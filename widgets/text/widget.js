@@ -7,6 +7,7 @@ class NabuText extends Widget {
   static get wiring() {
     return {
       id: 'id',
+      enabled: 'enabled',
       locale: 'selectedLocale',
       marker: 'marker',
       focus: 'focus',
@@ -21,8 +22,10 @@ class NabuText extends Widget {
   }
 
   mustAdd(props) {
-    const {msgid, desc} = props;
-    this.cmd('nabu.add-message', {messageId: msgid, description: desc});
+    const {msgid, desc, enabled} = props;
+    if (enabled) {
+      this.cmd('nabu.add-message', {messageId: msgid, description: desc});
+    }
   }
 
   componentWillUpdate(nextProps) {
@@ -35,6 +38,7 @@ class NabuText extends Widget {
 
   render() {
     const {
+      enabled,
       marker,
       focus,
       children,
@@ -46,6 +50,7 @@ class NabuText extends Widget {
       values,
       selectedItem,
       selectionModeEnabled,
+      ...other
     } = this.props;
 
     const translatedMessage = message
@@ -55,10 +60,11 @@ class NabuText extends Widget {
 
     function onMouseEnter() {
       if (selectionModeEnabled) {
-        timeout = setTimeout(
-          () => this.cmd('nabu.set-selected-item', {messageId: msgid}),
-          300
-        );
+        timeout = setTimeout(() => {
+          if (enabled) {
+            this.cmd('nabu.set-selected-item', {messageId: msgid});
+          }
+        }, 300);
       }
     }
 
@@ -107,6 +113,7 @@ class NabuText extends Widget {
         dangerouslySetInnerHTML={{__html: text}}
         onMouseEnter={onMouseEnter}
         onMouseLeave={onMouseLeave}
+        {...other}
       >
         {children}
       </span>

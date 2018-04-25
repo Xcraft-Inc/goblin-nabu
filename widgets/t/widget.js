@@ -7,13 +7,17 @@ class T extends Widget {
   static get wiring() {
     return {
       id: 'id',
+      enabled: 'enabled',
     };
   }
 
   render() {
-    const {id, msgid, ...other} = this.props;
+    const {id, enabled, msgid, dispatch, ...other} = this.props;
     if (!id) {
       return null;
+    }
+    if (!enabled) {
+      return <span {...other}>{msgid}</span>;
     }
     if (
       !msgid ||
@@ -25,11 +29,10 @@ class T extends Widget {
         'font-weight: bold;',
         `malformed message id: '${msgid}' found`
       );
-      return null;
+      return <span>bad msgid</span>;
     }
     const WiredText = this.WithState(Text, messages => {
       const msg = messages.get(msgid);
-      console.dir(msg);
       return {
         message: msg ? msg : null,
       };
