@@ -4,6 +4,12 @@ import React from 'react';
 import formatMessage from '../../lib/format.js';
 
 class NabuText extends Widget {
+  constructor() {
+    super(...arguments);
+    this.onMouseEnter = this.onMouseEnter.bind(this);
+    this.onMouseLeave = this.onMouseLeave.bind(this);
+  }
+
   static get wiring() {
     return {
       id: 'id',
@@ -36,6 +42,22 @@ class NabuText extends Widget {
     this.mustAdd(this.props);
   }
 
+  onMouseEnter() {
+    if (this.props.selectionModeEnabled) {
+      this.timeout = setTimeout(() => {
+        if (this.props.enabled) {
+          this.cmd('nabu.set-selected-item', {messageId: this.props.msgid});
+        }
+      }, 300);
+    }
+  }
+
+  onMouseLeave() {
+    if (this.props.selectionModeEnabled && this.timeout !== undefined) {
+      clearTimeout(this.timeout);
+    }
+  }
+
   render() {
     const {
       enabled,
@@ -50,6 +72,7 @@ class NabuText extends Widget {
       values,
       selectedItem,
       selectionModeEnabled,
+      dispatch,
       ...other
     } = this.props;
 
@@ -57,22 +80,6 @@ class NabuText extends Widget {
       ? message.get(`translations.${locale}.message`, msgid)
       : msgid;
     let timeout;
-
-    function onMouseEnter() {
-      if (selectionModeEnabled) {
-        timeout = setTimeout(() => {
-          if (enabled) {
-            this.cmd('nabu.set-selected-item', {messageId: msgid});
-          }
-        }, 300);
-      }
-    }
-
-    function onMouseLeave() {
-      if (selectionModeEnabled && timeout !== undefined) {
-        clearTimeout(timeout);
-      }
-    }
 
     const text = formatMessage(locale, html, translatedMessage, values);
 
@@ -111,8 +118,8 @@ class NabuText extends Widget {
       <span
         style={style}
         dangerouslySetInnerHTML={{__html: text}}
-        onMouseEnter={onMouseEnter}
-        onMouseLeave={onMouseLeave}
+        onMouseEnter={this.onMouseEnter}
+        onMouseLeave={this.onMouseLeave}
         {...other}
       >
         {children}

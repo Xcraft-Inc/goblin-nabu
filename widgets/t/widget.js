@@ -16,21 +16,24 @@ class T extends Widget {
     if (!id) {
       return null;
     }
+
     if (!enabled) {
       return <span {...other}>{msgid}</span>;
     }
-    if (
-      !msgid ||
-      typeof msgid !== 'string' ||
-      (typeof msgid === 'string' && msgid.length === 0)
-    ) {
+
+    if (!msgid || typeof msgid !== 'string') {
       console.warn(
         '%cNabu Warning',
         'font-weight: bold;',
         `malformed message id: '${msgid}' found`
       );
-      return <span>bad msgid</span>;
+      return null;
     }
+
+    if (typeof msgid === 'string' && msgid.length === 0) {
+      return null;
+    }
+
     const WiredText = this.WithState(Text, messages => {
       const msg = messages.get(msgid);
       return {
