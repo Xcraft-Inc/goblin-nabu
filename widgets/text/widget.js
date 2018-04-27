@@ -79,7 +79,6 @@ class NabuText extends Widget {
     const translatedMessage = message
       ? message.get(`translations.${locale}.message`, msgid)
       : msgid;
-    let timeout;
 
     const text = formatMessage(locale, html, translatedMessage, values);
 
@@ -110,6 +109,7 @@ class NabuText extends Widget {
         getSelectionModeStyle(selectedItem === msgid)
       );
     }
+
     if (focus && msgid === focus) {
       style = Object.assign(style, focusStyle);
     }
@@ -121,9 +121,7 @@ class NabuText extends Widget {
         onMouseEnter={this.onMouseEnter}
         onMouseLeave={this.onMouseLeave}
         {...other}
-      >
-        {children}
-      </span>
+      />
     );
   }
 }
