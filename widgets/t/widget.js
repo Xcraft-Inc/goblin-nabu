@@ -13,11 +13,7 @@ class T extends Widget {
 
   render() {
     const {id, enabled, msgid, dispatch, ...other} = this.props;
-    if (!id) {
-      return null;
-    }
-
-    if (!enabled) {
+    if (!id || !enabled) {
       return <span {...other}>{msgid}</span>;
     }
 
