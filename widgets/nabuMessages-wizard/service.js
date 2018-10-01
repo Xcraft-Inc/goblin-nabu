@@ -27,7 +27,7 @@ function buildMessages(messages, locales) {
   data.rows = messages
     .map(message => {
       const row = {
-        nabuId: message.get('id', '-'),
+        nabuId: message.get('nabuId'),
         description: message.get('description'),
       };
 

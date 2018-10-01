@@ -5,23 +5,14 @@ const entity = {
   type: 'nabuMessage',
 
   buildSummaries: function(quest, message, peers, MD) {
-    const ref = message.get('id', '');
+    const ref = message.get('nabuId', '');
     return {info: ref, description: ref};
   },
-  quests: {
-    addMessage: function*(quest, message) {
-      const msgId = `nabuMessage@${message.id}`;
-      yield quest.create(msgId, {
-        id: msgId,
-        desktopId: quest.getDesktop(),
-        description: message.description,
-        translations: message.translations,
-      });
-    },
-  },
-  onNew: function(quest, id, description) {
+  quests: {},
+  onNew: function(quest, id, nabuId, description) {
     return {
       id: id,
+      nabuId: nabuId,
       description: description,
       translations: {},
     };
