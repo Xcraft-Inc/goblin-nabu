@@ -2,7 +2,8 @@ import React from 'react';
 import Widget from 'laboratory/widget';
 
 import Container from 'gadgets/container/widget';
-import NabuDataTable from '../nabu-data-table/widget';
+import Table from 'gadgets/table/widget';
+import Field from 'gadgets/field/widget';
 
 class NabuData extends Widget {
   constructor() {
@@ -15,19 +16,53 @@ class NabuData extends Widget {
   }
 
   render() {
+    const {headers, rowsNumber, locales, id} = this.props;
+
+    function buildTableData() {
+      return {
+        header: headers.toJS(),
+        rows: Array.apply(null, {length: rowsNumber}).map((_, index) => {
+          const row = {
+            nabuId: () => (
+              <Field
+                kind="label"
+                grow="1"
+                labelWidth="0px"
+                model={`.form.table.rows[${index}].nabuId`}
+              />
+            ),
+          };
+
+          for (const locale of locales.toJS()) {
+            row[locale.name] = () => (
+              <Field
+                model={`.form.table.rows[${index}].${locale.name}`}
+                grow="1"
+                labelWidth="0px"
+              />
+            );
+          }
+          return row;
+        }),
+      };
+    }
+
     return (
-      <Container kind="row">
-        <NabuDataTable
-          nabuData={this.props.nabuData}
-          onUpdateTranslation={this.updateTranslation}
-        />
+      <Container kind="pane">
+        <Container kind="row-pane">
+          <Container kind="push-to-edge">
+            <Table id={id} data={buildTableData()} height="500px" />
+          </Container>
+        </Container>
       </Container>
     );
   }
 }
 
 const NabuDataConnected = Widget.connectBackend({
-  nabuData: 'form.table',
+  headers: 'form.table.header',
+  rowsNumber: 'form.rowsNumber',
+  locales: 'form.locales',
 })(NabuData);
 
 class ShowMessages extends Widget {
