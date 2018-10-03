@@ -28,11 +28,10 @@ function buildMessages(messages, locales) {
     .map(message => {
       const row = {
         nabuId: message.get('nabuId'),
-        description: message.get('description'),
       };
 
       for (const locale of locales) {
-        row[locale.name] = message.get(['translations', locale.name], '-');
+        row[locale.name] = message.get(['translations', locale.name], '');
       }
 
       return row;
