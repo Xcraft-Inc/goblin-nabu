@@ -91,6 +91,16 @@ const config = {
           path: 'form.table',
           newValue: nabuData,
         });
+
+        quest.me.change({
+          path: 'form.rowsNumber',
+          newValue: nabuData.rows.length,
+        });
+
+        quest.me.change({
+          path: 'form.locales',
+          newValue: locales,
+        });
       },
     },
 
