@@ -33,7 +33,7 @@ function buildMessages(messages, locales) {
       };
 
       for (const locale of locales) {
-        row[locale.name] = message.get(['translations', locale.name], '');
+        row[locale.name] = message.getIn(['translations', locale.name], '');
       }
 
       return row;
