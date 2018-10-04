@@ -1,5 +1,6 @@
 'use strict';
 const {buildWizard} = require('goblin-desktop');
+const {crypto} = require('xcraft-core-utils');
 const Shredder = require('xcraft-core-shredder');
 
 function buildMessages(messages, locales) {
@@ -75,7 +76,7 @@ const config = {
       mainButton: function(quest, form) {
         return {
           glyph: 'solid/arrow-right',
-          text: `Traduire`,
+          text: `Save`,
           grow: '2',
         };
       },
@@ -110,10 +111,29 @@ const config = {
         });
       },
     },
-
     finish: {
       form: {},
       quest: function*(quest, form, next) {
+        const r = quest.getStorage('rethink');
+
+        for (const row of form.table.rows) {
+          if (row.updated) {
+            const msgId = `nabuMessage@${crypto.sha256(row.nabuId)}`;
+            const translations = {};
+
+            for (const locale of form.locales) {
+              translations[locale.name] = row[locale.name];
+            }
+
+            yield r.setIn({
+              table: 'nabuMessage',
+              documentId: msgId,
+              path: ['translations'],
+              value: translations,
+            });
+          }
+        }
+
         const desktop = quest.getAPI(quest.getDesktop());
         desktop.removeDialog({dialogId: quest.goblin.id});
       },
