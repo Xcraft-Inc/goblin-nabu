@@ -17,6 +17,7 @@ class NabuData extends Widget {
 
   render() {
     const {headers, rowsNumber, locales, id} = this.props;
+    const self = this;
 
     function buildTableData() {
       return {
@@ -39,6 +40,9 @@ class NabuData extends Widget {
                 model={`.form.table.rows[${index}].${locale.name}`}
                 grow="1"
                 labelWidth="0px"
+                onDebouncedChange={() =>
+                  self.props.do('updateMessage', {rowIndex: index})
+                }
               />
             );
           }

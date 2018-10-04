@@ -28,6 +28,7 @@ function buildMessages(messages, locales) {
     .map(message => {
       const row = {
         nabuId: message.get('nabuId'),
+        updated: false,
       };
 
       for (const locale of locales) {
@@ -61,6 +62,12 @@ const config = {
         value: newValue,
       };
       yield nabuApi.translate(nabuState, action);
+    },
+    updateMessage: function(quest, rowIndex) {
+      quest.me.change({
+        path: `form.table.rows[${rowIndex}].updated`,
+        newValue: true,
+      });
     },
   },
   steps: {
