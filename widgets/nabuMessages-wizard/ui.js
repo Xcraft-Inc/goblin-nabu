@@ -8,11 +8,6 @@ import Field from 'gadgets/field/widget';
 class NabuData extends Widget {
   constructor() {
     super(...arguments);
-    this.updateTranslation = this.updateTranslation.bind(this);
-  }
-
-  updateTranslation(rowKey, colKey, newValue) {
-    this.props.do('updateTranslation', {rowKey, colKey, newValue});
   }
 
   render() {
@@ -63,11 +58,11 @@ class NabuData extends Widget {
   }
 }
 
-const NabuDataConnected = Widget.connectBackend({
-  headers: 'form.table.header',
-  rowsNumber: 'form.rowsNumber',
-  locales: 'form.locales',
-})(NabuData);
+const NabuDataConnected = Widget.connect((state, props) => ({
+  headers: state.get(`backend.${props.id}.form.table.header`),
+  rowsNumber: state.get(`backend.${props.id}.form.rowsNumber`),
+  locales: state.get(`backend.nabu.locales`),
+}))(NabuData);
 
 class ShowMessages extends Widget {
   constructor() {
