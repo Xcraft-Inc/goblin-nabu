@@ -10,5 +10,16 @@ exports.xcraftCommands = function() {
     type: 'locale',
     fields: ['name'],
     title: 'Locales',
+    newWorkitem: {
+      name: 'locale-workitem',
+      newEntityType: 'locale',
+      view: 'default',
+      icon: 'solid/map',
+      mapNewValueTo: 'name',
+      kind: 'tab',
+      isClosable: true,
+      navigate: true,
+    },
+    newButtonTitle: 'Nouvelle locale',
   });
 };

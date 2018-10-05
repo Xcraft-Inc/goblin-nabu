@@ -40,4 +40,14 @@ export default {
     readonly: renderPanelReadonly,
     edit: renderPanelEdit,
   },
+  plugin: {
+    readonly: {
+      compact: renderPanelReadonly,
+      extend: renderPanelEdit,
+    },
+    edit: {
+      compact: renderPanelReadonly,
+      extend: renderPanelEdit,
+    },
+  },
 };
