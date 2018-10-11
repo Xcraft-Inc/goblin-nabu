@@ -4,6 +4,7 @@ import Widget from 'laboratory/widget';
 import Container from 'gadgets/container/widget';
 import Table from 'gadgets/table/widget';
 import Field from 'gadgets/field/widget';
+import TextFieldCombo from 'gadgets/text-field-combo/widget';
 
 class NabuData extends Widget {
   constructor() {
@@ -11,12 +12,60 @@ class NabuData extends Widget {
   }
 
   render() {
-    const {headers, rowsNumber, locales, id} = this.props;
+    const {selectedLocales, rowsNumber, locales, id} = this.props;
     const self = this;
 
     function buildTableData() {
+      const head = [
+        {
+          name: 'nabuId',
+          description: 'Id de traduction original',
+          grow: '1',
+          textAlign: 'left',
+        },
+      ];
+
+      var localsList = [];
+      locales.linq.select(x => {
+        localsList.push(x.get('name'));
+      });
+      head[1] = {
+        name: selectedLocales.get(`0`),
+        description: () => (
+          <TextFieldCombo
+            model={`.form.selectedLocales[0]`}
+            readonly="true"
+            grow="1"
+            list={localsList}
+            menuType="wrap"
+            defaultValue={`${selectedLocales.get(`0`)}`}
+            comboTextTransform="none"
+            onSetText={newLocal => {
+              self.props.do('updateLocal', {index: 0, newLocal});
+            }}
+          />
+        ),
+      };
+      head[2] = {
+        name: selectedLocales.get(`1`),
+        description: () => (
+          <TextFieldCombo
+            model={`.form.selectedLocales[1])`}
+            readonly="true"
+            grow="1"
+            list={localsList}
+            menuType="wrap"
+            defaultValue={`${selectedLocales.get(`1`)}`}
+            comboTextTransform="none"
+            onSetText={newLocal => {
+              self.props.do('updateLocal', {index: 1, newLocal});
+            }}
+          />
+        ),
+      };
+
       return {
-        header: headers.toJS(),
+        header: head,
         rows: Array.apply(null, {length: rowsNumber}).map((_, index) => {
           const row = {
             nabuId: () => (
@@ -61,6 +110,10 @@ class NabuData extends Widget {
 const NabuDataConnected = Widget.connect((state, props) => ({
   headers: state.get(`backend.${props.id}.form.table.header`),
   rowsNumber: state.get(`backend.${props.id}.form.rowsNumber`),
+
+  nrColumn: state.get(`backend.${props.id}.form.nrColumn`),
+  selectedLocales: state.get(`backend.${props.id}.form.selectedLocales`),
+
   locales: state.get(`backend.nabu.locales`),
 }))(NabuData);
 

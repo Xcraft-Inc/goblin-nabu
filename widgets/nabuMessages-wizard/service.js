@@ -51,23 +51,16 @@ const config = {
   },
 
   quests: {
-    updateTranslation: function*(quest, rowKey, colKey, newValue) {
-      const nabuApi = quest.getAPI('nabu');
-      const nabuState = yield nabuApi.get();
-
-      const rowId = rowKey.get('nabuId');
-
-      const action = {
-        messageId: rowId,
-        locale: colKey,
-        value: newValue,
-      };
-      yield nabuApi.translate(nabuState, action);
-    },
     updateMessage: function(quest, rowIndex) {
       quest.me.change({
         path: `form.table.rows[${rowIndex}].updated`,
         newValue: true,
+      });
+    },
+    updateLocal: function(quest, index, newLocal) {
+      quest.me.change({
+        path: `form.selectedLocales[${index}]`,
+        newValue: newLocal,
       });
     },
   },
@@ -86,6 +79,22 @@ const config = {
 
         const locales = yield r.getAll({
           table: 'locale',
+        });
+
+        var firstLocale = locales[0] ? locales[0].name : 'no locale';
+        const nrColumn = 2;
+        quest.me.change({
+          path: 'form.nrColumn',
+          newValue: nrColumn,
+        });
+
+        var selectedLocales = [];
+        for (var i = 0; i < nrColumn; i++) {
+          selectedLocales[i] = firstLocale;
+        }
+        quest.me.change({
+          path: 'form.selectedLocales',
+          newValue: selectedLocales,
         });
 
         const nabuMessages = Shredder.fromJS(
@@ -111,12 +120,16 @@ const config = {
       quest: function*(quest, form, next) {
         const r = quest.getStorage('rethink');
 
+        const locales = yield r.getAll({
+          table: 'locale',
+        });
+
         for (const row of form.table.rows) {
           if (row.updated) {
             const msgId = `nabuMessage@${crypto.sha256(row.nabuId)}`;
             const translations = {};
 
-            for (const locale of form.locales) {
+            for (const locale of locales) {
               translations[locale.name] = row[locale.name];
             }
 
