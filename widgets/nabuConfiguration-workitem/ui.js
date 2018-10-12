@@ -1,24 +1,43 @@
 import React from 'react';
+import Widget from 'laboratory/widget';
 
 import Container from 'gadgets/container/widget';
-import Field from 'gadgets/field/widget';
+import TextFieldCombo from 'gadgets/text-field-combo/widget';
 
 /******************************************************************************/
 
-function renderPanel(props) {
-  return (
-    <Container kind="column">
-      <Container kind="pane">
-        <Field
-          kind="combo-ids"
-          model=".locales"
-          targetModel=".selectedLocaleId"
-          labelText="Langue"
-          onChange={localeId => props.do('setLocale', {localeId})}
-        />
+class NabuConfiguration extends Widget {
+  constructor() {
+    super(...arguments);
+  }
+
+  render() {
+    const {locales} = this.props;
+
+    return (
+      <Container kind="column">
+        <Container kind="pane">
+          <TextFieldCombo
+            model=".localeId"
+            readonly="true"
+            grow="1"
+            list={locales.toJS()}
+            menuType="wrap"
+            defaultValue={'-'}
+            comboTextTransform="none"
+          />
+        </Container>
       </Container>
-    </Container>
-  );
+    );
+  }
+}
+
+const NabuConfigurationConnected = Widget.connect((state, props) => ({
+  locales: state.get(`backend.nabu.locales`),
+}))(NabuConfiguration);
+
+function renderPanel(props) {
+  return <NabuConfigurationConnected id={this.props.id} do={this.props.do} />;
 }
 
 function renderReadonly(props) {
@@ -26,7 +45,7 @@ function renderReadonly(props) {
 }
 
 function renderExtend(props) {
-  return <Container kind="column" />;
+  return <NabuConfigurationConnected id={this.props.id} do={this.props.do} />;
 }
 
 /******************************************************************************/
