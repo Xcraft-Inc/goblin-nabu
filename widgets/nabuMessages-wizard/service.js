@@ -4,28 +4,7 @@ const {crypto} = require('xcraft-core-utils');
 const Shredder = require('xcraft-core-shredder');
 
 function buildMessages(messages, locales) {
-  const data = {
-    header: [
-      {
-        name: 'nabuId',
-        description: 'Id de traduction original',
-        grow: '1',
-        textAlign: 'left',
-      },
-    ],
-    rows: [],
-  };
-
-  for (const locale of locales) {
-    data.header.push({
-      name: locale.name,
-      description: locale.name,
-      grow: '1',
-      textAlign: 'left',
-    });
-  }
-
-  data.rows = messages
+  return messages
     .map(message => {
       const row = {
         nabuId: message.get('nabuId'),
@@ -39,8 +18,6 @@ function buildMessages(messages, locales) {
       return row;
     })
     .toArray();
-
-  return data;
 }
 
 const config = {
@@ -53,14 +30,14 @@ const config = {
   quests: {
     updateMessage: function(quest, rowIndex) {
       quest.me.change({
-        path: `form.table.rows[${rowIndex}].updated`,
+        path: `form.messages[${rowIndex}].updated`,
         newValue: true,
       });
     },
-    updateLocal: function(quest, index, newLocal) {
+    changeSelectedLocale: function(quest, index, locale) {
       quest.me.change({
         path: `form.selectedLocales[${index}]`,
-        newValue: newLocal,
+        newValue: locale,
       });
     },
   },
@@ -75,21 +52,20 @@ const config = {
       },
       form: {},
       quest: function*(quest, form, next) {
+        const nabuApi = quest.getAPI('nabu');
         const r = quest.getStorage('rethink');
 
-        const locales = yield r.getAll({
-          table: 'locale',
-        });
+        const locales = (yield nabuApi.get()).get('locales').toJS();
 
-        var firstLocale = locales[0] ? locales[0].name : 'no locale';
-        const nrColumn = 2;
+        var firstLocale = locales[0] ? locales[0].name : '';
+        const columnsNumber = 2;
         quest.me.change({
-          path: 'form.nrColumn',
-          newValue: nrColumn,
+          path: 'form.columnsNumber',
+          newValue: columnsNumber,
         });
 
         var selectedLocales = [];
-        for (var i = 0; i < nrColumn; i++) {
+        for (var i = 0; i < columnsNumber; i++) {
           selectedLocales[i] = firstLocale;
         }
         quest.me.change({
@@ -103,15 +79,15 @@ const config = {
           })
         );
 
-        const nabuData = buildMessages(nabuMessages, locales);
+        const messages = buildMessages(nabuMessages, locales);
         quest.me.change({
-          path: 'form.table',
-          newValue: nabuData,
+          path: 'form.messages',
+          newValue: messages,
         });
 
         quest.me.change({
           path: 'form.rowsNumber',
-          newValue: nabuData.rows.length,
+          newValue: messages.length,
         });
       },
     },
@@ -119,12 +95,11 @@ const config = {
       form: {},
       quest: function*(quest, form, next) {
         const r = quest.getStorage('rethink');
+        const nabuApi = quest.getAPI('nabu');
 
-        const locales = yield r.getAll({
-          table: 'locale',
-        });
+        const locales = (yield nabuApi.get()).get('locales').toJS();
 
-        for (const row of form.table.rows) {
+        for (const row of form.messages) {
           if (row.updated) {
             const msgId = `nabuMessage@${crypto.sha256(row.nabuId)}`;
             const translations = {};

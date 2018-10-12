@@ -12,11 +12,13 @@ class NabuData extends Widget {
   }
 
   render() {
-    const {selectedLocales, rowsNumber, locales, id} = this.props;
+    const {rowsNumber, columnsNumber, locales, id} = this.props;
     const self = this;
 
     function buildTableData() {
-      const head = [
+      const localesList = locales.map(l => l.get('name')).toJS();
+
+      const headers = [
         {
           name: 'nabuId',
           description: 'Id de traduction original',
@@ -26,49 +28,29 @@ class NabuData extends Widget {
         },
       ];
 
-      var localsList = [];
-      locales.linq.select(x => {
-        localsList.push(x.get('name'));
+      Array.apply(null, {length: columnsNumber}).map((_, i) => {
+        headers.push({
+          name: 'locale_' + i,
+          width: '33%',
+          description: () => (
+            <TextFieldCombo
+              model={`.form.selectedLocales[${i}]`}
+              readonly="true"
+              grow="1"
+              list={localesList}
+              menuType="wrap"
+              defaultValue={''}
+              comboTextTransform="none"
+              onSetText={locale => {
+                self.props.do('changeSelectedLocale', {index: i, locale});
+              }}
+            />
+          ),
+        });
       });
-      head[1] = {
-        name: selectedLocales.get(`0`),
-        description: () => (
-          <TextFieldCombo
-            model={`.form.selectedLocales[0]`}
-            readonly="true"
-            grow="1"
-            list={localsList}
-            menuType="wrap"
-            defaultValue={`${selectedLocales.get(`0`)}`}
-            comboTextTransform="none"
-            onSetText={newLocal => {
-              self.props.do('updateLocal', {index: 0, newLocal});
-            }}
-          />
-        ),
-        width: '33%',
-      };
-      head[2] = {
-        name: selectedLocales.get(`1`),
-        description: () => (
-          <TextFieldCombo
-            model={`.form.selectedLocales[1])`}
-            readonly="true"
-            grow="1"
-            list={localsList}
-            menuType="wrap"
-            defaultValue={`${selectedLocales.get(`1`)}`}
-            comboTextTransform="none"
-            onSetText={newLocal => {
-              self.props.do('updateLocal', {index: 1, newLocal});
-            }}
-          />
-        ),
-        width: '33%',
-      };
 
       return {
-        header: head,
+        header: headers,
         rows: Array.apply(null, {length: rowsNumber}).map((_, index) => {
           const row = {
             nabuId: () => (
@@ -76,15 +58,20 @@ class NabuData extends Widget {
                 kind="label"
                 grow="1"
                 labelWidth="0px"
-                model={`.form.table.rows[${index}].nabuId`}
+                model={`.form.messages[${index}].nabuId`}
               />
             ),
           };
 
-          for (const locale of locales.toJS()) {
-            row[locale.name] = () => (
+          Array.apply(null, {length: columnsNumber}).map((_, i) => {
+            row['locale_' + i] = () => (
               <Field
-                model={`.form.table.rows[${index}].${locale.name}`}
+                model={() => {
+                  const locale = self.getModelValue(
+                    `.form.selectedLocales[${i}]`
+                  );
+                  return `backend.${id}.form.messages[${index}].${locale}`;
+                }}
                 grow="1"
                 labelWidth="0px"
                 onDebouncedChange={() =>
@@ -92,7 +79,7 @@ class NabuData extends Widget {
                 }
               />
             );
-          }
+          });
           return row;
         }),
       };
@@ -111,12 +98,8 @@ class NabuData extends Widget {
 }
 
 const NabuDataConnected = Widget.connect((state, props) => ({
-  headers: state.get(`backend.${props.id}.form.table.header`),
   rowsNumber: state.get(`backend.${props.id}.form.rowsNumber`),
-
-  nrColumn: state.get(`backend.${props.id}.form.nrColumn`),
-  selectedLocales: state.get(`backend.${props.id}.form.selectedLocales`),
-
+  columnsNumber: state.get(`backend.${props.id}.form.columnsNumber`),
   locales: state.get(`backend.nabu.locales`),
 }))(NabuData);
 
