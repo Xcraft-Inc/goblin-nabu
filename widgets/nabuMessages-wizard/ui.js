@@ -21,7 +21,7 @@ class NabuData extends Widget {
       const headers = [
         {
           name: 'nabuId',
-          description: 'Id de traduction original',
+          description: 'Message original',
           grow: '1',
           textAlign: 'left',
           width: '33%',
