@@ -30,7 +30,7 @@ const config = {
   quests: {
     updateMessage: function(quest, rowIndex) {
       quest.me.change({
-        path: `form.table.rows[${rowIndex}].updated`,
+        path: `form.messages[${rowIndex}].updated`,
         newValue: true,
       });
     },
@@ -95,12 +95,11 @@ const config = {
       form: {},
       quest: function*(quest, form, next) {
         const r = quest.getStorage('rethink');
+        const nabuApi = quest.getAPI('nabu');
 
-        const locales = yield r.getAll({
-          table: 'locale',
-        });
+        const locales = (yield nabuApi.get()).get('locales').toJS();
 
-        for (const row of form.table.rows) {
+        for (const row of form.messages) {
           if (row.updated) {
             const msgId = `nabuMessage@${crypto.sha256(row.nabuId)}`;
             const translations = {};
