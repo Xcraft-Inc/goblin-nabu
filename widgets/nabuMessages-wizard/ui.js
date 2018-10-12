@@ -22,6 +22,7 @@ class NabuData extends Widget {
           description: 'Id de traduction original',
           grow: '1',
           textAlign: 'left',
+          width: '33%',
         },
       ];
 
@@ -45,6 +46,7 @@ class NabuData extends Widget {
             }}
           />
         ),
+        width: '33%',
       };
       head[2] = {
         name: selectedLocales.get(`1`),
@@ -62,6 +64,7 @@ class NabuData extends Widget {
             }}
           />
         ),
+        width: '33%',
       };
 
       return {
