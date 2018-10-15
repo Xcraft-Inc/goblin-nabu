@@ -1,9 +1,11 @@
 import React from 'react';
 import Widget from 'laboratory/widget';
 
+import Connect from 'laboratory/connect';
 import Container from 'gadgets/container/widget';
 import Table from 'gadgets/table/widget';
 import Field from 'gadgets/field/widget';
+import Label from 'gadgets/label/widget';
 import TextFieldCombo from 'gadgets/text-field-combo/widget';
 
 class NabuData extends Widget {
@@ -12,26 +14,35 @@ class NabuData extends Widget {
   }
 
   render() {
-    const {rowsNumber, columnsNumber, locales, id} = this.props;
+    const {rowsNumber, selectedLocalesNumber, locales, id} = this.props;
     const self = this;
 
     function buildTableData() {
       const localesList = locales.map(l => l.get('name')).toJS();
+      const localeColumnsNumber = selectedLocalesNumber + 1; // + nabuId
+      const fixedWidth = 5.0; // width reserved for other columns
+      const localeColumnWidth =
+        (100.0 - fixedWidth) / localeColumnsNumber + '%';
 
       const headers = [
+        {
+          name: 'missingTranslations',
+          grow: '1',
+          width: '5%',
+        },
         {
           name: 'nabuId',
           description: 'Message original',
           grow: '1',
           textAlign: 'left',
-          width: '33%',
+          width: localeColumnWidth,
         },
       ];
 
-      Array.apply(null, {length: columnsNumber}).map((_, i) => {
+      Array.apply(null, {length: selectedLocalesNumber}).map((_, i) => {
         headers.push({
           name: 'locale_' + i,
-          width: '33%',
+          width: localeColumnWidth,
           description: () => (
             <TextFieldCombo
               model={`.form.selectedLocales[${i}]`}
@@ -53,6 +64,28 @@ class NabuData extends Widget {
         header: headers,
         rows: Array.apply(null, {length: rowsNumber}).map((_, index) => {
           const row = {
+            missingTranslations: () => (
+              <Connect
+                glyph={() => {
+                  const message = self.getModelValue(
+                    `.form.messages[${index}]`
+                  );
+                  return locales
+                    .map(l => message.get(l))
+                    .some(
+                      translation =>
+                        translation == undefined || translation === ''
+                    )
+                    ? 'solid/exclamation-triangle'
+                    : null;
+                }}
+              >
+                <Label
+                  spacing="overlap"
+                  tooltip="Certaines locales n'ont pas encore été traduites"
+                />
+              </Connect>
+            ),
             nabuId: () => (
               <Field
                 kind="label"
@@ -63,7 +96,7 @@ class NabuData extends Widget {
             ),
           };
 
-          Array.apply(null, {length: columnsNumber}).map((_, i) => {
+          Array.apply(null, {length: selectedLocalesNumber}).map((_, i) => {
             row['locale_' + i] = () => (
               <Field
                 model={() => {
@@ -99,7 +132,7 @@ class NabuData extends Widget {
 
 const NabuDataConnected = Widget.connect((state, props) => ({
   rowsNumber: state.get(`backend.${props.id}.form.rowsNumber`),
-  columnsNumber: state.get(`backend.${props.id}.form.columnsNumber`),
+  selectedLocalesNumber: state.get(`backend.${props.id}.form.columnsNumber`),
   locales: state.get(`backend.nabu.locales`),
 }))(NabuData);
 
