@@ -28,7 +28,7 @@ class NabuData extends Widget {
         {
           name: 'missingTranslations',
           grow: '1',
-          width: '5%',
+          width: '2.5%',
         },
         {
           name: 'nabuId',
@@ -36,6 +36,11 @@ class NabuData extends Widget {
           grow: '1',
           textAlign: 'left',
           width: localeColumnWidth,
+        },
+        {
+          name: 'description',
+          grow: '1',
+          width: '2.5%',
         },
       ];
 
@@ -93,6 +98,26 @@ class NabuData extends Widget {
                 labelWidth="0px"
                 model={`.form.messages[${index}].nabuId`}
               />
+            ),
+            description: () => (
+              <Connect
+                glyph={() => {
+                  const message = self.getModelValue(
+                    `.form.messages[${index}]`
+                  );
+                  return message.get('description') &&
+                    message.get('description') !== ''
+                    ? 'solid/info' // not contained in standard icons
+                    : null;
+                }}
+                tooltip={() =>
+                  self
+                    .getModelValue(`.form.messages[${index}]`)
+                    .get('descrption')
+                }
+              >
+                <Label spacing="overlap" />
+              </Connect>
             ),
           };
 
