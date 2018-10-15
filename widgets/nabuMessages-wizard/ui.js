@@ -147,7 +147,12 @@ class NabuData extends Widget {
       <Container kind="pane">
         <Container kind="row-pane">
           <Container kind="push-to-edge">
-            <Table id={id} data={buildTableData()} height="500px" />
+            <Table
+              id={id}
+              data={buildTableData()}
+              height="500px"
+              selectionMode="none"
+            />
           </Container>
         </Container>
       </Container>
