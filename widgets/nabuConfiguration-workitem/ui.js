@@ -13,6 +13,7 @@ class NabuConfiguration extends Widget {
 
   render() {
     const {locales} = this.props;
+    const self = this;
 
     return (
       <Container kind="column">
@@ -21,10 +22,12 @@ class NabuConfiguration extends Widget {
             model=".localeId"
             readonly="true"
             grow="1"
-            list={locales.toJS()}
+            list={locales
+              .map(l => ({value: l.get('id'), text: l.get('name')}))
+              .toJS()}
             menuType="wrap"
-            defaultValue={'-'}
-            comboTextTransform="none"
+            defaultValue={''}
+            onSetText={localeId => self.props.do('setLocale', {localeId})}
           />
         </Container>
       </Container>
@@ -37,7 +40,7 @@ const NabuConfigurationConnected = Widget.connect((state, props) => ({
 }))(NabuConfiguration);
 
 function renderPanel(props) {
-  return <NabuConfigurationConnected id={this.props.id} do={this.props.do} />;
+  return <NabuConfigurationConnected id={props.id} do={props.do} />;
 }
 
 function renderReadonly(props) {
@@ -45,7 +48,7 @@ function renderReadonly(props) {
 }
 
 function renderExtend(props) {
-  return <NabuConfigurationConnected id={this.props.id} do={this.props.do} />;
+  return <NabuConfigurationConnected id={props.id} do={props.do} />;
 }
 
 /******************************************************************************/
