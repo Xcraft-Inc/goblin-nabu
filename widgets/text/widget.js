@@ -77,7 +77,7 @@ class NabuText extends Widget {
     } = this.props;
 
     const translatedMessage = message
-      ? message.get(`translations.${locale}.message`, msgid)
+      ? message.get(`translations.${locale}`, msgid)
       : msgid;
 
     const text = formatMessage(locale, html, translatedMessage, values);
