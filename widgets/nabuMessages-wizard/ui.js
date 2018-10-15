@@ -75,8 +75,9 @@ class NabuData extends Widget {
                   const message = self.getModelValue(
                     `.form.messages[${index}]`
                   );
+
                   return locales
-                    .map(l => message.get(l))
+                    .map(l => message.get(l.get('name')))
                     .some(
                       translation =>
                         translation == undefined || translation === ''
