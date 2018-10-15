@@ -36,7 +36,7 @@ class T extends Widget {
     const WiredText = this.WithState(Text, messages => {
       const hashedMsgId = `nabuMessage@${crypto.sha256(msgid)}`;
       const msg = messages.get(hashedMsgId);
-      console.dir(msg);
+
       return {
         message: msg ? msg : null,
       };
