@@ -52,8 +52,9 @@ function T(state, text, widget) {
     `translations.${locale.get('name')}`,
     text.id
   );
+  const finalMessage = translatedMessage !== '' ? translatedMessage : text.id;
 
-  return formatMessage(locale.get('name'), null, translatedMessage, []);
+  return formatMessage(locale.get('name'), null, finalMessage, []);
 }
 
 //-----------------------------------------------------------------------------
