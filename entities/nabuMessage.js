@@ -13,7 +13,7 @@ const entity = {
     return {
       id: id,
       nabuId: nabuId,
-      description: description,
+      description: description || '',
       translations: {},
     };
   },

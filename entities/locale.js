@@ -18,6 +18,7 @@ const entity = {
     return {
       id,
       name: name || '',
+      description: '',
     };
   },
 };

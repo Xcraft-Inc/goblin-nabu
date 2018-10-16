@@ -28,9 +28,9 @@ class NabuText extends Widget {
   }
 
   mustAdd(props) {
-    const {msgid, desc, enabled} = props;
+    const {msgid, description, enabled} = props;
     if (enabled) {
-      this.cmd('nabu.add-message', {messageId: msgid, description: desc});
+      this.cmd('nabu.add-message', {messageId: msgid, description});
     }
   }
 
@@ -67,7 +67,6 @@ class NabuText extends Widget {
       message,
       msgid,
       locale,
-      desc,
       html,
       values,
       selectedItem,
@@ -79,8 +78,9 @@ class NabuText extends Widget {
     const translatedMessage = message
       ? message.get(`translations.${locale}`, msgid)
       : msgid;
+    const finalMessage = translatedMessage !== '' ? translatedMessage : msgid;
 
-    const text = formatMessage(locale, html, translatedMessage, values);
+    const text = formatMessage(locale, html, finalMessage, values);
 
     const markerOn = this.mustTranslate(message, locale) && marker;
     const highliteStyle = {
