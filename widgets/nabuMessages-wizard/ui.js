@@ -123,7 +123,7 @@ class NabuData extends Widget {
                 tooltip={() =>
                   self
                     .getModelValue(`.form.messages[${index}]`)
-                    .get('descrption')
+                    .get('description')
                 }
               >
                 <Label spacing="overlap" />
@@ -138,7 +138,10 @@ class NabuData extends Widget {
                   const locale = self.getModelValue(
                     `.form.selectedLocales[${i}]`
                   );
-                  return `backend.${id}.form.messages[${index}].${locale}`;
+
+                  if (locale) {
+                    return `backend.${id}.form.messages[${index}].${locale}`;
+                  }
                 }}
                 grow="1"
                 labelWidth="0px"

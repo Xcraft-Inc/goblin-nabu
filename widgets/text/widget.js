@@ -24,7 +24,9 @@ class NabuText extends Widget {
 
   mustTranslate(message, locale) {
     const mustTranslate = !message;
-    return mustTranslate ? true : !message.get(`translations.${locale}`);
+    return mustTranslate || !locale
+      ? true
+      : !message.get(`translations.${locale}`);
   }
 
   mustAdd(props) {
@@ -75,12 +77,13 @@ class NabuText extends Widget {
       ...other
     } = this.props;
 
-    const translatedMessage = message
-      ? message.get(`translations.${locale}`, msgid)
-      : msgid;
+    const translatedMessage =
+      message && locale ? message.get(`translations.${locale}`, msgid) : msgid;
     const finalMessage = translatedMessage !== '' ? translatedMessage : msgid;
 
-    const text = formatMessage(locale, html, finalMessage, values);
+    const text = locale
+      ? formatMessage(locale, html, finalMessage, values)
+      : msgid;
 
     const markerOn = this.mustTranslate(message, locale) && marker;
     const highliteStyle = {
