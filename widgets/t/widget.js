@@ -16,25 +16,30 @@ class T extends Widget {
 
   render() {
     const {id, enabled, msgid, dispatch, ...other} = this.props;
-    if (!id || !enabled) {
+
+    if (typeof msgid === 'string') {
       return <span {...other}>{msgid}</span>;
     }
 
-    if (!msgid || typeof msgid !== 'string') {
+    if (!msgid) {
+      return null;
+    }
+
+    if (!id || !enabled) {
+      return <span {...other}>{msgid.id}</span>;
+    }
+
+    if (msgid.id.length === 0) {
       console.warn(
         '%cNabu Warning',
         'font-weight: bold;',
-        `malformed message id: '${msgid}' found`
+        `malformed message id: '${msgid.id}' found`
       );
       return null;
     }
 
-    if (typeof msgid === 'string' && msgid.length === 0) {
-      return null;
-    }
-
     const WiredText = this.WithState(Text, messages => {
-      const hashedMsgId = `nabuMessage@${crypto.sha256(msgid)}`;
+      const hashedMsgId = `nabuMessage@${crypto.sha256(msgid.id)}`;
       const msg = messages.get(hashedMsgId);
 
       return {
@@ -55,7 +60,11 @@ class T extends Widget {
           }
         }}
       >
-        <WiredText msgid={msgid} {...other} />
+        <WiredText
+          msgid={msgid.id}
+          description={msgid.description}
+          {...other}
+        />
       </Connect>
     );
   }

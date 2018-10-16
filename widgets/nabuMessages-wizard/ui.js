@@ -32,7 +32,14 @@ class NabuData extends Widget {
         },
         {
           name: 'nabuId',
-          description: 'Message original',
+          description: () => (
+            <Label
+              spacing="overlap"
+              text={{
+                id: 'Message original',
+              }}
+            />
+          ),
           grow: '1',
           textAlign: 'left',
           width: localeColumnWidth,
@@ -88,7 +95,9 @@ class NabuData extends Widget {
               >
                 <Label
                   spacing="overlap"
-                  tooltip="Certaines locales n'ont pas encore été traduites"
+                  tooltip={{
+                    id: "Certaines locales n'ont pas encore été traduites",
+                  }}
                 />
               </Connect>
             ),
