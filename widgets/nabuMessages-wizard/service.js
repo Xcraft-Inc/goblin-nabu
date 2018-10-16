@@ -43,12 +43,12 @@ const config = {
   },
   steps: {
     showMessages: {
-      mainButton: function(quest, form) {
-        return {
+      buttons: function(quest, buttons, form) {
+        return buttons.set('main', {
           glyph: 'solid/arrow-right',
-          text: `Save`,
+          text: 'Save',
           grow: '2',
-        };
+        });
       },
       form: {},
       quest: function*(quest, form, next) {
