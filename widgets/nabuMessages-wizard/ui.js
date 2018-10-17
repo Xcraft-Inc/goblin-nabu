@@ -27,7 +27,6 @@ class NabuData extends Widget {
       const headers = [
         {
           name: 'missingTranslations',
-          grow: '1',
           width: '2.5%',
         },
         {
@@ -40,7 +39,6 @@ class NabuData extends Widget {
               }}
             />
           ),
-          grow: '1',
           textAlign: 'left',
           width: localeColumnWidth,
         },
@@ -55,7 +53,7 @@ class NabuData extends Widget {
               grow="1"
               labelWidth="0px"
               onDebouncedChange={value =>
-                self.props.do('filter', {field: 'nabuId', value})
+                self.props.do('filter', {field: `nabuId`, value})
               }
             />
           ),
@@ -109,14 +107,16 @@ class NabuData extends Widget {
                     `.form.messages[${index}]`
                   );
 
-                  return locales
-                    .map(l => message.get(l.get('name')))
-                    .some(
-                      translation =>
-                        translation == undefined || translation === ''
-                    )
-                    ? 'solid/exclamation-triangle'
-                    : null;
+                  if (message) {
+                    return locales
+                      .map(l => message.get(l.get('name')))
+                      .some(
+                        translation =>
+                          translation == undefined || translation === ''
+                      )
+                      ? 'solid/exclamation-triangle'
+                      : null;
+                  }
                 }}
               >
                 <Label
@@ -141,16 +141,23 @@ class NabuData extends Widget {
                     const message = self.getModelValue(
                       `.form.messages[${index}]`
                     );
-                    return message.get('description') &&
-                      message.get('description') !== ''
-                      ? 'solid/exclamation-triangle' // not contained in standard icons
-                      : null;
+
+                    if (message) {
+                      const desc = message.get('description');
+                      return desc && desc !== ''
+                        ? 'solid/exclamation-triangle' // not contained in standard icons
+                        : null;
+                    }
                   }}
-                  tooltip={() =>
-                    self
-                      .getModelValue(`.form.messages[${index}]`)
-                      .get('description')
-                  }
+                  tooltip={() => {
+                    const message = self.getModelValue(
+                      `.form.messages[${index}]`
+                    );
+
+                    if (message) {
+                      return message.get('description');
+                    }
+                  }}
                 >
                   <Label spacing="overlap" />
                 </Connect>
@@ -160,22 +167,32 @@ class NabuData extends Widget {
 
           Array.apply(null, {length: selectedLocalesNumber}).map((_, i) => {
             row['locale_' + i] = () => (
-              <Field
-                model={() => {
-                  const locale = self.getModelValue(
-                    `.form.selectedLocales[${i}]`
+              <Connect
+                hidden={() => {
+                  const message = self.getModelValue(
+                    `.form.messages[${index}]`
                   );
 
-                  if (locale) {
-                    return `backend.${id}.form.messages[${index}].${locale}`;
-                  }
+                  return !message;
                 }}
-                grow="1"
-                labelWidth="0px"
-                onDebouncedChange={() =>
-                  self.props.do('updateMessage', {rowIndex: index})
-                }
-              />
+              >
+                <Field
+                  model={() => {
+                    const locale = self.getModelValue(
+                      `.form.selectedLocales[${i}]`
+                    );
+
+                    if (locale) {
+                      return `backend.${id}.form.messages[${index}].${locale}`;
+                    }
+                  }}
+                  grow="1"
+                  labelWidth="0px"
+                  onDebouncedChange={() =>
+                    self.props.do('updateMessage', {rowIndex: index})
+                  }
+                />
+              </Connect>
             );
           });
           return row;
