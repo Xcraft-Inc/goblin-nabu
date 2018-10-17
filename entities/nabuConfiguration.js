@@ -13,6 +13,9 @@ const entity = {
         newValue: localeId,
       });
     },
+    get: function(quest) {
+      return quest.goblin.getState();
+    },
   },
   onNew: function(quest, id) {
     id = 'nabuConfiguration@main';

@@ -53,9 +53,14 @@ const config = {
       form: {},
       quest: function*(quest, form, next) {
         const nabuApi = quest.getAPI('nabu');
+        const configApi = quest.getAPI('nabuConfiguration@main');
         const r = quest.getStorage('rethink');
 
         const locales = (yield nabuApi.get()).get('locales').toJS();
+        const currentLocaleId = (yield configApi.get()).get('localeId');
+        const currentLocale = locales.find(
+          locale => locale.id === currentLocaleId
+        );
 
         var firstLocale = locales[0] ? locales[0].name : '';
         const columnsNumber = 2;
@@ -65,7 +70,9 @@ const config = {
         });
 
         var selectedLocales = [];
-        for (var i = 0; i < columnsNumber; i++) {
+        selectedLocales[0] = currentLocale ? currentLocale.name : '';
+
+        for (var i = 1; i < columnsNumber; i++) {
           selectedLocales[i] = firstLocale;
         }
         quest.me.change({
