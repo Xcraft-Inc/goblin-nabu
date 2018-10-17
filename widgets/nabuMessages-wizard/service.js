@@ -70,7 +70,7 @@ const config = {
         });
 
         var selectedLocales = [];
-        selectedLocales[0] = currentLocale ? currentLocale.name : '';
+        selectedLocales[0] = currentLocale ? currentLocale.name : firstLocale;
 
         for (var i = 1; i < columnsNumber; i++) {
           selectedLocales[i] = firstLocale;
