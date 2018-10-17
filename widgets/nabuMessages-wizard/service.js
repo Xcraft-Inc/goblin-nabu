@@ -99,11 +99,25 @@ const config = {
         newValue: true,
       });
     },
-    changeSelectedLocale: function(quest, index, locale) {
+    changeSelectedLocale: function*(quest, index, locale, next) {
       quest.me.change({
         path: `form.selectedLocales[${index}]`,
         newValue: locale,
       });
+
+      const filters = quest.goblin.getState().get(`form.filters`);
+
+      if (
+        filters.get(`locale_${index}`) != undefined &&
+        filters.get(`locale_${index}`) !== ''
+      ) {
+        quest.me.change({
+          path: `form.filters.locale_${index}`,
+          newValue: '',
+        });
+
+        yield retrieveMessages(quest, filters.set(`locale_${index}`, ''), next);
+      }
     },
     filter: function*(quest, field, value, next) {
       const filters = quest.goblin.getState().get('form.filters');
