@@ -89,7 +89,7 @@ const config = {
   name: 'nabuMessages',
   title: 'Affichage de toutes les traductions en cours',
   dialog: {
-    width: '800px',
+    width: '1000px',
   },
 
   quests: {
