@@ -1,7 +1,9 @@
 'use strict';
 const {buildWizard} = require('goblin-desktop');
 const {crypto} = require('xcraft-core-utils');
+const {buildRegexFilter} = require('goblin-rethink/helpers.js');
 const Shredder = require('xcraft-core-shredder');
+const watt = require('watt');
 
 function buildMessages(messages, locales) {
   return messages
@@ -11,7 +13,7 @@ function buildMessages(messages, locales) {
         updated: false,
       };
 
-      for (const locale of locales) {
+      for (const locale of locales.toJS()) {
         row[locale.name] = message.getIn(['translations', locale.name], '');
       }
 
@@ -19,6 +21,69 @@ function buildMessages(messages, locales) {
     })
     .toArray();
 }
+
+const retrieveMessages = watt(function*(quest, filters, next) {
+  const nabuApi = quest.getAPI('nabu');
+  const locales = (yield nabuApi.get()).get('locales');
+
+  const r = quest.getStorage('rethink');
+  let nabuMessages = [];
+
+  if (!filters) {
+    nabuMessages = Shredder.fromJS(
+      yield r.getAll(
+        {
+          table: 'nabuMessage',
+        },
+        next
+      )
+    );
+  } else {
+    const selectedLocales = quest.goblin
+      .getState()
+      .get('form.selectedLocales')
+      .toJS();
+
+    nabuMessages = Shredder.fromJS(
+      yield r.getAll(
+        {
+          table: 'nabuMessage',
+          filter: buildRegexFilter(
+            filters
+              .mapEntries(entry => {
+                if (entry[0].startsWith('locale_')) {
+                  const localeKey =
+                    'translations.' +
+                    selectedLocales[parseInt(entry[0].replace('locale_', ''))];
+                  if (localeKey && localeKey !== '') {
+                    return [localeKey, entry[1]];
+                  }
+                }
+
+                return entry;
+              })
+              .toJS(),
+            value => '(?i).*' + value + '.*'
+          ),
+        },
+        next
+      )
+    );
+  }
+
+  const messages = buildMessages(nabuMessages, locales);
+  quest.me.change({
+    path: 'form.messages',
+    newValue: messages,
+  });
+
+  if (!filters) {
+    quest.me.change({
+      path: 'form.rowsNumber',
+      newValue: messages.length,
+    });
+  }
+});
 
 const config = {
   name: 'nabuMessages',
@@ -40,6 +105,11 @@ const config = {
         newValue: locale,
       });
     },
+    filter: function*(quest, field, value, next) {
+      const filters = quest.goblin.getState().get('form.filters');
+
+      yield retrieveMessages(quest, filters.set(field, value), next);
+    },
   },
   steps: {
     showMessages: {
@@ -56,15 +126,14 @@ const config = {
       quest: function*(quest, form, next) {
         const nabuApi = quest.getAPI('nabu');
         const configApi = quest.getAPI('nabuConfiguration@main');
-        const r = quest.getStorage('rethink');
 
-        const locales = (yield nabuApi.get()).get('locales').toJS();
+        const locales = (yield nabuApi.get()).get('locales');
         const currentLocaleId = (yield configApi.get()).get('localeId');
         const currentLocale = locales.find(
-          locale => locale.id === currentLocaleId
+          locale => locale.get('id') === currentLocaleId
         );
 
-        var firstLocale = locales[0] ? locales[0].name : '';
+        var firstLocale = locales.size > 0 ? locales.first().get('name') : '';
         const columnsNumber = 2;
         quest.me.change({
           path: 'form.columnsNumber',
@@ -72,7 +141,9 @@ const config = {
         });
 
         var selectedLocales = [];
-        selectedLocales[0] = currentLocale ? currentLocale.name : firstLocale;
+        selectedLocales[0] = currentLocale
+          ? currentLocale.get('name')
+          : firstLocale;
 
         for (var i = 1; i < columnsNumber; i++) {
           selectedLocales[i] = firstLocale;
@@ -82,22 +153,7 @@ const config = {
           newValue: selectedLocales,
         });
 
-        const nabuMessages = Shredder.fromJS(
-          yield r.getAll({
-            table: 'nabuMessage',
-          })
-        );
-
-        const messages = buildMessages(nabuMessages, locales);
-        quest.me.change({
-          path: 'form.messages',
-          newValue: messages,
-        });
-
-        quest.me.change({
-          path: 'form.rowsNumber',
-          newValue: messages.length,
-        });
+        yield retrieveMessages(quest, null, next);
       },
     },
     finish: {
