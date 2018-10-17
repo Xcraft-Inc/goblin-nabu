@@ -50,7 +50,9 @@ const config = {
           grow: '2',
         });
       },
-      form: {},
+      form: {
+        filters: {},
+      },
       quest: function*(quest, form, next) {
         const nabuApi = quest.getAPI('nabu');
         const configApi = quest.getAPI('nabuConfiguration@main');

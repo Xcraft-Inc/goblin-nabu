@@ -44,10 +44,21 @@ class NabuData extends Widget {
           textAlign: 'left',
           width: localeColumnWidth,
         },
+      ];
+
+      const postHeaders = [
         {
-          name: 'description',
-          grow: '1',
-          width: '2.5%',
+          names: ['nabuId'],
+          description: () => (
+            <Field
+              model=".form.filters.nabuId"
+              grow="1"
+              labelWidth="0px"
+              onDebouncedChange={value =>
+                self.props.do('filter', {field: 'nabuId', value})
+              }
+            />
+          ),
         },
       ];
 
@@ -70,10 +81,25 @@ class NabuData extends Widget {
             />
           ),
         });
+
+        postHeaders.push({
+          names: ['locale_' + i],
+          description: () => (
+            <Field
+              model={`.form.filters.locale_${i}`}
+              grow="1"
+              labelWidth="0px"
+              onDebouncedChange={value =>
+                self.props.do('filter', {field: `locale_${i}`, value})
+              }
+            />
+          ),
+        });
       });
 
       return {
         header: headers,
+        'post-header': postHeaders,
         rows: Array.apply(null, {length: rowsNumber}).map((_, index) => {
           const row = {
             missingTranslations: () => (
@@ -97,37 +123,38 @@ class NabuData extends Widget {
                   spacing="overlap"
                   tooltip={{
                     id: "Certaines locales n'ont pas encore été traduites",
+                    description: 'In Nabu window',
                   }}
                 />
               </Connect>
             ),
             nabuId: () => (
-              <Field
-                kind="label"
-                grow="1"
-                labelWidth="0px"
-                model={`.form.messages[${index}].nabuId`}
-              />
-            ),
-            description: () => (
-              <Connect
-                glyph={() => {
-                  const message = self.getModelValue(
-                    `.form.messages[${index}]`
-                  );
-                  return message.get('description') &&
-                    message.get('description') !== ''
-                    ? 'solid/info' // not contained in standard icons
-                    : null;
-                }}
-                tooltip={() =>
-                  self
-                    .getModelValue(`.form.messages[${index}]`)
-                    .get('description')
-                }
-              >
-                <Label spacing="overlap" />
-              </Connect>
+              <div>
+                <Field
+                  kind="label"
+                  grow="1"
+                  labelWidth="0px"
+                  model={`.form.messages[${index}].nabuId`}
+                />
+                <Connect
+                  glyph={() => {
+                    const message = self.getModelValue(
+                      `.form.messages[${index}]`
+                    );
+                    return message.get('description') &&
+                      message.get('description') !== ''
+                      ? 'solid/exclamation-triangle' // not contained in standard icons
+                      : null;
+                  }}
+                  tooltip={() =>
+                    self
+                      .getModelValue(`.form.messages[${index}]`)
+                      .get('description')
+                  }
+                >
+                  <Label spacing="overlap" />
+                </Connect>
+              </div>
             ),
           };
 
