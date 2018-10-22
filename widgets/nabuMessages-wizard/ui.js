@@ -11,11 +11,51 @@ import TextFieldCombo from 'gadgets/text-field-combo/widget';
 class NabuData extends Widget {
   constructor() {
     super(...arguments);
+    this.tooltips = {
+      asc: {
+        id: 'ascending order',
+      },
+      desc: {
+        id: 'descending order',
+      },
+    };
   }
 
   render() {
     const {rowsNumber, selectedLocalesNumber, locales, id} = this.props;
     const self = this;
+
+    function renderSortingHeader(field) {
+      return (
+        <Connect
+          glyph={() => {
+            const key = self.getModelValue(`.form.sort.key`);
+            const dir = self.getModelValue(`.form.sort.dir`);
+
+            if (key === field) {
+              return dir === 'asc' ? 'solid/arrow-up' : 'solid/arrow-down';
+            } else {
+              return 'solid/circle';
+            }
+          }}
+          tooltip={() => {
+            const key = self.getModelValue(`.form.sort.key`);
+            const dir = self.getModelValue(`.form.sort.dir`);
+
+            if (key === field) {
+              return dir === 'asc' ? self.tooltips.asc : self.tooltips.desc;
+            } else {
+              return null;
+            }
+          }}
+        >
+          <Label
+            onClick={() => self.props.do('toggleSort', {field})}
+            spacing="overlap"
+          />
+        </Connect>
+      );
+    }
 
     function buildTableData() {
       const localesList = locales.map(l => l.get('name')).toJS();
@@ -32,12 +72,15 @@ class NabuData extends Widget {
         {
           name: 'nabuId',
           description: () => (
-            <Label
-              spacing="overlap"
-              text={{
-                id: 'Message original',
-              }}
-            />
+            <div style={{display: 'flex'}}>
+              <Label
+                spacing="overlap"
+                text={{
+                  id: 'Message original',
+                }}
+              />
+              {renderSortingHeader('nabuId')}
+            </div>
           ),
           textAlign: 'left',
           width: localeColumnWidth,
@@ -65,18 +108,21 @@ class NabuData extends Widget {
           name: 'locale_' + i,
           width: localeColumnWidth,
           description: () => (
-            <TextFieldCombo
-              model={`.form.selectedLocales[${i}]`}
-              readonly="true"
-              grow="1"
-              list={localesList}
-              menuType="wrap"
-              defaultValue={''}
-              comboTextTransform="none"
-              onSetText={locale => {
-                self.props.do('changeSelectedLocale', {index: i, locale});
-              }}
-            />
+            <div style={{display: 'flex'}}>
+              <TextFieldCombo
+                model={`.form.selectedLocales[${i}]`}
+                readonly="true"
+                grow="1"
+                list={localesList}
+                menuType="wrap"
+                defaultValue={''}
+                comboTextTransform="none"
+                onSetText={locale => {
+                  self.props.do('changeSelectedLocale', {index: i, locale});
+                }}
+              />
+              {renderSortingHeader('locale_' + i)}
+            </div>
           ),
         });
 
