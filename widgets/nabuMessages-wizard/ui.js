@@ -175,7 +175,7 @@ class NabuData extends Widget {
               </Connect>
             ),
             nabuId: () => (
-              <div>
+              <div style={{display: 'flex'}}>
                 <Field
                   kind="label"
                   grow="1"
@@ -191,7 +191,7 @@ class NabuData extends Widget {
                     if (message) {
                       const desc = message.get('description');
                       return desc && desc !== ''
-                        ? 'solid/exclamation-triangle' // not contained in standard icons
+                        ? 'solid/info' // not contained in standard icons
                         : null;
                     }
                   }}
