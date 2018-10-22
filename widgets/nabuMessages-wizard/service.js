@@ -10,6 +10,7 @@ function buildMessages(messages, locales) {
     .map(message => {
       const row = {
         nabuId: message.get('nabuId'),
+        description: message.get('description'),
         updated: false,
       };
 
