@@ -1,7 +1,10 @@
 'use strict';
 const {buildWizard} = require('goblin-desktop');
 const {crypto} = require('xcraft-core-utils');
-const {buildRegexFilter} = require('goblin-rethink/helpers.js');
+const {
+  buildFilterReql,
+  buildOrderByReql,
+} = require('goblin-rethink/helpers.js');
 const Shredder = require('xcraft-core-shredder');
 const watt = require('watt');
 
@@ -23,45 +26,71 @@ function buildMessages(messages, locales) {
     .toArray();
 }
 
-const retrieveMessages = watt(function*(quest, filters, next) {
+function computeHeaderField(selectedLocales, key) {
+  if (key.startsWith('locale_')) {
+    const localeKey = selectedLocales[parseInt(key.replace('locale_', ''))];
+
+    if (localeKey && localeKey !== '') {
+      return 'translations.' + localeKey;
+    }
+    return null;
+  }
+
+  return key;
+}
+
+const retrieveMessages = watt(function*(quest, filters, sort, next) {
   const nabuApi = quest.getAPI('nabu');
   const locales = (yield nabuApi.get()).get('locales');
 
   const r = quest.getStorage('rethink');
   let nabuMessages = [];
 
+  const selectedLocales = quest.goblin
+    .getState()
+    .get('form.selectedLocales')
+    .toJS();
+
+  const sortKeyPath = computeHeaderField(selectedLocales, sort.get('key'));
+  let sortKey = null;
+
+  if (sortKeyPath) {
+    const sortKeyArr = sortKeyPath.split('.');
+    sortKey = sortKeyArr[sortKeyArr.length - 1];
+
+    yield r.ensureSecondaryIndex(
+      {
+        table: 'nabuMessage',
+        name: sortKey,
+        path: sortKeyPath,
+      },
+      next
+    );
+  }
+
   if (!filters) {
     nabuMessages = Shredder.fromJS(
       yield r.getAll(
         {
           table: 'nabuMessage',
+          orderBy: sortKey ? buildOrderByReql(sortKey, sort.get('dir')) : null,
         },
         next
       )
     );
   } else {
-    const selectedLocales = quest.goblin
-      .getState()
-      .get('form.selectedLocales')
-      .toJS();
-
     nabuMessages = Shredder.fromJS(
       yield r.getAll(
         {
           table: 'nabuMessage',
-          filter: buildRegexFilter(
+          orderBy: sortKey ? buildOrderByReql(sortKey, sort.get('dir')) : null,
+          filter: buildFilterReql(
             filters
               .mapEntries(entry => {
-                if (entry[0].startsWith('locale_')) {
-                  const localeKey =
-                    'translations.' +
-                    selectedLocales[parseInt(entry[0].replace('locale_', ''))];
-                  if (localeKey && localeKey !== '') {
-                    return [localeKey, entry[1]];
-                  }
-                }
-
-                return entry;
+                return [
+                  computeHeaderField(selectedLocales, entry[0]) || entry[0],
+                  entry[1],
+                ];
               })
               .toJS(),
             value => '(?i).*' + value + '.*'
@@ -117,13 +146,48 @@ const config = {
           newValue: '',
         });
 
-        yield retrieveMessages(quest, filters.set(`locale_${index}`, ''), next);
+        yield retrieveMessages(
+          quest,
+          filters.set(`locale_${index}`, ''),
+          quest.goblin.getState().get('form.sort'),
+          next
+        );
       }
     },
     filter: function*(quest, field, value, next) {
       const filters = quest.goblin.getState().get('form.filters');
+      const sort = quest.goblin.getState().get('form.sort');
 
-      yield retrieveMessages(quest, filters.set(field, value), next);
+      yield retrieveMessages(quest, filters.set(field, value), sort, next);
+    },
+    toggleSort: function*(quest, field, next) {
+      const filters = quest.goblin.getState().get('form.filters');
+      const sort = quest.goblin.getState().get('form.sort');
+
+      const lastField = sort.get('key');
+      const dir = sort.get('dir');
+      let newDir = dir === 'asc' ? 'desc' : 'asc';
+
+      if (field !== lastField) {
+        newDir = 'asc'; // but if we sort by a new field, then by default an asc order is used
+      }
+
+      quest.me.change({
+        path: `form.sort.key`,
+        newValue: field,
+      });
+
+      quest.me.change({
+        path: `form.sort.dir`,
+        newValue: newDir,
+      });
+
+      yield retrieveMessages(
+        quest,
+        filters,
+        sort.set('key', field).set('dir', newDir),
+        next
+      );
     },
   },
   steps: {
@@ -137,6 +201,10 @@ const config = {
       },
       form: {
         filters: {},
+        sort: {
+          key: 'nabuId',
+          dir: 'asc',
+        },
       },
       quest: function*(quest, form, next) {
         const nabuApi = quest.getAPI('nabu');
@@ -168,7 +236,12 @@ const config = {
           newValue: selectedLocales,
         });
 
-        yield retrieveMessages(quest, null, next);
+        yield retrieveMessages(
+          quest,
+          null,
+          quest.goblin.getState().get('form.sort'),
+          next
+        );
       },
     },
     finish: {
