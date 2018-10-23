@@ -10,6 +10,7 @@ class ToolBar extends Widget {
     this.toggleEnabled = this.toggleEnabled.bind(this);
     this.toggleMarks = this.toggleMarks.bind(this);
     this.toggleSelectionMode = this.toggleSelectionMode.bind(this);
+    this.openDatagrid = this.openDatagrid.bind(this);
   }
 
   static get wiring() {
@@ -36,6 +37,10 @@ class ToolBar extends Widget {
     this.cmd('nabu.toggle-selection-mode', {});
   }
 
+  openDatagrid() {
+    this.cmd('nabu.open-datagrid', {});
+  }
+
   render() {
     const {enabled, marker, selectionMode, selectedItem} = this.props;
 
@@ -56,6 +61,11 @@ class ToolBar extends Widget {
             kind="button-footer"
             text={`Select. mode ${selectionMode ? 'off' : 'on'}`}
             onClick={this.toggleSelectionMode}
+          />
+          <Button
+            kind="button-footer"
+            text={`Modify messages`}
+            onClick={this.openDatagrid}
           />
           {selectedItem ? selectedItem : ''}
         </Container>
