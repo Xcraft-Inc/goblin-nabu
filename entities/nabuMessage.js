@@ -3,6 +3,7 @@ const {buildEntity} = require('goblin-workshop');
 
 const entity = {
   type: 'nabuMessage',
+  newEntityStatus: 'draft',
 
   buildSummaries: function(quest, message, peers, MD) {
     const ref = message.get('nabuId', '');
