@@ -38,14 +38,7 @@ class T extends Widget {
       return null;
     }
 
-    const WiredText = this.WithState(Text, messages => {
-      const hashedMsgId = `nabuMessage@${crypto.sha256(msgid.id)}`;
-      const msg = messages.get(hashedMsgId);
-
-      return {
-        message: msg ? msg : null,
-      };
-    })('.messages');
+    const hashedMsgId = `nabuMessage@${crypto.sha256(msgid.id)}`;
 
     return (
       <Connect
@@ -59,12 +52,9 @@ class T extends Widget {
               .get('name');
           }
         }}
+        message={state => state.get(`backend.${hashedMsgId}`)}
       >
-        <WiredText
-          msgid={msgid.id}
-          description={msgid.description}
-          {...other}
-        />
+        <Text msgid={msgid.id} description={msgid.description} {...other} />
       </Connect>
     );
   }

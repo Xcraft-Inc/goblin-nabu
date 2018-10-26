@@ -30,9 +30,9 @@ class NabuText extends Widget {
   }
 
   mustAdd(props) {
-    const {msgid, description, enabled} = props;
+    const {msgid, description, enabled, workitemId} = props;
     if (enabled) {
-      this.cmd('nabu.add-message', {messageId: msgid, description});
+      this.cmd('nabu.add-message', {messageId: msgid, description, workitemId});
     }
   }
 
