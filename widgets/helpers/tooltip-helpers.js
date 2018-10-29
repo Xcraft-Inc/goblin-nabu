@@ -21,9 +21,11 @@ function T(state, text, widget) {
 
   if (widget) {
     const cmd = widget.cmd.bind(widget);
+    const getNearestId = widget.getNearestId.bind(widget);
     cmd('nabu.add-message', {
       messageId: text.id,
       description: text.description,
+      workitemId: getNearestId(),
     });
   }
 
