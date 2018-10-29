@@ -7,15 +7,9 @@ import React from 'react';
 import Text from 'nabu/text/widget';
 
 class T extends Widget {
-  static get wiring() {
-    return {
-      id: 'id',
-      enabled: 'enabled',
-    };
-  }
-
   render() {
-    const {id, enabled, msgid, dispatch, ...other} = this.props;
+    const {id, msgid, ...other} = this.props;
+    const self = this;
 
     if (typeof msgid === 'string') {
       return <span {...other}>{msgid}</span>;
@@ -23,10 +17,6 @@ class T extends Widget {
 
     if (!msgid) {
       return null;
-    }
-
-    if (!id || !enabled) {
-      return <span {...other}>{msgid.id}</span>;
     }
 
     if (msgid.id.length === 0) {
@@ -54,10 +44,15 @@ class T extends Widget {
         }}
         message={state => state.get(`backend.${hashedMsgId}`)}
       >
-        <Text msgid={msgid.id} description={msgid.description} {...other} />
+        <Text
+          msgid={msgid.id}
+          description={msgid.description}
+          workitemId={self.getNearestId()}
+          {...other}
+        />
       </Connect>
     );
   }
 }
 
-export default Widget.Wired(T)('nabu');
+export default T;

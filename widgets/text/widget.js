@@ -32,7 +32,11 @@ class NabuText extends Widget {
   mustAdd(props) {
     const {msgid, description, enabled, workitemId} = props;
     if (enabled) {
-      this.cmd('nabu.add-message', {messageId: msgid, description, workitemId});
+      this.cmd('nabu.add-message', {
+        messageId: msgid,
+        description,
+        workitemId,
+      });
     }
   }
 
@@ -78,7 +82,9 @@ class NabuText extends Widget {
     } = this.props;
 
     const translatedMessage =
-      message && locale ? message.get(`translations.${locale}`, msgid) : msgid;
+      enabled && message && locale
+        ? message.get(`translations.${locale}`, msgid)
+        : msgid;
     const finalMessage = translatedMessage !== '' ? translatedMessage : msgid;
 
     const text = locale
