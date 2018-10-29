@@ -1,5 +1,6 @@
 import formatMessage from '../../lib/format.js';
 const {crypto} = require('xcraft-core-utils');
+import {isShredder, isImmutable} from 'xcraft-core-shredder';
 
 function T(state, text, widget) {
   if (!text || typeof text === 'string') {
@@ -10,11 +11,15 @@ function T(state, text, widget) {
     return text.id;
   }
 
-  if (text.id.length === 0) {
+  if (isShredder(text) || isImmutable(text)) {
+    text = text.toJS();
+  }
+
+  if (!text.id || text.id.length === 0) {
     console.warn(
       '%cNabu Warning',
       'font-weight: bold;',
-      `malformed message id in tooltip: '${text.id}' found`
+      `malformed message in tooltip: '${text}' found`
     );
     return text.id;
   }
@@ -42,9 +47,13 @@ function T(state, text, widget) {
     return text.id;
   }
 
-  const locale = state
-    .get('backend.nabu.locales')
-    .find(locale => locale.get('id') === localeId);
+  const locales = state.get('backend.nabu.locales');
+
+  if (!locales) {
+    return text.id;
+  }
+
+  const locale = locales.find(locale => locale.get('id') === localeId);
 
   if (!locale) {
     return text.id;

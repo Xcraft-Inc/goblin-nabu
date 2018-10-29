@@ -5,30 +5,36 @@ import Widget from 'laboratory/widget';
 import Connect from 'laboratory/connect';
 import React from 'react';
 import Text from 'nabu/text/widget';
+import {isShredder, isImmutable} from 'xcraft-core-shredder';
 
 class T extends Widget {
   render() {
-    const {id, msgid, ...other} = this.props;
+    const {msgid, ...other} = this.props;
     const self = this;
+    let msg = msgid;
 
-    if (typeof msgid === 'string') {
-      return <span {...other}>{msgid}</span>;
+    if (typeof msg === 'string') {
+      return <span {...other}>{msg}</span>;
     }
 
-    if (!msgid) {
+    if (!msg) {
       return null;
     }
 
-    if (msgid.id.length === 0) {
+    if (isShredder(msg) || isImmutable(msg)) {
+      msg = msg.toJS();
+    }
+
+    if (!msg.id || msg.id.length === 0) {
       console.warn(
         '%cNabu Warning',
         'font-weight: bold;',
-        `malformed message id: '${msgid.id}' found`
+        `malformed message: '${msg}' found`
       );
       return null;
     }
 
-    const hashedMsgId = `nabuMessage@${crypto.sha256(msgid.id)}`;
+    const hashedMsgId = `nabuMessage@${crypto.sha256(msg.id)}`;
 
     return (
       <Connect
@@ -36,17 +42,20 @@ class T extends Widget {
           const localeId = state.get('backend.nabuConfiguration@main.localeId');
 
           if (localeId != undefined && localeId !== '') {
-            return state
-              .get('backend.nabu.locales')
-              .find(locale => locale.get('id') === localeId)
-              .get('name');
+            const locales = state.get('backend.nabu.locales');
+
+            if (locales) {
+              return locales
+                .find(locale => locale.get('id') === localeId)
+                .get('name');
+            }
           }
         }}
         message={state => state.get(`backend.${hashedMsgId}`)}
       >
         <Text
-          msgid={msgid.id}
-          description={msgid.description}
+          msgid={msg.id}
+          description={msg.description}
           workitemId={self.getNearestId()}
           {...other}
         />
