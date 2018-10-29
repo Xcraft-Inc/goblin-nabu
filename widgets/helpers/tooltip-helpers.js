@@ -7,12 +7,12 @@ function T(state, text, widget) {
     return text;
   }
 
-  if (!state || !state.get('backend.nabu.enabled')) {
-    return text.id;
-  }
-
   if (isShredder(text) || isImmutable(text)) {
     text = text.toJS();
+  }
+
+  if (!state || !state.get('backend.nabu.enabled')) {
+    return text.id;
   }
 
   if (!text.id || text.id.length === 0) {
