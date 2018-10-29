@@ -70,6 +70,7 @@ class NabuText extends Widget {
       marker,
       focus,
       children,
+      workitemId,
       message,
       msgid,
       locale,
