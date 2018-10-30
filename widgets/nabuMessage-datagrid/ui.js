@@ -10,7 +10,9 @@ import TextFieldCombo from 'gadgets/text-field-combo/widget';
 class HeaderCombo extends Widget {
   render() {
     const {locales, index, doAsDatagrid} = this.props;
-    const localesList = locales.map(l => l.get('name')).toJS();
+    const localesList = locales
+      .map(l => 'translations.' + l.get('name'))
+      .toJS();
 
     return (
       <TextFieldCombo
@@ -111,7 +113,7 @@ function renderNabuIdRowCell(id) {
 }
 
 function renderLocaleRowCell(id, field) {
-  return <Field model={`.translations.${field}`} grow="1" labelWidth="0px" />;
+  return <Field model={`.${field}`} grow="1" labelWidth="0px" />;
 }
 
 // ------------------------------------------------------------
