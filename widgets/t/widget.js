@@ -45,9 +45,13 @@ class T extends Widget {
             const locales = state.get('backend.nabu.locales');
 
             if (locales) {
-              return locales
-                .find(locale => locale.get('id') === localeId)
-                .get('name');
+              const locale = locales.find(
+                locale => locale.get('id') === localeId
+              );
+
+              if (locale) {
+                return locale.get('name');
+              }
             }
           }
         }}
