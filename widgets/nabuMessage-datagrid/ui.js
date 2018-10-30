@@ -113,7 +113,7 @@ function renderNabuIdRowCell(id) {
 }
 
 function renderLocaleRowCell(id, field) {
-  return <Field model={`.${field}`} grow="1" labelWidth="0px" />;
+  return <Field model={`.translations.${field}`} grow="1" labelWidth="0px" />;
 }
 
 // ------------------------------------------------------------
