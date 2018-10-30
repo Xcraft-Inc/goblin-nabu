@@ -9,10 +9,8 @@ import TextFieldCombo from 'gadgets/text-field-combo/widget';
 // ------------------------------------------------------------
 class HeaderCombo extends Widget {
   render() {
-    const {locales, index, datagrid} = this.props;
+    const {locales, index, doAsDatagrid} = this.props;
     const localesList = locales.map(l => l.get('name')).toJS();
-
-    const service = datagrid.props.id.split('@')[0];
 
     return (
       <TextFieldCombo
@@ -24,7 +22,7 @@ class HeaderCombo extends Widget {
         defaultValue={''}
         comboTextTransform="none"
         onSetText={locale => {
-          datagrid.doAs(service, 'changeSelectedLocale', {index, locale});
+          doAsDatagrid('changeSelectedLocale', {index, locale});
         }}
       />
     );
@@ -46,10 +44,10 @@ function renderNabuIdHeaderCell() {
   );
 }
 
-function renderLocaleHeaderCell(id, index, datagrid) {
+function renderLocaleHeaderCell(id, index, doAsDatagrid) {
   return (
     <Connect locales={state => state.get(`backend.nabu.locales`)}>
-      <HeaderCombo index={index} datagrid={datagrid} />
+      <HeaderCombo index={index} doAsDatagrid={doAsDatagrid} />
     </Connect>
   );
 }
@@ -126,7 +124,7 @@ function renderHeaderCell(props) {
       return renderNabuIdHeaderCell();
     case 'locale_1':
     case 'locale_2':
-      return renderLocaleHeaderCell(props.id, props.index, props.datagrid);
+      return renderLocaleHeaderCell(props.id, props.index, props.doAsDatagrid);
     default:
       return <div />;
   }
