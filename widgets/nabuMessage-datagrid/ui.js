@@ -65,14 +65,14 @@ function renderLocaleRowCell(id, field) {
 }
 
 function renderRowCell(props) {
-  switch (props.name) {
+  switch (props.column.get('name')) {
     case 'missingTranslations':
       return renderMissingTranslationsRowCell(props.id);
     case 'nabuId':
       return renderNabuIdRowCell(props.id);
     case 'locale_1':
     case 'locale_2':
-      return renderLocaleRowCell(props.id, props.field);
+      return renderLocaleRowCell(props.id, props.column.get('field'));
     default:
       return <div />;
   }
