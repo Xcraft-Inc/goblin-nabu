@@ -12,6 +12,8 @@ class HeaderCombo extends Widget {
     const {locales, index, datagrid} = this.props;
     const localesList = locales.map(l => l.get('name')).toJS();
 
+    const service = datagrid.props.id.split('@')[0];
+
     return (
       <TextFieldCombo
         model={`.columns[${index}].field`}
@@ -22,7 +24,7 @@ class HeaderCombo extends Widget {
         defaultValue={''}
         comboTextTransform="none"
         onSetText={locale => {
-          datagrid.do('changeSelectedLocale', {index, locale});
+          datagrid.doAs(service, 'changeSelectedLocale', {index, locale});
         }}
       />
     );
@@ -44,7 +46,7 @@ function renderNabuIdHeaderCell() {
   );
 }
 
-function renderLocaleHeaderCell(index, datagrid) {
+function renderLocaleHeaderCell(id, index, datagrid) {
   return (
     <Connect locales={state => state.get(`backend.nabu.locales`)}>
       <HeaderCombo index={index} datagrid={datagrid} />
@@ -124,7 +126,7 @@ function renderHeaderCell(props) {
       return renderNabuIdHeaderCell();
     case 'locale_1':
     case 'locale_2':
-      return renderLocaleHeaderCell(props.index, props.datagrid);
+      return renderLocaleHeaderCell(props.id, props.index, props.datagrid);
     default:
       return <div />;
   }
