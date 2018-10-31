@@ -7,6 +7,7 @@ const config = {
   kind: 'datagrid',
   initialStatuses: ['draft', 'published'],
   initialState: {},
+  listOrderBy: 'nabuId',
   pageSize: 15,
   columns: [
     {
