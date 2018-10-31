@@ -65,7 +65,7 @@ function renderMissingTranslationsRowCell(id) {
 
         if (message) {
           return locales
-            .map(l => message.get(l.get('name')))
+            .map(l => message.get(`translations.${l.get('name')}`))
             .some(translation => translation == undefined || translation === '')
             ? 'solid/exclamation-triangle'
             : null;

@@ -43,11 +43,13 @@ const config = {
 
     quest.me.change({
       path: 'columns[2].field',
-      newValue: currentLocale ? currentLocale.get('name') : firstLocale,
+      newValue: `translations.${
+        currentLocale ? currentLocale.get('name') : firstLocale
+      }`,
     });
     quest.me.change({
       path: 'columns[3].field',
-      newValue: firstLocale,
+      newValue: `translations.${firstLocale}`,
     });
   },
   quests: {
