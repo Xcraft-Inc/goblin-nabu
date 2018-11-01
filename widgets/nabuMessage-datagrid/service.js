@@ -40,17 +40,18 @@ const config = {
       locale => locale.get('id') === currentLocaleId
     );
 
-    var firstLocale = locales.size > 0 ? locales.first().get('name') : '';
+    var firstLocale =
+      locales.size > 0 ? `translations.${locales.first().get('name')}` : '';
 
     quest.me.change({
       path: 'columns[2].field',
-      newValue: `translations.${
-        currentLocale ? currentLocale.get('name') : firstLocale
-      }`,
+      newValue: currentLocale
+        ? `translations.${currentLocale.get('name')}`
+        : firstLocale,
     });
     quest.me.change({
       path: 'columns[3].field',
-      newValue: `translations.${firstLocale}`,
+      newValue: firstLocale,
     });
   },
   quests: {

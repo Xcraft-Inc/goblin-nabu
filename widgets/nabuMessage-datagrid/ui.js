@@ -113,7 +113,11 @@ function renderNabuIdRowCell(id) {
 }
 
 function renderLocaleRowCell(id, field) {
-  return <Field model={`.${field}`} grow="1" labelWidth="0px" />;
+  if (field !== '') {
+    return <Field model={`.${field}`} grow="1" labelWidth="0px" />;
+  } else {
+    return <div />;
+  }
 }
 
 // ------------------------------------------------------------
