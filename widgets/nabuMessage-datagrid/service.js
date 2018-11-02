@@ -5,8 +5,8 @@ const {buildWorkitem} = require('goblin-workshop');
 const config = {
   type: 'nabuMessage',
   kind: 'datagrid',
-  initialStatuses: ['draft', 'published'],
   initialState: {},
+  listStatus: ['draft', 'published'],
   listOrderBy: 'nabuId',
   columns: [
     {
