@@ -93,9 +93,7 @@ function renderNabuIdRowCell(id) {
 
           if (message) {
             const desc = message.get('description');
-            return desc && desc !== ''
-              ? 'solid/info' // not contained in standard icons
-              : null;
+            return desc && desc !== '' ? 'regular/info-circle' : null;
           }
         }}
         tooltip={state => {
