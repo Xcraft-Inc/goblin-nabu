@@ -8,7 +8,6 @@ const config = {
   initialStatuses: ['draft', 'published'],
   initialState: {},
   listOrderBy: 'nabuId',
-  pageSize: 15,
   columns: [
     {
       name: 'missingTranslations',
