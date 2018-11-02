@@ -54,40 +54,29 @@ const config = {
     });
   },
   quests: {
-    changeSelectedLocale: function(quest, index, locale) {
-      quest.me.change({
-        path: `columns[${index}].field`,
-        newValue: locale,
-      });
-      /*
-      const filters = quest.goblin.getState().get(`form.filters`);
-      const sort = quest.goblin.getState().get('form.sort');
+    changeSelectedLocale: function*(quest, index, locale, next) {
+      const currentLocale = quest.goblin
+        .getState()
+        .get(`columns[${index}].field`);
+
+      yield quest.me.change(
+        {
+          path: `columns[${index}].field`,
+          newValue: locale,
+        },
+        next
+      );
+
+      const filters = quest.goblin.getState().get(`filters`);
+      const sort = quest.goblin.getState().get('sort');
 
       if (
-        (filters.get(`locale_${index}`) != undefined &&
-          filters.get(`locale_${index}`) !== '') ||
-        sort.get('key') === 'locale_' + index
+        (filters.get(currentLocale) != undefined &&
+          filters.get(currentLocale) !== '') ||
+        sort.get('key') === currentLocale
       ) {
-        quest.me.change({
-          path: `form.filters.locale_${index}`,
-          newValue: '',
-        });
-        quest.me.change({
-          path: `form.sort.key`,
-          newValue: 'nabuId',
-        });
-        quest.me.change({
-          path: `form.sort.dir`,
-          newValue: 'asc',
-        });
-
-        yield retrieveMessages(
-          quest,
-          filters.set(`locale_${index}`, ''),
-          sort.set('key', 'nabuId').set('dir', 'asc'),
-          next
-        );
-      }*/
+        yield quest.me.resetListVisualization(next);
+      }
     },
   },
 };
