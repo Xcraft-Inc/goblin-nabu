@@ -35,7 +35,7 @@ function T(state, text, widget) {
   }
 
   const hashedMsgId = `nabuMessage@${crypto.sha256(text.id)}`;
-  const message = state.get(`backend.nabu.messages.${hashedMsgId}`);
+  const message = state.get(`backend.${hashedMsgId}`);
 
   if (!message) {
     return text.id;
