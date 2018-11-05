@@ -110,9 +110,21 @@ function renderNabuIdRowCell(id) {
   );
 }
 
-function renderLocaleRowCell(id, field) {
+function setFocus(msgId, value, datagrid) {
+  datagrid.doFor('nabu', 'set-focus', {messageId: msgId, value});
+}
+
+function renderLocaleRowCell(id, field, datagrid) {
   if (field !== '') {
-    return <Field model={`.${field}`} grow="1" labelWidth="0px" />;
+    return (
+      <Field
+        model={`.${field}`}
+        grow="1"
+        labelWidth="0px"
+        onFocus={() => setFocus(id, true, datagrid)}
+        onBlur={() => setFocus(id, false, datagrid)}
+      />
+    );
   } else {
     return <div />;
   }
@@ -142,7 +154,11 @@ function renderRowCell(props) {
       return renderNabuIdRowCell(props.id);
     case 'locale_1':
     case 'locale_2':
-      return renderLocaleRowCell(props.id, props.column.get('field'));
+      return renderLocaleRowCell(
+        props.id,
+        props.column.get('field'),
+        props.datagrid
+      );
     default:
       return <div />;
   }
