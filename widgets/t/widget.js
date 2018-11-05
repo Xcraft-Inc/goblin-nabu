@@ -25,7 +25,7 @@ class T extends Widget {
       msg = msg.toJS();
     }
 
-    if (!msg.nabuId || msg.nabuId.length === 0) {
+    if (!msg.nabuId || msg.nabuId == undefined || msg.nabuId.length === 0) {
       console.warn(
         '%cNabu Warning',
         'font-weight: bold;',

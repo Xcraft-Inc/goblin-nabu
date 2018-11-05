@@ -15,7 +15,7 @@ function T(state, text, widget) {
     return text.nabuId;
   }
 
-  if (!text.nabuId || text.nabuId.length === 0) {
+  if (!text.nabuId || text.nabuId == undefined || text.nabuId.length === 0) {
     console.warn(
       '%cNabu Warning',
       'font-weight: bold;',
