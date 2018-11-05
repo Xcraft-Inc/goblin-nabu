@@ -8,6 +8,7 @@ const config = {
   initialState: {},
   listStatus: ['draft', 'published'],
   listOrderBy: 'nabuId',
+  listType: 'uniform',
   columns: [
     {
       name: 'missingTranslations',
