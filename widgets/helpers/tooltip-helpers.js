@@ -19,7 +19,7 @@ function T(state, text, widget) {
     console.warn(
       '%cNabu Warning',
       'font-weight: bold;',
-      `malformed message in tooltip: '${text}' found`
+      `malformed message in tooltip: '${JSON.stringify(text)}' found`
     );
     return text.nabuId;
   }

@@ -29,7 +29,7 @@ class T extends Widget {
       console.warn(
         '%cNabu Warning',
         'font-weight: bold;',
-        `malformed message: '${msg}' found`
+        `malformed message: '${JSON.stringify(msg)}' found`
       );
       return null;
     }
