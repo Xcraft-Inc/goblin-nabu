@@ -33,7 +33,7 @@ class NabuText extends Widget {
     const {msgid, description, enabled, workitemId} = props;
     if (enabled) {
       this.cmd('nabu.add-message', {
-        messageId: msgid,
+        nabuId: msgid,
         description,
         workitemId,
       });
