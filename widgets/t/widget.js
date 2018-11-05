@@ -25,7 +25,7 @@ class T extends Widget {
       msg = msg.toJS();
     }
 
-    if (!msg.id || msg.id.length === 0) {
+    if (!msg.nabuId || msg.nabuId.length === 0) {
       console.warn(
         '%cNabu Warning',
         'font-weight: bold;',
@@ -34,7 +34,7 @@ class T extends Widget {
       return null;
     }
 
-    const hashedMsgId = `nabuMessage@${crypto.sha256(msg.id)}`;
+    const hashedMsgId = `nabuMessage@${crypto.sha256(msg.nabuId)}`;
 
     return (
       <Connect
@@ -58,7 +58,7 @@ class T extends Widget {
         message={state => state.get(`backend.${hashedMsgId}`)}
       >
         <Text
-          msgid={msg.id}
+          nabuId={msg.nabuId}
           description={msg.description}
           workitemId={self.getNearestId()}
           {...other}
