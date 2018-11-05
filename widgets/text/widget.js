@@ -52,7 +52,9 @@ class NabuText extends Widget {
     if (this.props.selectionModeEnabled) {
       this.timeout = setTimeout(() => {
         if (this.props.enabled) {
-          this.cmd('nabu.set-selected-item', {messageId: this.props.msgid});
+          this.cmd('nabu.set-selected-item', {
+            messageId: this.props.message.get('id'),
+          });
         }
       }, 300);
     }
@@ -116,7 +118,7 @@ class NabuText extends Widget {
     if (selectionModeEnabled) {
       style = Object.assign(
         style,
-        getSelectionModeStyle(selectedItem === nabuId)
+        getSelectionModeStyle(selectedItem === message.get('id'))
       );
     }
 
