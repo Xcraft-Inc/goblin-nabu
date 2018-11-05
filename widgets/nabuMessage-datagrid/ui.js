@@ -40,7 +40,7 @@ function renderNabuIdHeaderCell() {
     <Label
       spacing="overlap"
       text={{
-        id: 'Message original',
+        nabuId: 'Message original',
       }}
     />
   );
