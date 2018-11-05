@@ -40,10 +40,6 @@ class NabuText extends Widget {
     }
   }
 
-  componentWillUpdate(nextProps) {
-    this.mustAdd(nextProps);
-  }
-
   componentDidMount() {
     this.mustAdd(this.props);
   }
