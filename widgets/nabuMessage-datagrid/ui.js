@@ -75,7 +75,7 @@ function renderMissingTranslationsRowCell(id) {
       <Label
         spacing="overlap"
         tooltip={{
-          id: "Certaines locales n'ont pas encore été traduites",
+          nabuId: "Certaines locales n'ont pas encore été traduites",
           description: 'In Nabu window',
         }}
       />
