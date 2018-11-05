@@ -12,6 +12,7 @@ const config = {
   columns: [
     {
       name: 'missingTranslations',
+      width: '20px',
     },
     {
       name: 'nabuId',
