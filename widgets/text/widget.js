@@ -30,10 +30,10 @@ class NabuText extends Widget {
   }
 
   mustAdd(props) {
-    const {msgid, description, enabled, workitemId} = props;
+    const {nabuId, description, enabled, workitemId} = props;
     if (enabled) {
       this.cmd('nabu.add-message', {
-        nabuId: msgid,
+        nabuId,
         description,
         workitemId,
       });
@@ -72,7 +72,7 @@ class NabuText extends Widget {
       children,
       workitemId,
       message,
-      msgid,
+      nabuId,
       locale,
       html,
       values,
@@ -84,13 +84,13 @@ class NabuText extends Widget {
 
     const translatedMessage =
       enabled && message && locale
-        ? message.get(`translations.${locale}`, msgid)
-        : msgid;
-    const finalMessage = translatedMessage !== '' ? translatedMessage : msgid;
+        ? message.get(`translations.${locale}`, nabuId)
+        : nabuId;
+    const finalMessage = translatedMessage !== '' ? translatedMessage : nabuId;
 
     const text = locale
       ? formatMessage(locale, html, finalMessage, values)
-      : msgid;
+      : nabuId;
 
     const markerOn = this.mustTranslate(message, locale) && marker;
     const highliteStyle = {
@@ -116,11 +116,11 @@ class NabuText extends Widget {
     if (selectionModeEnabled) {
       style = Object.assign(
         style,
-        getSelectionModeStyle(selectedItem === msgid)
+        getSelectionModeStyle(selectedItem === nabuId)
       );
     }
 
-    if (focus && msgid === focus) {
+    if (focus && message.get('id') === focus) {
       style = Object.assign(style, focusStyle);
     }
 

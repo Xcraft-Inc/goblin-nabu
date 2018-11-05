@@ -40,7 +40,7 @@ function renderNabuIdHeaderCell() {
     <Label
       spacing="overlap"
       text={{
-        id: 'Message original',
+        nabuId: 'Message original',
       }}
     />
   );
@@ -75,7 +75,7 @@ function renderMissingTranslationsRowCell(id) {
       <Label
         spacing="overlap"
         tooltip={{
-          id: "Certaines locales n'ont pas encore été traduites",
+          nabuId: "Certaines locales n'ont pas encore été traduites",
           description: 'In Nabu window',
         }}
       />
@@ -110,7 +110,11 @@ function renderNabuIdRowCell(id) {
   );
 }
 
-function renderLocaleRowCell(id, field) {
+function setFocus(msgId, value, datagrid) {
+  datagrid.doFor('nabu', 'set-focus', {messageId: msgId, value});
+}
+
+function renderLocaleRowCell(id, field, datagrid) {
   if (field !== '') {
     return (
       <Field
@@ -118,6 +122,8 @@ function renderLocaleRowCell(id, field) {
         grow="1"
         labelWidth="0px"
         verticalSpacing="compact"
+        onFocus={() => setFocus(id, true, datagrid)}
+        onBlur={() => setFocus(id, false, datagrid)}
       />
     );
   } else {
@@ -149,7 +155,11 @@ function renderRowCell(props) {
       return renderNabuIdRowCell(props.id);
     case 'locale_1':
     case 'locale_2':
-      return renderLocaleRowCell(props.id, props.column.get('field'));
+      return renderLocaleRowCell(
+        props.id,
+        props.column.get('field'),
+        props.datagrid
+      );
     default:
       return <div />;
   }

@@ -12,58 +12,59 @@ function T(state, text, widget) {
   }
 
   if (!state || !state.get('backend.nabu.enabled')) {
-    return text.id;
+    return text.nabuId;
   }
 
-  if (!text.id || text.id.length === 0) {
+  if (!text.nabuId || text.nabuId == undefined || text.nabuId.length === 0) {
     console.warn(
       '%cNabu Warning',
       'font-weight: bold;',
-      `malformed message in tooltip: '${text}' found`
+      `malformed message in tooltip: '${JSON.stringify(text)}' found`
     );
-    return text.id;
+    return text.nabuId;
   }
 
   if (widget) {
     const cmd = widget.cmd.bind(widget);
     const getNearestId = widget.getNearestId.bind(widget);
     cmd('nabu.add-message', {
-      nabuId: text.id,
+      nabuId: text.nabuId,
       description: text.description,
       workitemId: getNearestId(),
     });
   }
 
-  const hashedMsgId = `nabuMessage@${crypto.sha256(text.id)}`;
+  const hashedMsgId = `nabuMessage@${crypto.sha256(text.nabuId)}`;
   const message = state.get(`backend.${hashedMsgId}`);
 
   if (!message) {
-    return text.id;
+    return text.nabuId;
   }
 
   const localeId = state.get('backend.nabuConfiguration@main.localeId');
 
   if (localeId == undefined || localeId === '') {
-    return text.id;
+    return text.nabuId;
   }
 
   const locales = state.get('backend.nabu.locales');
 
   if (!locales) {
-    return text.id;
+    return text.nabuId;
   }
 
   const locale = locales.find(locale => locale.get('id') === localeId);
 
   if (!locale) {
-    return text.id;
+    return text.nabuId;
   }
 
   const translatedMessage = message.get(
     `translations.${locale.get('name')}`,
-    text.id
+    text.nabuId
   );
-  const finalMessage = translatedMessage !== '' ? translatedMessage : text.id;
+  const finalMessage =
+    translatedMessage !== '' ? translatedMessage : text.nabuId;
 
   return formatMessage(locale.get('name'), null, finalMessage, []);
 }
