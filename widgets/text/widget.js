@@ -118,7 +118,7 @@ class NabuText extends Widget {
       );
     }
 
-    if (focus && message.get('id') === focus) {
+    if (focus && message && message.get('id') === focus) {
       style = Object.assign(style, focusStyle);
     }
 
