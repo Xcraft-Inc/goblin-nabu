@@ -32,7 +32,7 @@ class HeaderCombo extends Widget {
 }
 
 function renderMissingTranslationsHeaderCell() {
-  return <div />;
+  return <div style={{width: '40px'}} />;
 }
 
 function renderNabuIdHeaderCell() {
@@ -68,7 +68,7 @@ function renderMissingTranslationsRowCell(id) {
             .map(l => message.get(`translations.${l.get('name')}`))
             .some(translation => translation == undefined || translation === '')
             ? 'solid/exclamation-triangle'
-            : null;
+            : `<div />`;
         }
       }}
     >
