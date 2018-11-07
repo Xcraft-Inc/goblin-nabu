@@ -15,7 +15,7 @@ function T(state, text, widget) {
     return text.nabuId;
   }
 
-  if (!text.nabuId || text.nabuId == undefined || text.nabuId.length === 0) {
+  if (!text.nabuId) {
     console.warn(
       '%cNabu Warning',
       'font-weight: bold;',
@@ -43,7 +43,7 @@ function T(state, text, widget) {
 
   const localeId = state.get('backend.nabuConfiguration@main.localeId');
 
-  if (localeId == undefined || localeId === '') {
+  if (!localeId) {
     return text.nabuId;
   }
 
