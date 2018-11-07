@@ -1,6 +1,6 @@
 'use strict';
 
-const {crypto} = require('xcraft-core-utils');
+const crypto = require('xcraft-core-utils/lib/crypto.js');
 import Widget from 'laboratory/widget';
 import Connect from 'laboratory/connect';
 import React from 'react';

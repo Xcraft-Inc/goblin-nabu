@@ -1,5 +1,5 @@
 import formatMessage from '../../lib/format.js';
-const {crypto} = require('xcraft-core-utils');
+const crypto = require('xcraft-core-utils/lib/crypto.js');
 import {isShredder, isImmutable} from 'xcraft-core-shredder';
 
 function T(state, text, widget) {
