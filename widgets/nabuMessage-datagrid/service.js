@@ -12,7 +12,7 @@ const config = {
   columns: [
     {
       name: 'missingTranslations',
-      width: '60px',
+      width: '40px',
     },
     {
       name: 'nabuId',
@@ -43,16 +43,22 @@ const config = {
 
     var firstLocale =
       locales.size > 0 ? `translations.${locales.first().get('name')}` : '';
+    var secondLocale =
+      locales.size > 1 ? `translations.${locales.get(1).get('name')}` : '';
+
+    var firstColumn = currentLocale
+      ? `translations.${currentLocale.get('name')}`
+      : firstLocale;
+
+    var secondColumn = firstColumn === firstLocale ? secondLocale : firstLocale;
 
     quest.me.change({
       path: 'columns[2].field',
-      newValue: currentLocale
-        ? `translations.${currentLocale.get('name')}`
-        : firstLocale,
+      newValue: firstColumn,
     });
     quest.me.change({
       path: 'columns[3].field',
-      newValue: firstLocale,
+      newValue: secondColumn,
     });
   },
   quests: {
