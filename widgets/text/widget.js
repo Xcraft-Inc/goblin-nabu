@@ -18,7 +18,7 @@ class NabuText extends Widget {
       marker: 'marker',
       focus: 'focus',
       selectionModeEnabled: 'selectionMode.enabled',
-      selectedItem: 'selectionMode.selectedNabuId',
+      selectedItem: 'selectionMode.selectedItemId',
     };
   }
 
@@ -45,11 +45,11 @@ class NabuText extends Widget {
   }
 
   onMouseEnter() {
-    if (this.props.selectionModeEnabled) {
+    if (this.props.selectionModeEnabled && this.props.message) {
       this.timeout = setTimeout(() => {
         if (this.props.enabled) {
           this.cmd('nabu.set-selected-item', {
-            nabuId: this.props.nabuId,
+            messageId: this.props.message.get('id'),
           });
         }
       }, 300);
@@ -114,7 +114,7 @@ class NabuText extends Widget {
     if (selectionModeEnabled) {
       style = Object.assign(
         style,
-        getSelectionModeStyle(selectedItem === nabuId)
+        getSelectionModeStyle(message && selectedItem === message.get('id'))
       );
     }
 
