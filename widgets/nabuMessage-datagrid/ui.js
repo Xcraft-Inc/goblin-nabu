@@ -8,8 +8,8 @@ import TextFieldCombo from 'gadgets/text-field-combo/widget';
 
 // ------------------------------------------------------------
 class HeaderCombo extends Widget {
-  render() {
-    const {glyph, locales, index, doAsDatagrid} = this.props;
+  render () {
+    const {locales, index, doAsDatagrid} = this.props;
     const localesList = locales
       .map(l => 'translations.' + l.get('name'))
       .toJS();
@@ -46,19 +46,9 @@ function renderNabuIdHeaderCell() {
   );
 }
 
-function renderLocaleHeaderCell(id, index, doAsDatagrid) {
+function renderLocaleHeaderCell (id, index, doAsDatagrid) {
   return (
-    <Connect
-      glyph={state => {
-        const locales = state.get(`backend.nabu.locales`);
-
-        if (locales.get('name') === `translations.fr-CH`) {
-          return 'solid/exclamation-triangle';
-        }
-        return <div />;
-      }}
-      locales={state => state.get(`backend.nabu.locales`)}
-    >
+    <Connect locales={state => state.get (`backend.nabu.locales`)}>
       <HeaderCombo index={index} doAsDatagrid={doAsDatagrid} />
     </Connect>
   );
