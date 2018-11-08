@@ -1,6 +1,6 @@
 'use strict';
 
-const {crypto} = require('xcraft-core-utils');
+const crypto = require('xcraft-core-utils/lib/crypto.js');
 import Widget from 'laboratory/widget';
 import Connect from 'laboratory/connect';
 import React from 'react';
@@ -25,7 +25,7 @@ class T extends Widget {
       msg = msg.toJS();
     }
 
-    if (!msg.nabuId || msg.nabuId == undefined || msg.nabuId.length === 0) {
+    if (!msg.nabuId) {
       console.warn(
         '%cNabu Warning',
         'font-weight: bold;',

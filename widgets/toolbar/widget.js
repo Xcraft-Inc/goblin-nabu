@@ -41,6 +41,10 @@ class ToolBar extends Widget {
     this.cmd('nabu.open-datagrid', {});
   }
 
+  openSingleEntity(entityId) {
+    this.cmd('nabu.open-single-entity', {entityId});
+  }
+
   render() {
     const {enabled, marker, selectionMode, selectedItem} = this.props;
 
@@ -67,7 +71,13 @@ class ToolBar extends Widget {
             text={`Modify messages`}
             onClick={this.openDatagrid}
           />
-          {selectedItem ? selectedItem : ''}
+          {selectedItem ? (
+            <Button
+              kind="button-footer"
+              text={`Modify single message`}
+              onClick={() => this.openSingleEntity(selectedItem)}
+            />
+          ) : null}
         </Container>
       );
     } else {
