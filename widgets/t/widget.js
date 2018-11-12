@@ -2,10 +2,31 @@
 
 const crypto = require('xcraft-core-utils/lib/crypto.js');
 import Widget from 'laboratory/widget';
-import Connect from 'laboratory/connect';
 import React from 'react';
 import Text from 'nabu/text/widget';
 import {isShredder, isImmutable} from 'xcraft-core-shredder';
+
+const TextConnected = Widget.connect((state, props) => {
+  const localeId = state.get('backend.nabuConfiguration@main.localeId');
+
+  let localeName = null;
+  if (localeId != undefined && localeId !== '') {
+    const locales = state.get('backend.nabu.locales');
+
+    if (locales) {
+      const locale = locales.find(locale => locale.get('id') === localeId);
+
+      if (locale) {
+        localeName = locale.get('name');
+      }
+    }
+  }
+
+  return {
+    message: state.get(`backend.${props.hashedmsgid}`),
+    locale: localeName,
+  };
+})(Text);
 
 class T extends Widget {
   render() {
@@ -37,33 +58,13 @@ class T extends Widget {
     const hashedMsgId = `nabuMessage@${crypto.sha256(msg.nabuId)}`;
 
     return (
-      <Connect
-        locale={state => {
-          const localeId = state.get('backend.nabuConfiguration@main.localeId');
-
-          if (localeId != undefined && localeId !== '') {
-            const locales = state.get('backend.nabu.locales');
-
-            if (locales) {
-              const locale = locales.find(
-                locale => locale.get('id') === localeId
-              );
-
-              if (locale) {
-                return locale.get('name');
-              }
-            }
-          }
-        }}
-        message={state => state.get(`backend.${hashedMsgId}`)}
-      >
-        <Text
-          nabuId={msg.nabuId}
-          description={msg.description}
-          workitemId={self.getNearestId()}
-          {...other}
-        />
-      </Connect>
+      <TextConnected
+        hashedmsgid={hashedMsgId}
+        nabuId={msg.nabuId}
+        description={msg.description}
+        workitemId={self.getNearestId()}
+        {...other}
+      />
     );
   }
 }

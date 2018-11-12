@@ -2,37 +2,82 @@ import React from 'react';
 import Widget from 'laboratory/widget';
 
 import Field from 'gadgets/field/widget';
-import Connect from 'laboratory/connect';
 import Label from 'gadgets/label/widget';
 import TextFieldCombo from 'gadgets/text-field-combo/widget';
+import Container from 'gadgets/container/widget';
+import Button from 'gadgets/button/widget';
+import {queryStringQuery} from 'elastic-builder';
+
+const LabelConnected = Widget.connect((state, props) => {
+  const message = state.get(`backend.${props.id}`);
+  const locales = state.get(`backend.nabu.locales`);
+
+  let glyph = null;
+  let tooltip = null;
+
+  if (message && props.checkDescription) {
+    const desc = message.get('description');
+    if (desc && desc !== '') {
+      glyph = 'regular/info-circle';
+    }
+    tooltip = message.get('description');
+
+    return {
+      glyph: glyph,
+      tooltip: tooltip,
+    };
+  }
+
+  if (
+    message &&
+    locales
+      .map(l => message.get(`translations.${l.get('name')}`))
+      .some(translation => !translation)
+  ) {
+    glyph = 'solid/exclamation-triangle';
+  }
+
+  return {
+    glyph: glyph,
+    tooltip: tooltip,
+  };
+})(Label);
 
 // ------------------------------------------------------------
 class HeaderCombo extends Widget {
-  render () {
+  render() {
     const {locales, index, doAsDatagrid} = this.props;
     const localesList = locales
       .map(l => 'translations.' + l.get('name'))
       .toJS();
 
     return (
-      <TextFieldCombo
-        model={`.columns[${index}].field`}
-        readonly="true"
-        grow="1"
-        list={localesList}
-        menuType="wrap"
-        defaultValue={''}
-        comboTextTransform="none"
-        onSetText={locale => {
-          doAsDatagrid('changeSelectedLocale', {index, locale});
-        }}
-      />
+      <Container kind="row">
+        <TextFieldCombo
+          model={`.columns[${index}].field`}
+          readonly="true"
+          grow="1"
+          list={localesList}
+          menuType="wrap"
+          defaultValue={''}
+          comboTextTransform="none"
+          onSetText={locale => {
+            doAsDatagrid('changeSelectedLocale', {index, locale});
+          }}
+        />
+      </Container>
     );
   }
 }
 
+const HeaderComboConnected = Widget.connect(state => {
+  return {
+    locales: state.get(`backend.nabu.locales`),
+  };
+})(HeaderCombo);
+
 function renderMissingTranslationsHeaderCell() {
-  return <div style={{width: '40px'}} />;
+  return <div />;
 }
 
 function renderNabuIdHeaderCell() {
@@ -46,40 +91,22 @@ function renderNabuIdHeaderCell() {
   );
 }
 
-function renderLocaleHeaderCell (id, index, doAsDatagrid) {
-  return (
-    <Connect locales={state => state.get (`backend.nabu.locales`)}>
-      <HeaderCombo index={index} doAsDatagrid={doAsDatagrid} />
-    </Connect>
-  );
+function renderLocaleHeaderCell(id, index, doAsDatagrid) {
+  return <HeaderComboConnected index={index} doAsDatagrid={doAsDatagrid} />;
 }
 
 // ------------------------------------------------------------
 
 function renderMissingTranslationsRowCell(id) {
   return (
-    <Connect
-      glyph={state => {
-        const message = state.get(`backend.${id}`);
-        const locales = state.get(`backend.nabu.locales`);
-
-        if (message) {
-          return locales
-            .map(l => message.get(`translations.${l.get('name')}`))
-            .some(translation => !translation)
-            ? 'solid/exclamation-triangle'
-            : `<div />`;
-        }
+    <LabelConnected
+      id={id}
+      spacing="overlap"
+      tooltip={{
+        nabuId: "Certaines locales n'ont pas encore été traduites",
+        description: 'In Nabu window',
       }}
-    >
-      <Label
-        spacing="overlap"
-        tooltip={{
-          nabuId: "Certaines locales n'ont pas encore été traduites",
-          description: 'In Nabu window',
-        }}
-      />
-    </Connect>
+    />
   );
 }
 
@@ -87,25 +114,7 @@ function renderNabuIdRowCell(id) {
   return (
     <div style={{display: 'flex'}}>
       <Field kind="label" grow="1" labelWidth="0px" model={`.nabuId`} />
-      <Connect
-        glyph={state => {
-          const message = state.get(`backend.${id}`);
-
-          if (message) {
-            const desc = message.get('description');
-            return desc && desc !== '' ? 'regular/info-circle' : null;
-          }
-        }}
-        tooltip={state => {
-          const message = state.get(`backend.${id}`);
-
-          if (message) {
-            return message.get('description');
-          }
-        }}
-      >
-        <Label spacing="overlap" />
-      </Connect>
+      <LabelConnected checkDescription="true" spacing="overlap" />
     </div>
   );
 }
