@@ -15,31 +15,27 @@ const LabelConnected = Widget.connect((state, props) => {
   let glyph = null;
   let tooltip = null;
 
-  if (message && props.checkDescription) {
-    const desc = message.get('description');
-    if (desc && desc !== '') {
-      glyph = 'regular/info-circle';
+  if (message) {
+    if (props.checkDescription) {
+      // Description label
+      const desc = message.get('description');
+      if (desc && desc !== '') {
+        glyph = 'regular/info-circle';
+        tooltip = desc;
+      }
+    } else if (
+      locales // Missing translations label
+        .map(l => message.get(`translations.${l.get('name')}`))
+        .some(translation => !translation)
+    ) {
+      glyph = 'solid/exclamation-triangle';
+      tooltip = props.tooltip;
     }
-    tooltip = message.get('description');
-
-    return {
-      glyph: glyph,
-      tooltip: tooltip,
-    };
-  }
-
-  if (
-    message &&
-    locales
-      .map(l => message.get(`translations.${l.get('name')}`))
-      .some(translation => !translation)
-  ) {
-    glyph = 'solid/exclamation-triangle';
   }
 
   return {
-    glyph: glyph,
-    tooltip: tooltip,
+    glyph,
+    tooltip,
   };
 })(Label);
 
@@ -114,7 +110,7 @@ function renderNabuIdRowCell(id) {
   return (
     <div style={{display: 'flex'}}>
       <Field kind="label" grow="1" labelWidth="0px" model={`.nabuId`} />
-      <LabelConnected checkDescription="true" spacing="overlap" />
+      <LabelConnected id={id} checkDescription="true" spacing="overlap" />
     </div>
   );
 }
