@@ -34,12 +34,12 @@ class T extends Widget {
     const self = this;
     let msg = msgid;
 
-    if (typeof msg === 'string') {
-      return <span {...other}>{msg}</span>;
-    }
-
     if (!msg) {
       return null;
+    }
+
+    if (typeof msg === 'string') {
+      return <span {...other}>{msg}</span>;
     }
 
     if (isShredder(msg) || isImmutable(msg)) {

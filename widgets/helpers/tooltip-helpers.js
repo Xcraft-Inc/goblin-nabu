@@ -11,6 +11,10 @@ function T(state, text, widget) {
     text = text.toJS();
   }
 
+  if (!widget) {
+    return text.nabuId;
+  }
+
   if (!state || !state.get('backend.nabu.enabled')) {
     return text.nabuId;
   }
@@ -24,20 +28,19 @@ function T(state, text, widget) {
     return text.nabuId;
   }
 
-  if (widget) {
+  const hashedMsgId = `nabuMessage@${crypto.sha256(text.nabuId)}`;
+  const message = state.get(`backend.${hashedMsgId}`);
+
+  if (!message) {
     const cmd = widget.cmd.bind(widget);
     const getNearestId = widget.getNearestId.bind(widget);
+
     cmd('nabu.add-message', {
       nabuId: text.nabuId,
       description: text.description,
       workitemId: getNearestId(),
     });
-  }
 
-  const hashedMsgId = `nabuMessage@${crypto.sha256(text.nabuId)}`;
-  const message = state.get(`backend.${hashedMsgId}`);
-
-  if (!message) {
     return text.nabuId;
   }
 
