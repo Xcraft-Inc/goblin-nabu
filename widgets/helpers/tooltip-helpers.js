@@ -2,7 +2,7 @@ import formatMessage from '../../lib/format.js';
 const crypto = require('xcraft-core-utils/lib/crypto.js');
 import {isShredder, isImmutable} from 'xcraft-core-shredder';
 
-function T(state, text, widget) {
+function Message(text, state, widget) {
   if (!text || typeof text === 'string') {
     return text;
   }
@@ -66,19 +66,60 @@ function T(state, text, widget) {
     `translations.${locale.get('name')}`,
     text.nabuId
   );
-  const finalMessage =
-    translatedMessage !== '' ? translatedMessage : text.nabuId;
 
-  return formatMessage(
-    locale.get('name'),
-    text.html,
-    finalMessage,
-    text.values || []
-  );
+  return translatedMessage !== '' ? translatedMessage : text.nabuId;
+}
+
+function Locale(state, text) {
+  if (!text || typeof text === 'string') {
+    return null;
+  }
+
+  if (!state || !state.get('backend.nabu.enabled')) {
+    return null;
+  }
+
+  const localeId = state.get('backend.nabuConfiguration@main.localeId');
+
+  if (!localeId) {
+    return null;
+  }
+
+  const locales = state.get('backend.nabu.locales');
+
+  if (!locales) {
+    return null;
+  }
+
+  const locale = locales.find(locale => locale.get('id') === localeId);
+
+  if (!locale) {
+    return null;
+  }
+
+  return locale.get('name');
+}
+
+function Format(message, locale, text) {
+  if (!message || !text) {
+    return null;
+  }
+
+  if (!locale) {
+    return message;
+  }
+
+  if (isShredder(text) || isImmutable(text)) {
+    text = text.toJS();
+  }
+
+  return formatMessage(locale, text.html, message, text.values || []);
 }
 
 //-----------------------------------------------------------------------------
 
 module.exports = {
-  T,
+  Message,
+  Locale,
+  Format,
 };
