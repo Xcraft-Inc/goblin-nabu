@@ -62,6 +62,8 @@ class T extends Widget {
         hashedmsgid={hashedMsgId}
         nabuId={msg.nabuId}
         description={msg.description}
+        html={msg.html}
+        values={msg.values}
         workitemId={self.getNearestId()}
         {...other}
       />

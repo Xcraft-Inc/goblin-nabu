@@ -66,7 +66,12 @@ function T(state, text, widget) {
   const finalMessage =
     translatedMessage !== '' ? translatedMessage : text.nabuId;
 
-  return formatMessage(locale.get('name'), null, finalMessage, []);
+  return formatMessage(
+    locale.get('name'),
+    text.html,
+    finalMessage,
+    text.values || []
+  );
 }
 
 //-----------------------------------------------------------------------------

@@ -87,7 +87,7 @@ class NabuText extends Widget {
     const finalMessage = translatedMessage !== '' ? translatedMessage : nabuId;
 
     const text = locale
-      ? formatMessage(locale, html, finalMessage, values)
+      ? formatMessage(locale, html, finalMessage, values || [])
       : nabuId;
 
     const markerOn = this.mustTranslate(message, locale) && marker;
