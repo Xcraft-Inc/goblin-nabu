@@ -77,14 +77,7 @@ function renderMissingTranslationsHeaderCell() {
 }
 
 function renderNabuIdHeaderCell() {
-  return (
-    <Label
-      spacing="overlap"
-      text={{
-        nabuId: 'Message original',
-      }}
-    />
-  );
+  return <Label spacing="overlap" text={Widget.T('Message original')} />;
 }
 
 function renderLocaleHeaderCell(id, index, doAsDatagrid) {
@@ -98,10 +91,10 @@ function renderMissingTranslationsRowCell(id) {
     <LabelConnected
       id={id}
       spacing="overlap"
-      tooltip={{
-        nabuId: "Certaines locales n'ont pas encore été traduites",
-        description: 'In Nabu window',
-      }}
+      tooltip={Widget.T(
+        "Certaines locales n'ont pas encore été traduites",
+        'In Nabu window'
+      )}
     />
   );
 }
