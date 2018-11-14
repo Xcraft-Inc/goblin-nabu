@@ -10,7 +10,8 @@ const TextConnected = Widget.connect((state, props) => {
   const localeId = state.get('backend.nabuConfiguration@main.localeId');
 
   let localeName = null;
-  if (localeId != undefined && localeId !== '') {
+  let translation = null;
+  if (localeId) {
     const locales = state.get('backend.nabu.locales');
 
     if (locales) {
@@ -18,12 +19,21 @@ const TextConnected = Widget.connect((state, props) => {
 
       if (locale) {
         localeName = locale.get('name');
+
+        if (localeName) {
+          translation = state.get(
+            `backend.nabuTranslation@${localeName}-${
+              props.hashedMsgId.split('@')[1]
+            }`
+          );
+        }
       }
     }
   }
 
   return {
-    message: state.get(`backend.${props.hashedmsgid}`),
+    message: state.get(`backend.${props.hashedMsgId}`),
+    translation,
     locale: localeName,
   };
 })(Text);
@@ -59,7 +69,7 @@ class T extends Widget {
 
     return (
       <TextConnected
-        hashedmsgid={hashedMsgId}
+        hashedMsgId={hashedMsgId}
         nabuId={msg.nabuId}
         description={msg.description}
         html={msg.html}

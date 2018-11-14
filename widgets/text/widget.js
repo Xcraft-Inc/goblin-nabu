@@ -22,11 +22,8 @@ class NabuText extends Widget {
     };
   }
 
-  mustTranslate(message, locale) {
-    const mustTranslate = !message;
-    return mustTranslate || !locale
-      ? true
-      : !message.get(`translations.${locale}`);
+  mustTranslate(message, translation) {
+    return !message || !translation;
   }
 
   mustAdd(props) {
@@ -70,6 +67,7 @@ class NabuText extends Widget {
       children,
       workitemId,
       message,
+      translation,
       nabuId,
       locale,
       html,
@@ -81,16 +79,14 @@ class NabuText extends Widget {
     } = this.props;
 
     const translatedMessage =
-      enabled && message && locale
-        ? message.get(`translations.${locale}`, nabuId)
-        : nabuId;
+      enabled && message && translation && locale ? translation : nabuId;
     const finalMessage = translatedMessage !== '' ? translatedMessage : nabuId;
 
     const text = locale
       ? formatMessage(locale, html, finalMessage, values || [])
       : nabuId;
 
-    const markerOn = this.mustTranslate(message, locale) && marker;
+    const markerOn = this.mustTranslate(message, translation) && marker;
     const highliteStyle = {
       outline: 'none',
       backgroundColor: 'rgba(10, 200, 100, .8)',
