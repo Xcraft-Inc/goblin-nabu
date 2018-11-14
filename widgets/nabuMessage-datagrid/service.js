@@ -41,13 +41,11 @@ const config = {
       locale => locale.get('id') === currentLocaleId
     );
 
-    var firstLocale =
-      locales.size > 0 ? `translations.${locales.first().get('name')}` : '';
-    var secondLocale =
-      locales.size > 1 ? `translations.${locales.get(1).get('name')}` : '';
+    var firstLocale = locales.size > 0 ? `${locales.first().get('name')}` : '';
+    var secondLocale = locales.size > 1 ? `${locales.get(1).get('name')}` : '';
 
     var firstColumn = currentLocale
-      ? `translations.${currentLocale.get('name')}`
+      ? `${currentLocale.get('name')}`
       : firstLocale;
 
     var secondColumn = firstColumn === firstLocale ? secondLocale : firstLocale;
