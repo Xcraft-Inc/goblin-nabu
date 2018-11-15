@@ -175,6 +175,22 @@ function renderLocaleRowCell(id, field, datagrid) {
 
 // ------------------------------------------------------------
 
+function renderLocaleFilterCell(doAsDatagrid, field) {
+  return (
+    <Field
+      model={`.filters.${field}`}
+      grow="1"
+      labelWidth="0px"
+      onDebouncedChange={value =>
+        doAsDatagrid('applyCustomVisualization', {field, value})
+      }
+      hintText={`Search on ${field}`}
+    />
+  );
+}
+
+// ------------------------------------------------------------
+
 function renderHeaderCell(props) {
   switch (props.column.get('name')) {
     case 'missingTranslations':
@@ -207,8 +223,23 @@ function renderRowCell(props) {
   }
 }
 
+function renderFilterCell(props) {
+  switch (props.column.get('name')) {
+    case 'nabuId':
+    case 'locale_1':
+    case 'locale_2':
+      return renderLocaleFilterCell(
+        props.doAsDatagrid,
+        props.column.get('field')
+      );
+    default:
+      return <div />;
+  }
+}
+
 /******************************************************************************/
 export default {
   headerCell: renderHeaderCell,
   rowCell: renderRowCell,
+  filterCell: renderFilterCell,
 };

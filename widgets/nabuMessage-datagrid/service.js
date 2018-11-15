@@ -1,5 +1,6 @@
 'use strict';
 
+const watt = require('gigawatts');
 const {buildWorkitem} = require('goblin-workshop');
 
 const config = {
@@ -19,16 +20,19 @@ const config = {
       field: 'nabuId',
       sortable: true,
       filterable: true,
+      customFilter: true,
     },
     {
       name: 'locale_1',
       sortable: true,
       filterable: true,
+      customFilter: true,
     },
     {
       name: 'locale_2',
       sortable: true,
       filterable: true,
+      customFilter: true,
     },
   ],
   afterCreate: function*(quest, next) {
@@ -95,6 +99,76 @@ const config = {
       ) {
         yield quest.me.resetListVisualization(next);
       }
+    },
+    applyCustomVisualization: function*(quest, field, value, next) {
+      const listId = quest.goblin.getX('listId');
+      const listAPI = quest.getAPI(listId);
+      const r = quest.getStorage('rethink');
+
+      yield quest.me.change(
+        {
+          path: `filters.${field}`,
+          newValue: value,
+        },
+        next
+      );
+
+      const filters = quest.goblin.getState().get('filters');
+      const sort = quest.goblin.getState().get('sort');
+      const sortKey = sort.get('key');
+
+      yield listAPI.customizeVisualization(
+        {
+          listIdsGetter: watt(function*() {
+            //query
+            let q = r
+              .table('nabuMessage', {readMode: 'outdated'})
+              .eqJoin(
+                'messageId',
+                r.table('nabuTranslation', {readMode: 'outdated'})
+              );
+
+            let filterFunc = filters
+              ? buildFilterReql(
+                  filters.toJS(),
+                  value => '(?i).*' + value + '.*'
+                )
+              : null;
+
+            if (filterFunc) {
+              q.filter(filterFunc);
+            }
+
+            let orderFunc =
+              sortKey && sortKey !== ''
+                ? buildOrderByReql(sortKey, sort.get('dir'))
+                : null;
+
+            if (orderFunc) {
+              q.order(orderFunc);
+            }
+
+            q = q.map(row => row('left')('id')).distinct();
+
+            const cursor = yield run(quest, q, next);
+            const listIds = yield cursor.toArray(next);
+
+            // foreach listId in listIds{nabu.loadTranslations(listId) }
+            return listIds;
+          }),
+
+          /*orderBy:
+            sortKey && sortKey !== ''
+              ? buildOrderByReql(sortKey, sort.get('dir'))
+              : null,
+          filter: filters
+            ? buildFilterReql(filters.toJS(), value => '(?i).*' + value + '.*')
+            : null,*/
+        },
+        next
+      );
+
+      quest.defer(() => quest.me.loadMessages());
     },
     loadTranslations: function(quest, listIds) {
       const nabuApi = quest.getAPI('nabu');
