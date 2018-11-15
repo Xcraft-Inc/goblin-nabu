@@ -8,6 +8,10 @@ class NabuText extends Widget {
     super(...arguments);
     this.onMouseEnter = this.onMouseEnter.bind(this);
     this.onMouseLeave = this.onMouseLeave.bind(this);
+
+    this.getText = this.getText.bind(this);
+    this.getSelectionModeStyle = this.getSelectionModeStyle.bind(this);
+    this.getStyle = this.getStyle.bind(this);
   }
 
   static get wiring() {
@@ -59,64 +63,71 @@ class NabuText extends Widget {
     }
   }
 
-  render() {
+  getText() {
     const {
       enabled,
-      marker,
-      focus,
-      children,
-      workitemId,
-      hashedMsgId,
       message,
-      translation,
       nabuId,
       locale,
       html,
       values,
-      selectedItem,
-      selectionModeEnabled,
-      dispatch,
-      ...other
+      translation,
     } = this.props;
 
     const translatedMessage =
       enabled && message && translation && locale ? translation : nabuId;
 
-    const text = locale
+    return locale
       ? formatMessage(locale, html, translatedMessage, values || [])
       : nabuId;
+  }
 
-    const markerOn = this.mustTranslate(message, translation) && marker;
-    const highliteStyle = {
-      outline: 'none',
-      backgroundColor: 'rgba(10, 200, 100, .8)',
-    };
-    const focusStyle = {
-      boxShadow: '0 0 10px 5px rgba(200, 0, 0, .8)',
-    };
-    function getSelectionModeStyle(selected) {
-      const lineWidth = selected ? '2' : '1';
-      const transparency = selected ? '1.0' : '0.4';
+  getSelectionModeStyle() {
+    const {message, selectedItem} = this.props;
 
-      return {
-        boxShadow: `0 0 0 ${lineWidth}px rgba(200, 0, 0, ${transparency})`,
-      };
-    }
+    const selected = message && selectedItem === message.get('id');
+
+    const lineWidth = selected ? '2' : '1';
+    const transparency = selected ? '1.0' : '0.4';
+
+    return {
+      boxShadow: `0 0 0 ${lineWidth}px rgba(200, 0, 0, ${transparency})`,
+    };
+  }
+
+  getStyle() {
+    const {focus, message, selectionModeEnabled, locale, marker} = this.props;
 
     let style = {};
+
+    const markerOn = this.mustTranslate(message, locale) && marker;
     if (markerOn) {
-      style = Object.assign(style, highliteStyle);
+      style = Object.assign(style, this.highliteStyle);
     }
     if (selectionModeEnabled) {
-      style = Object.assign(
-        style,
-        getSelectionModeStyle(message && selectedItem === message.get('id'))
-      );
+      style = Object.assign(style, this.getSelectionModeStyle());
     }
 
     if (focus && message && message.get('id') === focus) {
-      style = Object.assign(style, focusStyle);
+      style = Object.assign(style, this.focusStyle);
     }
+    return style;
+  }
+
+  highliteStyle = {
+    outline: 'none',
+    backgroundColor: 'rgba(10, 200, 100, .8)',
+  };
+
+  focusStyle = {
+    boxShadow: '0 0 10px 5px rgba(200, 0, 0, .8)',
+  };
+
+  render() {
+    const {...other} = this.props;
+
+    const text = this.getText();
+    const style = this.getStyle();
 
     return (
       <span

@@ -24,8 +24,8 @@ const LabelConnected = Widget.connect((state, props) => {
       }
     } /*else if (
       locales // Missing translations label
-        .map(l => message.get(`translations.${l.get('name')}`))
-        .some(translation => !translation)
+        .map (l => message.get (`translations.${l.get ('name')}`))
+        .some (translation => !translation)
     ) {
       glyph = 'solid/exclamation-triangle';
       tooltip = props.tooltip;
