@@ -160,22 +160,15 @@ function renderNabuIdRowCell(id) {
 function renderLocaleRowCell(id, field, datagrid) {
   if (field) {
     const translationId = `nabuTranslation@${field}-${id.split('@')[1]}`;
-    const localeId = datagrid
-      .getState()
-      .backend.getIn(['nabu', 'locales'])
-      .find(locale => locale.get('name') === field)
-      .get('id');
+
+    const TranslationFieldConnected = Widget.connect(() => {
+      return {
+        id: translationId,
+      };
+    })(TranslationField);
 
     if (datagrid.getState().backend.get(translationId)) {
-      return (
-        <TranslationField id={translationId} datagrid={datagrid} msgId={id} />
-      );
-    } else {
-      datagrid.doFor('nabu', 'add-translation', {
-        id: translationId,
-        messageId: id,
-        localeId,
-      });
+      return <TranslationFieldConnected datagrid={datagrid} msgId={id} />;
     }
   }
 
