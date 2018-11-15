@@ -31,10 +31,18 @@ const config = {
       filterable: true,
     },
   ],
-  afterCreate: function*(quest) {
+  afterCreate: function*(quest, next) {
+    // Loading translations
+    const listId = quest.goblin.getX('listId');
+    const listAPI = quest.getAPI(listId);
+
+    const listIds = yield listAPI.getListIds();
+
+    yield quest.me.loadTranslations({listIds}, next);
+
+    // Setting correct selected locales
     const nabuApi = quest.getAPI('nabu');
     const configApi = quest.getAPI('nabuConfiguration@main');
-
     const locales = (yield nabuApi.get()).get('locales');
     const currentLocaleId = (yield configApi.get()).get('localeId');
     const currentLocale = locales.find(
@@ -86,6 +94,15 @@ const config = {
         sort.get('key') === currentLocale
       ) {
         yield quest.me.resetListVisualization(next);
+      }
+    },
+    loadTranslations: function(quest, listIds) {
+      const nabuApi = quest.getAPI('nabu');
+
+      for (const messageId of listIds) {
+        quest.defer(() =>
+          nabuApi.loadTranslations({messageId, ownerId: quest.goblin.id})
+        );
       }
     },
   },
