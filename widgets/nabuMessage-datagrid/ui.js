@@ -71,7 +71,7 @@ class TranslationField extends Form {
     const {id} = this.props;
 
     if (!id) {
-      return null;
+      return <div />;
     }
 
     const Form = this.Form;
@@ -161,15 +161,13 @@ function renderLocaleRowCell(id, field, datagrid) {
   if (field) {
     const translationId = `nabuTranslation@${field}-${id.split('@')[1]}`;
 
-    const TranslationFieldConnected = Widget.connect(() => {
+    const TranslationFieldConnected = Widget.connect(state => {
       return {
-        id: translationId,
+        id: state.get(`backend.${translationId}`) ? translationId : null,
       };
     })(TranslationField);
 
-    if (datagrid.getState().backend.get(translationId)) {
-      return <TranslationFieldConnected datagrid={datagrid} msgId={id} />;
-    }
+    return <TranslationFieldConnected datagrid={datagrid} msgId={id} />;
   }
 
   return <div />;
