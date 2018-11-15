@@ -125,7 +125,23 @@ class NabuText extends Widget {
   };
 
   render() {
-    const {...other} = this.props;
+    const {
+      enabled,
+      marker,
+      focus,
+      children,
+      workitemId,
+      message,
+      nabuId,
+      translation,
+      locale,
+      html,
+      values,
+      selectedItem,
+      selectionModeEnabled,
+      dispatch,
+      ...other
+    } = this.props;
 
     const text = this.getText();
     const style = this.getStyle();
