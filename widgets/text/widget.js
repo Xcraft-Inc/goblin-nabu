@@ -136,6 +136,7 @@ class NabuText extends Widget {
       focus,
       children,
       workitemId,
+      hashedMsgId,
       message,
       nabuId,
       translation,
