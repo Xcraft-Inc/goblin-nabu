@@ -65,6 +65,10 @@ const config = {
         .getState()
         .get(`columns[${index}].field`);
 
+      if (currentLocale === locale) {
+        return;
+      }
+
       yield quest.me.change(
         {
           path: `columns[${index}].field`,
