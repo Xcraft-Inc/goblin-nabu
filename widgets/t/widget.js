@@ -9,20 +9,18 @@ import {isShredder, isImmutable} from 'xcraft-core-shredder';
 const TextConnected = Widget.connect((state, props) => {
   const localeId = state.get('backend.nabuConfiguration@main.localeId');
 
-  let localeName = null;
+  let locale = null;
   let translation = null;
   if (localeId) {
     const locales = state.get('backend.nabu.locales');
 
     if (locales) {
-      const locale = locales.find(locale => locale.get('id') === localeId);
+      locale = locales.find(locale => locale.get('id') === localeId);
 
       if (locale) {
-        localeName = locale.get('name');
-
-        if (localeName) {
+        if (locale.get('name')) {
           translation = state.get(
-            `backend.nabuTranslation@${localeName}-${
+            `backend.nabuTranslation@${locale.get('name')}-${
               props.hashedMsgId.split('@')[1]
             }`
           );
@@ -34,7 +32,7 @@ const TextConnected = Widget.connect((state, props) => {
   return {
     message: state.get(`backend.${props.hashedMsgId}`),
     translation,
-    locale: localeName,
+    locale,
   };
 })(Text);
 

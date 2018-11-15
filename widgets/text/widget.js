@@ -14,7 +14,6 @@ class NabuText extends Widget {
     return {
       id: 'id',
       enabled: 'enabled',
-      locale: 'selectedLocale',
       marker: 'marker',
       focus: 'focus',
       selectionModeEnabled: 'selectionMode.enabled',
@@ -80,11 +79,19 @@ class NabuText extends Widget {
     } = this.props;
 
     const translatedMessage =
-      enabled && message && translation && locale ? translation : nabuId;
+      enabled && message && translation && locale && locale.get('name')
+        ? translation
+        : nabuId;
 
-    const text = locale
-      ? formatMessage(locale, html, translatedMessage, values || [])
-      : nabuId;
+    const text =
+      locale && locale.get('name')
+        ? formatMessage(
+            locale.get('name'),
+            html,
+            translatedMessage,
+            values || []
+          )
+        : nabuId;
 
     const markerOn = this.mustTranslate(message, translation) && marker;
     const highliteStyle = {
