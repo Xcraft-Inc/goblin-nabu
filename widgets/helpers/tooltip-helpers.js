@@ -66,7 +66,9 @@ function Message(text, state, widget) {
     `backend.nabuTranslation@${locale.get('name')}-${hashedMsgId.split('@')[1]}`
   );
 
-  return translatedMessage !== '' ? translatedMessage : text.nabuId;
+  return translatedMessage && translatedMessage.get('text')
+    ? translatedMessage.get('text')
+    : text.nabuId;
 }
 
 function Locale(state, text) {

@@ -74,8 +74,13 @@ class NabuText extends Widget {
     } = this.props;
 
     const translatedMessage =
-      enabled && message && translation && locale && locale.get('name')
-        ? translation
+      enabled &&
+      message &&
+      translation &&
+      translation.get('text') &&
+      locale &&
+      locale.get('name')
+        ? translation.get('text')
         : nabuId;
 
     return locale && locale.get('name')
