@@ -2,6 +2,10 @@
 
 const watt = require('gigawatts');
 const {buildWorkitem} = require('goblin-workshop');
+const {
+  buildFilterReql,
+  buildOrderByReql,
+} = require('goblin-rethink/helpers.js');
 
 const config = {
   type: 'nabuMessage',
@@ -27,12 +31,14 @@ const config = {
       sortable: true,
       filterable: true,
       customFilter: true,
+      customSort: true,
     },
     {
       name: 'locale_2',
       sortable: true,
       filterable: true,
       customFilter: true,
+      customSort: true,
     },
   ],
   afterCreate: function*(quest, next) {
@@ -104,6 +110,7 @@ const config = {
       const listId = quest.goblin.getX('listId');
       const listAPI = quest.getAPI(listId);
       const r = quest.getStorage('rethink');
+      //const r = require ('rethinkdb');
 
       yield quest.me.change(
         {
@@ -115,58 +122,62 @@ const config = {
 
       const filters = quest.goblin.getState().get('filters');
       const sort = quest.goblin.getState().get('sort');
-      const sortKey = sort.get('key');
 
-      yield listAPI.customizeVisualization(
-        {
-          listIdsGetter: watt(function*() {
-            //query
-            let q = r
-              .table('nabuMessage', {readMode: 'outdated'})
-              .eqJoin(
-                'messageId',
-                r.table('nabuTranslation', {readMode: 'outdated'})
-              );
+      const idsGetter = watt(function*() {
+        const joinRequest = (r, orderFunc, filterFunc) => {
+          let q = r
+            .table('nabuTranslation')
+            .eqJoin('messageId', r.table('nabuMessage'))
+            .zip()
+            .eqJoin('localeId', r.table('locale'))
+            .zip()
+            .map(function(item) {
+              return r
+                .expr([
+                  ['id', item('messageId')],
+                  ['nabuId', item('nabuId')],
+                  [item('name'), item('text')],
+                ])
+                .coerceTo('OBJECT');
+            })
+            .group('id')
+            .reduce(function(item1, item2) {
+              return item1.merge(item2);
+            })
+            .ungroup()
+            .getField('reduction');
 
-            let filterFunc = filters
-              ? buildFilterReql(
-                  filters.toJS(),
-                  value => '(?i).*' + value + '.*'
-                )
-              : null;
+          if (orderFunc) {
+            q.orderBy(orderFunc);
+          }
+          if (filterFunc) {
+            q.filter(filterFunc);
+          }
 
-            if (filterFunc) {
-              q.filter(filterFunc);
-            }
+          return q.getField('id');
+        };
 
-            let orderFunc =
-              sortKey && sortKey !== ''
-                ? buildOrderByReql(sortKey, sort.get('dir'))
-                : null;
+        const sortKey = sort.get('key');
+        let orderFunc =
+          sortKey && sortKey !== ''
+            ? buildOrderByReql(sortKey, sort.get('dir'))
+            : null;
 
-            if (orderFunc) {
-              q.order(orderFunc);
-            }
+        let filterFunc = filters
+          ? buildFilterReql(filters.toJS(), value => '(?i).*' + value + '.*')
+          : null;
 
-            q = q.map(row => row('left')('id')).distinct();
+        const query = joinRequest.toString();
+        const listIds = yield r.query({
+          query,
+          args: [orderFunc, filterFunc],
+        });
 
-            const cursor = yield run(quest, q, next);
-            const listIds = yield cursor.toArray(next);
+        // foreach listId in listIds{nabu.loadTranslations(listId) }
+        return listIds;
+      });
 
-            // foreach listId in listIds{nabu.loadTranslations(listId) }
-            return listIds;
-          }),
-
-          /*orderBy:
-            sortKey && sortKey !== ''
-              ? buildOrderByReql(sortKey, sort.get('dir'))
-              : null,
-          filter: filters
-            ? buildFilterReql(filters.toJS(), value => '(?i).*' + value + '.*')
-            : null,*/
-        },
-        next
-      );
+      yield listAPI.customizeVisualization({listIdsGetter: idsGetter}, next);
 
       quest.defer(() => quest.me.loadMessages());
     },
