@@ -6,6 +6,15 @@ const entity = {
   references: {
     localeId: 'locale',
   },
+
+  buildSummaries: function(quest, configuration, peers, MD) {
+    const localeName = peers.localeId ? peers.localeId.get('name') : null;
+    return {info: localeName, description: localeName};
+  },
+  indexer: function(quest, entity) {
+    const info = entity.get('meta.summaries.description', '');
+    return {info};
+  },
   quests: {
     setLocale: function*(quest, localeId) {
       yield quest.me.change({

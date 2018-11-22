@@ -2,7 +2,7 @@ import React from 'react';
 import Widget from 'laboratory/widget';
 
 import Container from 'gadgets/container/widget';
-import TextFieldCombo from 'gadgets/text-field-combo/widget';
+import Field from 'gadgets/field/widget';
 
 /******************************************************************************/
 
@@ -18,16 +18,17 @@ class NabuConfiguration extends Widget {
     return (
       <Container kind="column">
         <Container kind="pane">
-          <TextFieldCombo
-            model=".localeId"
-            readonly="true"
-            grow="1"
+          <Field
+            kind="combo"
+            fieldWidth="200px"
+            labelText={Widget.T('Locale')}
+            tooltip={Widget.T('Choose your default locale')}
             list={locales
               .map(l => ({value: l.get('id'), text: l.get('name')}))
               .toJS()}
-            menuType="wrap"
-            defaultValue={''}
-            onSetText={localeId => self.props.do('setLocale', {localeId})}
+            comboReadonly="true"
+            model=".localeId"
+            onChange={localeId => self.props.do('setLocale', {localeId})}
           />
         </Container>
       </Container>
@@ -43,14 +44,6 @@ function renderPanel(props) {
   return <NabuConfigurationConnected id={props.id} do={props.do} />;
 }
 
-function renderReadonly(props) {
-  return <Container kind="row" />;
-}
-
-function renderExtend(props) {
-  return <NabuConfigurationConnected id={props.id} do={props.do} />;
-}
-
 /******************************************************************************/
 export default {
   panel: {
@@ -59,12 +52,12 @@ export default {
   },
   plugin: {
     readonly: {
-      compact: renderReadonly,
-      extend: renderExtend,
+      compact: renderPanel,
+      extend: renderPanel,
     },
     edit: {
-      compact: renderReadonly,
-      extend: renderExtend,
+      compact: renderPanel,
+      extend: renderPanel,
     },
   },
 };
