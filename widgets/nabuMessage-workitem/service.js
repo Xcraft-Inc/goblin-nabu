@@ -7,4 +7,6 @@ const config = {
   quests: {},
 };
 
+// LoadTranslation (?? -> nabuTranslation@locales-messageGuid)
+
 module.exports = buildWorkitem(config);

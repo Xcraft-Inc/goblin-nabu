@@ -3,7 +3,7 @@ import Widget from 'laboratory/widget';
 
 import Container from 'gadgets/container/widget';
 import Field from 'gadgets/field/widget';
-import Label from 'gadgets/label/widget';
+import TranslationFieldConnected from '../nabuMessage-datagrid/TranslationField';
 
 /******************************************************************************/
 class NabuMessage extends Widget {
@@ -29,13 +29,19 @@ class NabuMessage extends Widget {
           </Container>
 
           {locales.map(l => {
+            const translationId = `nabuTranslation@${l.get('name')}-${
+              this.props.entityId.split('@')[1]
+            }`;
+
             return (
-              <Field
-                key={l.get('name')}
-                grow="1"
-                labelText={l.get('name')}
-                model={`.translations.${l.get('name')}`}
-              />
+              <Container kind="row" key={translationId}>
+                <TranslationFieldConnected
+                  translationId={translationId}
+                  id={translationId}
+                  labelText={l.get('name')}
+                  labelWidth="100px"
+                />
+              </Container>
             );
           })}
         </Container>
@@ -49,15 +55,13 @@ const NabuMessageConnected = Widget.connect((state, props) => ({
 }))(NabuMessage);
 
 function renderPanel(props) {
-  return <NabuMessageConnected id={props.id} do={props.do} />;
-}
-
-function renderReadonly(props) {
-  return <Container kind="row" grow="1" />;
-}
-
-function renderExtend(props) {
-  return <Container kind="column" grow="1" />;
+  return (
+    <NabuMessageConnected
+      entityId={props.entityId}
+      id={props.id}
+      do={props.do}
+    />
+  );
 }
 
 /******************************************************************************/
@@ -68,12 +72,12 @@ export default {
   },
   plugin: {
     readonly: {
-      compact: renderReadonly,
-      extend: renderExtend,
+      compact: renderPanel,
+      extend: renderPanel,
     },
     edit: {
-      compact: renderReadonly,
-      extend: renderExtend,
+      compact: renderPanel,
+      extend: renderPanel,
     },
   },
 };

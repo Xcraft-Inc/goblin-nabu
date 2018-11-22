@@ -1,11 +1,12 @@
 import React from 'react';
 import Widget from 'laboratory/widget';
-import Form from 'laboratory/form';
 
 import Field from 'gadgets/field/widget';
 import Label from 'gadgets/label/widget';
 import TextFieldCombo from 'gadgets/text-field-combo/widget';
 import Container from 'gadgets/container/widget';
+
+import TranslationFieldConnected from './TranslationField';
 
 const LabelConnected = Widget.connect((state, props) => {
   const message = state.get(`backend.${props.id}`);
@@ -39,57 +40,6 @@ const LabelConnected = Widget.connect((state, props) => {
 })(Label);
 
 // ------------------------------------------------------------
-class TranslationField extends Form {
-  constructor() {
-    super(...arguments);
-
-    this.onFocus = this.onFocus.bind(this);
-    this.onBlur = this.onBlur.bind(this);
-  }
-
-  static get wiring() {
-    return {
-      id: 'id',
-    };
-  }
-
-  onFocus() {
-    this.props.datagrid.doFor('nabu', 'set-focus', {
-      messageId: this.props.msgId,
-      value: true,
-    });
-  }
-
-  onBlur() {
-    this.props.datagrid.doFor('nabu', 'set-focus', {
-      messageId: this.props.msgId,
-      value: false,
-    });
-  }
-
-  render() {
-    const {id} = this.props;
-
-    if (!id) {
-      return <div />;
-    }
-
-    const Form = this.Form;
-
-    return (
-      <Form {...this.formConfig}>
-        <Field
-          model={'.text'}
-          grow="1"
-          labelWidth="0px"
-          verticalSpacing="compact"
-          onFocus={this.onFocus}
-          onBlur={this.onBlur}
-        />
-      </Form>
-    );
-  }
-}
 
 class HeaderCombo extends Widget {
   render() {
@@ -161,13 +111,13 @@ function renderLocaleRowCell(id, field, datagrid) {
   if (field) {
     const translationId = `nabuTranslation@${field}-${id.split('@')[1]}`;
 
-    const TranslationFieldConnected = Widget.connect(state => {
-      return {
-        id: state.get(`backend.${translationId}`) ? translationId : null,
-      };
-    })(TranslationField);
-
-    return <TranslationFieldConnected datagrid={datagrid} msgId={id} />;
+    return (
+      <TranslationFieldConnected
+        translationId={translationId}
+        datagrid={datagrid}
+        msgId={id}
+      />
+    );
   }
 
   return <div />;
