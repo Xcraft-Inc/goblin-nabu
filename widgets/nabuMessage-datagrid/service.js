@@ -112,13 +112,18 @@ const config = {
       const r = quest.getStorage('rethink');
       //const r = require ('rethinkdb');
 
-      yield quest.me.change(
-        {
-          path: `filters.${field}`,
-          newValue: value,
-        },
-        next
-      );
+      //const oldValue = quest.goblin.getState ().get (`filters.${field}`);
+      if (value !== undefined) {
+        yield quest.me.change(
+          {
+            path: `filters.${field}`,
+            newValue: value,
+          },
+          next
+        );
+      }
+
+      yield quest.me.toggleSort({field: field}, next);
 
       const filters = quest.goblin.getState().get('filters');
       const sort = quest.goblin.getState().get('sort');
@@ -148,13 +153,13 @@ const config = {
             .getField('reduction');
 
           if (orderFunc) {
-            q.orderBy(orderFunc);
+            q = q.orderBy(orderFunc);
           }
           if (filterFunc) {
-            q.filter(filterFunc);
+            q = q.filter(filterFunc);
           }
 
-          return q.getField('id');
+          return (q = q.getField('id'));
         };
 
         const sortKey = sort.get('key');
@@ -174,6 +179,8 @@ const config = {
         });
 
         // foreach listId in listIds{nabu.loadTranslations(listId) }
+        quest.me.loadTranslations({listIds}, next);
+
         return listIds;
       });
 

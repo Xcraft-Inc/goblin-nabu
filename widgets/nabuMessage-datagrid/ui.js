@@ -191,6 +191,49 @@ function renderLocaleFilterCell(doAsDatagrid, field) {
 
 // ------------------------------------------------------------
 
+const SortConnected = Widget.connect((state, props) => {
+  const key = state.get(`backend.${props.id}.sort.key`);
+  const dir = state.get(`backend.${props.id}.sort.dir`);
+
+  let glyph = 'solid/sort';
+  let tooltip = null;
+
+  if (key === props.column.get('field')) {
+    if (dir === 'asc') {
+      glyph = 'solid/sort-alpha-up';
+      tooltip = props.tooltips.asc;
+    } else {
+      glyph = 'solid/sort-alpha-down';
+      tooltip = props.tooltips.desc;
+    }
+  }
+
+  return {glyph: glyph, tooltip: tooltip};
+})(Label);
+
+const tooltips = {
+  asc: Widget.T('ascending order'),
+  desc: Widget.T('descending order'),
+};
+
+function renderLocaleSortCell(doAsDatagrid, column, datagridId) {
+  return (
+    <SortConnected
+      tooltips={tooltips}
+      id={datagridId}
+      column={column}
+      onClick={() =>
+        doAsDatagrid('applyCustomVisualization', {
+          field: column.get('field'),
+        })
+      }
+      spacing="overlap"
+    />
+  );
+}
+
+// ------------------------------------------------------------
+
 function renderHeaderCell(props) {
   switch (props.column.get('name')) {
     case 'missingTranslations':
@@ -237,9 +280,25 @@ function renderFilterCell(props) {
   }
 }
 
+function renderSortCell(props) {
+  switch (props.column.get('name')) {
+    case 'nabuId':
+    case 'locale_1':
+    case 'locale_2':
+      return renderLocaleSortCell(
+        props.doAsDatagrid,
+        props.column,
+        props.datagrid.props.id
+      );
+    default:
+      return <div />;
+  }
+}
+
 /******************************************************************************/
 export default {
   headerCell: renderHeaderCell,
   rowCell: renderRowCell,
   filterCell: renderFilterCell,
+  sortCell: renderSortCell,
 };
