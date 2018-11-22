@@ -110,9 +110,7 @@ const config = {
       const listId = quest.goblin.getX('listId');
       const listAPI = quest.getAPI(listId);
       const r = quest.getStorage('rethink');
-      //const r = require ('rethinkdb');
 
-      //const oldValue = quest.goblin.getState ().get (`filters.${field}`);
       if (value !== undefined) {
         yield quest.me.change(
           {
