@@ -71,7 +71,7 @@ class ToolBar extends Widget {
             text={`Modify messages`}
             onClick={this.openDatagrid}
           />
-          {selectedItem ? (
+          {selectedItem && selectionMode ? (
             <Button
               kind="button-footer"
               text={`Modify single message`}
