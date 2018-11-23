@@ -3,7 +3,7 @@ import Widget from 'laboratory/widget';
 
 import Container from 'gadgets/container/widget';
 import Field from 'gadgets/field/widget';
-import TranslationFieldConnected from '../nabuMessage-datagrid/TranslationField';
+import TranslationFieldConnected from '../nabuWidgets/translationField';
 
 /******************************************************************************/
 class NabuMessage extends Widget {
@@ -39,7 +39,9 @@ class NabuMessage extends Widget {
                   translationId={translationId}
                   id={translationId}
                   labelText={l.get('name')}
-                  labelWidth="100px"
+                  verticalSpacing="5px"
+                  width="600px"
+                  multiline="true"
                 />
               </Container>
             );
