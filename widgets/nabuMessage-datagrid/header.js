@@ -11,7 +11,7 @@ function renderMissingTranslationsHeaderCell() {
 }
 
 function renderNabuIdHeaderCell() {
-  return <Label spacing="overlap" text={Widget.T('Message original')} />;
+  return <Label spacing="compact" text={Widget.T('Message original')} />;
 }
 
 function renderLocaleHeaderCell(id, index, doAsDatagrid) {

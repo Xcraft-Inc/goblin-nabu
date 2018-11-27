@@ -22,6 +22,7 @@ class HeaderCombo extends Widget {
           onSetText={locale => {
             doAsDatagrid('changeSelectedLocale', {index, locale});
           }}
+          spacing="compact"
         />
       </Container>
     );

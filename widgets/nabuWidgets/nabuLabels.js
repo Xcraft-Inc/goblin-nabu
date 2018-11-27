@@ -5,25 +5,30 @@ const label = Widget.connect((state, props) => {
   const message = state.get(`backend.${props.id}`);
   //const locales = state.get(`backend.nabu.locales`);
 
+  const locale1 = props.locale1;
+  const locale2 = props.locale2;
+  const translation1 = state.get(
+    `backend.nabuTranslation@${locale1}-${props.id.split('@')[1]}`
+  );
+  const translation2 = state.get(
+    `backend.nabuTranslation@${locale2}-${props.id.split('@')[1]}`
+  );
+
   let glyph = null;
   let tooltip = null;
 
   if (message) {
+    // Description label
     if (props.checkDescription) {
-      // Description label
       const desc = message.get('description');
       if (desc) {
         glyph = 'regular/info-circle';
         tooltip = desc;
       }
-    } /*else if (
-        locales // Missing translations label
-          .map (l => message.get (`translations.${l.get ('name')}`))
-          .some (translation => !translation)
-      ) {
-        glyph = 'solid/exclamation-triangle';
-        tooltip = props.tooltip;
-      }*/
+    } else if (!translation1.get('text') || !translation2.get('text')) {
+      glyph = 'solid/exclamation-triangle';
+      tooltip = props.tooltip;
+    }
   }
 
   return {

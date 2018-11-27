@@ -41,7 +41,7 @@ function renderLocaleSortCell(doAsDatagrid, column, datagridId) {
           field: column.get('field'),
         })
       }
-      spacing="overlap"
+      spacing="compact"
     />
   );
 }

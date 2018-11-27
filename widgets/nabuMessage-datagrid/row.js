@@ -8,7 +8,7 @@ import TranslationFieldConnected from '../nabuWidgets/translationField';
 
 // ------------------------------------------------------------
 
-function renderMissingTranslationsRowCell(id) {
+function renderMissingTranslationsRowCell(id, props) {
   return (
     <NabuLabels.label
       id={id}
@@ -17,6 +17,8 @@ function renderMissingTranslationsRowCell(id) {
         "Certaines locales n'ont pas encore été traduites",
         'In Nabu window'
       )}
+      locale1={props.columns.get('2').get('field')}
+      locale2={props.columns.get('3').get('field')}
     />
   );
 }
@@ -40,7 +42,8 @@ function renderLocaleRowCell(id, field, datagrid) {
         datagrid={datagrid}
         msgId={id}
         labelWidth="0px"
-        width="250px"
+        width="280px"
+        spacing="compact"
       />
     );
   }
@@ -53,7 +56,7 @@ function renderLocaleRowCell(id, field, datagrid) {
 function renderRowCell(props) {
   switch (props.column.get('name')) {
     case 'missingTranslations':
-      return renderMissingTranslationsRowCell(props.id);
+      return renderMissingTranslationsRowCell(props.id, props);
     case 'nabuId':
       return renderNabuIdRowCell(props.id);
     case 'locale_1':
