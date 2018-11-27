@@ -25,15 +25,17 @@ class NabuMessage extends Form {
     return (
       <Container kind="column">
         <Container kind="pane">
-          <Form {...this.formConfig}>
+          <Form {...this.formConfig} model={`backend.${this.props.entityId}`}>
             <Container kind="row-pane">
-              <Field kind="label" grow="1" labelWidth="0px" model={`.nabuId`} />
+              <Field kind="title" grow="1" model={`.nabuId`} />
             </Container>
             <Container kind="row-pane">
               <Field
+                width="950px"
                 labelText="Description"
                 model=".description"
                 readonly={true}
+                spacing="compact"
               />
             </Container>
           </Form>
