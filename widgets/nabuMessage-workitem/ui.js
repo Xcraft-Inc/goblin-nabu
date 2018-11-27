@@ -52,8 +52,8 @@ class NabuMessage extends Form {
                   id={translationId}
                   labelText={l.get('name')}
                   verticalSpacing="5px"
-                  width="600px"
-                  multiline="true"
+                  width="950px"
+                  rows="5"
                 />
               </Container>
             );

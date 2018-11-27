@@ -5,42 +5,42 @@ import Field from 'gadgets/field/widget';
 import Widget from 'laboratory/widget';
 
 class TranslationField extends Form {
-  constructor () {
-    super (...arguments);
+  constructor() {
+    super(...arguments);
 
-    this.onFocus = this.onFocus.bind (this);
-    this.onBlur = this.onBlur.bind (this);
+    this.onFocus = this.onFocus.bind(this);
+    this.onBlur = this.onBlur.bind(this);
   }
 
-  static get wiring () {
+  static get wiring() {
     return {
       id: 'id',
     };
   }
 
-  onFocus () {
+  onFocus() {
     if (!this.props.datagrid) {
       return;
     }
 
-    this.props.datagrid.doFor ('nabu', 'set-focus', {
+    this.props.datagrid.doFor('nabu', 'set-focus', {
       messageId: this.props.msgId,
       value: true,
     });
   }
 
-  onBlur () {
+  onBlur() {
     if (!this.props.datagrid) {
       return;
     }
 
-    this.props.datagrid.doFor ('nabu', 'set-focus', {
+    this.props.datagrid.doFor('nabu', 'set-focus', {
       messageId: this.props.msgId,
       value: false,
     });
   }
 
-  render () {
+  render() {
     const {id, ...other} = this.props;
 
     if (!id) {
@@ -58,7 +58,7 @@ class TranslationField extends Form {
           verticalSpacing="compact"
           onFocus={this.onFocus}
           onBlur={this.onBlur}
-          rows={this.props.multiline ? '5' : '1'}
+          rows={this.props.rows ? this.props.rows : '1'}
           {...other}
         />
       </Form>
@@ -66,10 +66,10 @@ class TranslationField extends Form {
   }
 }
 
-export default Widget.connect ((state, props) => {
+export default Widget.connect((state, props) => {
   return {
-    id: state.get (`backend.${props.translationId}`)
+    id: state.get(`backend.${props.translationId}`)
       ? props.translationId
       : null,
   };
-}) (TranslationField);
+})(TranslationField);
