@@ -25,6 +25,7 @@ const config = {
       sortable: true,
       filterable: true,
       customFilter: true,
+      customSort: true,
     },
     {
       name: 'locale_1',
@@ -119,9 +120,9 @@ const config = {
           },
           next
         );
+      } else {
+        yield quest.me.toggleSort({field: field}, next);
       }
-
-      yield quest.me.toggleSort({field: field}, next);
 
       const filters = quest.goblin.getState().get('filters');
       const sort = quest.goblin.getState().get('sort');
