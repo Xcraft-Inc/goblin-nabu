@@ -3,7 +3,6 @@ import Label from 'gadgets/label/widget';
 
 const label = Widget.connect((state, props) => {
   const message = state.get(`backend.${props.id}`);
-  //const locales = state.get(`backend.nabu.locales`);
 
   const locale1 = props.locale1;
   const locale2 = props.locale2;
@@ -25,7 +24,10 @@ const label = Widget.connect((state, props) => {
         glyph = 'regular/info-circle';
         tooltip = desc;
       }
-    } else if (!translation1.get('text') || !translation2.get('text')) {
+    } else if (
+      (translation1 && !translation1.get('text')) ||
+      (translation2 && !translation2.get('text'))
+    ) {
       glyph = 'solid/exclamation-triangle';
       tooltip = props.tooltip;
     }
