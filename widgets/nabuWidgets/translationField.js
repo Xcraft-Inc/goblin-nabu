@@ -52,10 +52,10 @@ class TranslationField extends Form {
     return (
       <Form {...this.formConfig}>
         <Field
-          model={'.text'}
+          model={`backend.${id}.text`}
           grow="1"
-          labelWidth={this.props.labelWidth}
           verticalSpacing="compact"
+          labelWidth={this.props.labelWidth}
           onFocus={this.onFocus}
           onBlur={this.onBlur}
           rows={this.props.rows ? this.props.rows : '1'}
