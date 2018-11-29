@@ -42,6 +42,7 @@ const config = {
       customSort: true,
     },
   ],
+  hasTranslations: {},
   afterCreate: function*(quest, next) {
     // Loading translations
     const listId = quest.goblin.getX('listId');
@@ -50,6 +51,7 @@ const config = {
     const listIds = yield listAPI.getListIds();
 
     yield quest.me.loadTranslations({listIds}, next);
+    yield quest.me.setNeedTranslation();
 
     // Setting correct selected locales
     const nabuApi = quest.getAPI('nabu');
@@ -106,6 +108,8 @@ const config = {
       ) {
         yield quest.me.resetListVisualization(next);
       }
+
+      yield quest.me.setNeedTranslation(next);
     },
     applyCustomVisualization: function*(quest, field, value, next) {
       const listId = quest.goblin.getX('listId');
@@ -195,6 +199,56 @@ const config = {
           nabuApi.loadTranslations({messageId, ownerId: quest.goblin.id})
         );
       }
+    },
+    setNeedTranslation: function*(quest) {
+      const getNrTranslaton = watt(function*() {
+        const getTranslationQuery = (r, id) => {
+          return r.table('nabuTranslation').filter(
+            r
+              .row('localeId')
+              .match(id)
+              .and(
+                r
+                  .row('text')
+                  .match('.')
+                  .not()
+              )
+          );
+        };
+
+        const r = quest.getStorage('rethink');
+        const query = getTranslationQuery.toString();
+
+        const nabuApi = quest.getAPI('nabu');
+        const locales = (yield nabuApi.get()).get('locales');
+        const nrLocales = locales.size;
+        let i = 0;
+        let needTranslation = {};
+        while (i < nrLocales) {
+          const locale = locales.get(i);
+
+          const args = [locale.get('id')];
+          const localTranslation = yield r.query({query, args});
+
+          let value = false;
+          if (localTranslation.length > 0) {
+            value = true;
+          }
+
+          needTranslation[locale.get('name')] = value;
+
+          i++;
+        }
+
+        return needTranslation;
+      });
+
+      const toChange = yield getNrTranslaton();
+
+      quest.me.change({
+        path: 'hasTranslation',
+        newValue: toChange,
+      });
     },
   },
 };

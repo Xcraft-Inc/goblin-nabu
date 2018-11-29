@@ -15,7 +15,9 @@ function renderNabuIdHeaderCell() {
 }
 
 function renderLocaleHeaderCell(id, index, doAsDatagrid) {
-  return <HeaderComboConnected index={index} doAsDatagrid={doAsDatagrid} />;
+  return (
+    <HeaderComboConnected id={id} index={index} doAsDatagrid={doAsDatagrid} />
+  );
 }
 
 // ------------------------------------------------------------

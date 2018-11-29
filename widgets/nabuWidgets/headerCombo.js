@@ -4,10 +4,22 @@ import Widget from 'laboratory/widget';
 import TextFieldCombo from 'gadgets/text-field-combo/widget';
 import Container from 'gadgets/container/widget';
 
+const {GlyphHelpers} = require('goblin-toolbox');
+
 class HeaderCombo extends Widget {
   render() {
-    const {locales, index, doAsDatagrid} = this.props;
-    const localesList = locales.map(l => l.get('name')).toJS();
+    const {locales, index, hasTranslation, doAsDatagrid} = this.props;
+    const localesList = locales
+      .map(l => {
+        const localName = l.get('name');
+        return {
+          glyph: hasTranslation.get(`${localName}`)
+            ? GlyphHelpers.getComboGlyph('desk', 'warning')
+            : '',
+          text: localName,
+        };
+      })
+      .toJS();
 
     return (
       <Container kind="row">
@@ -22,6 +34,9 @@ class HeaderCombo extends Widget {
           onSetText={locale => {
             doAsDatagrid('changeSelectedLocale', {index, locale});
           }}
+          onShowCombo={_ => {
+            doAsDatagrid('setNeedTranslation');
+          }}
           spacing="compact"
         />
       </Container>
@@ -29,8 +44,9 @@ class HeaderCombo extends Widget {
   }
 }
 
-export default Widget.connect(state => {
+export default Widget.connect((state, props) => {
   return {
     locales: state.get(`backend.nabu.locales`),
+    hasTranslation: state.get(`backend.${props.id}.hasTranslation`),
   };
 })(HeaderCombo);
