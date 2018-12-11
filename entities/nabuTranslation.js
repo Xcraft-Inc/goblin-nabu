@@ -13,7 +13,11 @@ const entity = {
     const ref = message.get('text', '');
     return {info: ref, description: ref};
   },
-  quests: {},
+  indexer: function(quest, entity) {
+    const info = entity.get('meta.summaries.description');
+    const ownerId = entity.get('messageId');
+    return {info, ownerId};
+  },
   onNew: function(quest, id, messageId, localeId, text) {
     return {
       id: id,

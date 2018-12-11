@@ -7,6 +7,7 @@ import Button from 'gadgets/button/widget';
 class ToolBar extends Widget {
   constructor() {
     super(...arguments);
+    this.messageSearch = this.messageSearch.bind(this);
     this.toggleEnabled = this.toggleEnabled.bind(this);
     this.toggleMarks = this.toggleMarks.bind(this);
     this.toggleSelectionMode = this.toggleSelectionMode.bind(this);
@@ -23,6 +24,10 @@ class ToolBar extends Widget {
       selectionMode: 'selectionMode.enabled',
       selectedItem: 'selectionMode.selectedItemId',
     };
+  }
+
+  messageSearch() {
+    this.cmd('nabu.message-search', {});
   }
 
   toggleEnabled() {
@@ -51,6 +56,11 @@ class ToolBar extends Widget {
     if (enabled) {
       return (
         <Container kind="row">
+          <Button
+            kind="button-footer"
+            text="Message search"
+            onClick={this.messageSearch}
+          />
           <Button
             kind="button-footer"
             text="&#x048a;&#x023a;&#x0243;&#x054d;"
