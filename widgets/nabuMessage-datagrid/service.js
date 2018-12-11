@@ -50,7 +50,8 @@ const config = {
 
     const listIds = yield listAPI.getListIds();
 
-    yield quest.me.loadTranslations({listIds}, next);
+    const iterableIds = Object.values(listIds);
+    yield quest.me.loadTranslations({listIds: iterableIds}, next);
     yield quest.me.setNeedTranslation();
 
     // Setting correct selected locales
