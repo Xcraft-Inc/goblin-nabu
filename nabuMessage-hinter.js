@@ -10,7 +10,7 @@ exports.xcraftCommands = function() {
     type: 'nabuMessage',
     subTypes: ['nabuTranslation'],
     subJoins: ['ownerId'],
-    fields: ['info', 'text'],
+    fields: ['info'],
     title: 'Messages',
     newWorkitem: {
       name: 'nabuMessage-workitem',
