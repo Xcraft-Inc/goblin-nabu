@@ -7,6 +7,10 @@ const {
   buildOrderByReql,
 } = require('goblin-rethink/helpers.js');
 
+function isEmptyOrSpaces(str) {
+  return !str || str.length === 0 || /^\s*$/.test(str);
+}
+
 const config = {
   type: 'nabuMessage',
   kind: 'datagrid',
@@ -74,6 +78,10 @@ const config = {
       path: 'columns[3].field',
       newValue: secondColumn,
     });
+    quest.me.change({
+      path: `searchValue`,
+      newValue: '',
+    });
   },
   quests: {
     changeSelectedLocale: function*(quest, index, locale, next) {
@@ -105,6 +113,103 @@ const config = {
       }
 
       yield quest.me.setNeedTranslation(next);
+    },
+    applyElasticVisualization: function*(quest, value, next) {
+      quest.me.change({
+        path: `searchValue`,
+        newValue: value,
+      });
+
+      if (isEmptyOrSpaces(value)) {
+        yield quest.me.resetListVisualization(next);
+        return;
+      }
+
+      const idsGetter = watt(function*() {
+        const hinter = {
+          type: 'nabuMessage',
+          subTypes: ['nabuTranslation'],
+          subJoins: ['ownerId'],
+          field: 'id',
+          fields: ['info'],
+          title: 'Messages',
+        };
+
+        const elastic = quest.getStorage('elastic');
+
+        let type = hinter.type;
+        const subTypes = hinter.subTypes;
+        if (subTypes) {
+          subTypes.forEach(subType => {
+            type = `${type},${subType}`;
+          });
+        }
+
+        const results = yield elastic.search({
+          type,
+          value,
+        });
+
+        let values = [];
+        if (results) {
+          results.hits.hits.map(hit => {
+            if (!hit.highlight) {
+              return hit._source.info;
+            }
+
+            let phonetic = false;
+            let autocomplete = false;
+
+            if (hit.highlight.searchPhonetic) {
+              phonetic = true;
+            }
+            if (hit.highlight.searchAutocomplete) {
+              autocomplete = true;
+            }
+
+            if (!phonetic && !autocomplete) {
+              return hit._source.info;
+            }
+
+            // Prefer phonetic result if possible, but use autocomplete result
+            // if there are more tags.
+            if (phonetic && autocomplete) {
+              const countPhonetic = (
+                hit.highlight.searchPhonetic[0].match(/<em>/g) || []
+              ).length;
+              const countAutocomplete = (
+                hit.highlight.searchAutocomplete[0].match(/<em>/g) || []
+              ).length;
+              if (countAutocomplete > countPhonetic) {
+                phonetic = false;
+              }
+            }
+
+            return phonetic
+              ? hit.highlight.searchPhonetic[0].replace(/<\/?em>/g, '`')
+              : hit.highlight.searchAutocomplete[0].replace(/<\/?em>/g, '`');
+          });
+          values = results.hits.hits.map(hit => {
+            let value = hit._id;
+            if (hinter.subJoins) {
+              hinter.subJoins.forEach(subJoin => {
+                const join = hit._source[subJoin];
+                if (join) {
+                  value = join;
+                }
+              });
+            }
+            return value;
+          });
+        }
+
+        return values;
+      });
+      const listId = quest.goblin.getX('listId');
+      const listAPI = quest.getAPI(listId);
+
+      yield listAPI.customizeVisualization({listIdsGetter: idsGetter}, next);
+      //quest.defer (() => quest.me.loadMessages ());
     },
     applyCustomVisualization: function*(quest, field, value, next) {
       const listId = quest.goblin.getX('listId');

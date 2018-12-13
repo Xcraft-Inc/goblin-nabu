@@ -1,6 +1,11 @@
 import React from 'react';
 import Widget from 'laboratory/widget';
 
+import Button from 'gadgets/button/widget';
+import Container from 'gadgets/container/widget';
+import LabelTextField from 'gadgets/label-text-field/widget';
+import Field from 'gadgets/field/widget';
+
 import NabuLabels from '../nabuWidgets/nabuLabels';
 
 import header from './header';
@@ -29,10 +34,25 @@ function renderLocaleSortCell(doAsDatagrid, column, datagridId) {
   );
 }
 
+function renderHinterRow(doAsDatagrid) {
+  return (
+    <LabelTextField
+      model={`.searchValue`}
+      grow="1"
+      labelGlyph="solid/search"
+      onDebouncedChange={value =>
+        doAsDatagrid('applyElasticVisualization', {value})
+      }
+      hintText={`Search message or translation`}
+      width="95%"
+      verticalSpacing="5px"
+    />
+  );
+}
 // ------------------------------------------------------------
 
-function renderHinter() {
-  return <div>My Nice Hinter</div>;
+function renderHinter(props) {
+  return renderHinterRow(props.doAsDatagrid);
 }
 
 function renderSortCell(props) {
