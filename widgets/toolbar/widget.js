@@ -12,6 +12,7 @@ class ToolBar extends Widget {
     this.toggleMarks = this.toggleMarks.bind(this);
     this.toggleSelectionMode = this.toggleSelectionMode.bind(this);
     this.openDatagrid = this.openDatagrid.bind(this);
+    this.extract = this.extract.bind(this);
   }
 
   static get wiring() {
@@ -48,6 +49,10 @@ class ToolBar extends Widget {
 
   openSingleEntity(entityId) {
     this.cmd('nabu.open-single-entity', {entityId});
+  }
+
+  extract() {
+    this.cmd('nabu.extract-messages', {});
   }
 
   render() {
@@ -88,6 +93,11 @@ class ToolBar extends Widget {
               onClick={() => this.openSingleEntity(selectedItem)}
             />
           ) : null}
+          <Button
+            kind="button-footer"
+            text={`Extract messages`}
+            onClick={this.extract}
+          />
         </Container>
       );
     } else {
