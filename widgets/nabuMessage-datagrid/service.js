@@ -81,7 +81,7 @@ const config = {
 
     const listIds = yield quest.me.returnSearch({
       hinter,
-      sort: {key: 'value', dir: 'asc'},
+      sort: {key: 'value.keyword', dir: 'asc'},
     });
     yield quest.me.loadTranslations({listIds}, next);
     yield quest.me.setNeedTranslation();
@@ -222,7 +222,7 @@ const config = {
         let key = 'value';
         const sortKey = sortValue.get('key');
         if (sortKey !== 'nabuId') {
-          key = `${sortKey}-value`;
+          key = `${sortKey}-value.keyword`;
         }
 
         const searchValue = quest.goblin.getState().get('searchValue');

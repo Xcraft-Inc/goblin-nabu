@@ -1,19 +1,6 @@
 'use strict';
 const {buildEntity} = require('goblin-workshop');
 
-function convertToValue(info) {
-  let value = 0;
-  for (var i = 0; i < 5; i++) {
-    let char = ' ';
-    if (info.length > i) {
-      char = info.charAt(i);
-    }
-    const intValue = char.charCodeAt(0);
-    value = value + intValue;
-  }
-  return value;
-}
-
 const entity = {
   type: 'nabuTranslation',
   references: {
@@ -30,13 +17,12 @@ const entity = {
   indexer: function(quest, entity) {
     const info = entity.get('meta.summaries.description');
     const ownerId = entity.get('messageId');
+
+    let result = {info, ownerId};
+
     const localeName = entity.get('meta.summaries.localeName');
-
-    let result = {info, ownerId, localeName};
-
-    const value = convertToValue(info);
     const variableName = `${localeName}-value`;
-    result[variableName] = value;
+    result[variableName] = info;
 
     return result;
   },
