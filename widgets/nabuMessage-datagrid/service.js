@@ -2,10 +2,6 @@
 
 const watt = require('gigawatts');
 const {buildWorkitem} = require('goblin-workshop');
-const {
-  buildFilterReql,
-  buildOrderByReql,
-} = require('goblin-rethink/helpers.js');
 
 function isEmptyOrSpaces(str) {
   return !str || str.length === 0 || /^\s*$/.test(str);
@@ -42,16 +38,6 @@ const config = {
   ],
   hasTranslations: {},
   afterCreate: function*(quest, next) {
-    // Loading translations
-    const listId = quest.goblin.getX('listId');
-    const listAPI = quest.getAPI(listId);
-
-    const listIds = yield listAPI.getListIds();
-
-    const iterableIds = Object.values(listIds);
-    yield quest.me.loadTranslations({listIds: iterableIds}, next);
-    yield quest.me.setNeedTranslation();
-
     // Setting correct selected locales
     const nabuApi = quest.getAPI('nabu');
     const configApi = quest.getAPI('nabuConfiguration@main');
@@ -82,6 +68,23 @@ const config = {
       path: `searchValue`,
       newValue: '',
     });
+
+    // Loading translations
+    const hinter = {
+      type: 'nabuMessage',
+      subTypes: ['nabuTranslation'],
+      subJoins: ['ownerId'],
+      field: 'id',
+      fields: ['info'],
+      title: 'Messages',
+    };
+
+    const listIds = yield quest.me.returnSearch({
+      hinter,
+      sort: {key: 'value', dir: 'asc'},
+    });
+    yield quest.me.loadTranslations({listIds}, next);
+    yield quest.me.setNeedTranslation();
   },
   quests: {
     changeSelectedLocale: function*(quest, index, locale, next) {
@@ -129,6 +132,8 @@ const config = {
         type,
         value,
         sort,
+        from: 0,
+        size: 200,
       });
 
       let values = [];
