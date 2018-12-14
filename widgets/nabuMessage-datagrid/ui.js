@@ -25,8 +25,8 @@ function renderLocaleSortCell(doAsDatagrid, column, datagridId) {
       id={datagridId}
       column={column}
       onClick={() =>
-        doAsDatagrid('applyCustomVisualization', {
-          field: column.get('field'),
+        doAsDatagrid('applyElasticVisualization', {
+          sort: column.get('field'),
         })
       }
       spacing="compact"

@@ -114,15 +114,94 @@ const config = {
 
       yield quest.me.setNeedTranslation(next);
     },
-    applyElasticVisualization: function*(quest, value, next) {
-      quest.me.change({
-        path: `searchValue`,
-        newValue: value,
+    returnSearch: function*(quest, hinter, value, sort) {
+      const elastic = quest.getStorage('elastic');
+
+      let type = hinter.type;
+      const subTypes = hinter.subTypes;
+      if (subTypes) {
+        subTypes.forEach(subType => {
+          type = `${type},${subType}`;
+        });
+      }
+
+      const results = yield elastic.search({
+        type,
+        value,
+        sort,
       });
 
-      if (isEmptyOrSpaces(value)) {
-        yield quest.me.resetListVisualization(next);
-        return;
+      let values = [];
+      if (results) {
+        results.hits.hits.map(hit => {
+          if (!hit.highlight) {
+            return hit._source.info;
+          }
+
+          let phonetic = false;
+          let autocomplete = false;
+
+          if (hit.highlight.searchPhonetic) {
+            phonetic = true;
+          }
+          if (hit.highlight.searchAutocomplete) {
+            autocomplete = true;
+          }
+
+          if (!phonetic && !autocomplete) {
+            return hit._source.info;
+          }
+
+          // Prefer phonetic result if possible, but use autocomplete result
+          // if there are more tags.
+          if (phonetic && autocomplete) {
+            const countPhonetic = (
+              hit.highlight.searchPhonetic[0].match(/<em>/g) || []
+            ).length;
+            const countAutocomplete = (
+              hit.highlight.searchAutocomplete[0].match(/<em>/g) || []
+            ).length;
+            if (countAutocomplete > countPhonetic) {
+              phonetic = false;
+            }
+          }
+
+          return phonetic
+            ? hit.highlight.searchPhonetic[0].replace(/<\/?em>/g, '`')
+            : hit.highlight.searchAutocomplete[0].replace(/<\/?em>/g, '`');
+        });
+
+        results.hits.hits.forEach(hit => {
+          let value = hit._id;
+          if (hinter.subJoins) {
+            hinter.subJoins.forEach(subJoin => {
+              const join = hit._source[subJoin];
+              if (join) {
+                value = join;
+              }
+            });
+          }
+          if (!values.includes(value)) {
+            values.push(value);
+          }
+        });
+      }
+
+      return values;
+    },
+    applyElasticVisualization: function*(quest, value, sort, next) {
+      if (value !== undefined) {
+        quest.me.change({
+          path: `searchValue`,
+          newValue: value,
+        });
+
+        if (isEmptyOrSpaces(value)) {
+          yield quest.me.resetListVisualization(next);
+          return;
+        }
+      } else {
+        yield quest.me.toggleSort({field: sort}, next);
       }
 
       const idsGetter = watt(function*() {
@@ -134,162 +213,29 @@ const config = {
           fields: ['info'],
           title: 'Messages',
         };
-
-        const elastic = quest.getStorage('elastic');
-
-        let type = hinter.type;
-        const subTypes = hinter.subTypes;
-        if (subTypes) {
-          subTypes.forEach(subType => {
-            type = `${type},${subType}`;
-          });
+        const sortValue = quest.goblin.getState().get('sort');
+        let key = 'value';
+        const sortKey = sortValue.get('key');
+        if (sortKey !== 'nabuId') {
+          key = `${sortKey}-value`;
         }
 
-        const results = yield elastic.search({
-          type,
-          value,
+        const searchValue = quest.goblin.getState().get('searchValue');
+
+        return yield quest.me.returnSearch({
+          hinter,
+          value: searchValue,
+          sort: {
+            key,
+            dir: sortValue.get('dir'),
+          },
         });
-
-        let values = [];
-        if (results) {
-          results.hits.hits.map(hit => {
-            if (!hit.highlight) {
-              return hit._source.info;
-            }
-
-            let phonetic = false;
-            let autocomplete = false;
-
-            if (hit.highlight.searchPhonetic) {
-              phonetic = true;
-            }
-            if (hit.highlight.searchAutocomplete) {
-              autocomplete = true;
-            }
-
-            if (!phonetic && !autocomplete) {
-              return hit._source.info;
-            }
-
-            // Prefer phonetic result if possible, but use autocomplete result
-            // if there are more tags.
-            if (phonetic && autocomplete) {
-              const countPhonetic = (
-                hit.highlight.searchPhonetic[0].match(/<em>/g) || []
-              ).length;
-              const countAutocomplete = (
-                hit.highlight.searchAutocomplete[0].match(/<em>/g) || []
-              ).length;
-              if (countAutocomplete > countPhonetic) {
-                phonetic = false;
-              }
-            }
-
-            return phonetic
-              ? hit.highlight.searchPhonetic[0].replace(/<\/?em>/g, '`')
-              : hit.highlight.searchAutocomplete[0].replace(/<\/?em>/g, '`');
-          });
-          values = results.hits.hits.map(hit => {
-            let value = hit._id;
-            if (hinter.subJoins) {
-              hinter.subJoins.forEach(subJoin => {
-                const join = hit._source[subJoin];
-                if (join) {
-                  value = join;
-                }
-              });
-            }
-            return value;
-          });
-        }
-
-        return values;
       });
       const listId = quest.goblin.getX('listId');
       const listAPI = quest.getAPI(listId);
 
       yield listAPI.customizeVisualization({listIdsGetter: idsGetter}, next);
       //quest.defer (() => quest.me.loadMessages ());
-    },
-    applyCustomVisualization: function*(quest, field, value, next) {
-      const listId = quest.goblin.getX('listId');
-      const listAPI = quest.getAPI(listId);
-      const r = quest.getStorage('rethink');
-
-      if (value !== undefined) {
-        yield quest.me.change(
-          {
-            path: `filters.${field}`,
-            newValue: value,
-          },
-          next
-        );
-      } else {
-        yield quest.me.toggleSort({field: field}, next);
-      }
-
-      const filters = quest.goblin.getState().get('filters');
-      const sort = quest.goblin.getState().get('sort');
-
-      const idsGetter = watt(function*() {
-        const joinRequest = (r, orderFunc, filterFunc) => {
-          let q = r
-            .table('nabuTranslation')
-            .eqJoin('messageId', r.table('nabuMessage'))
-            .zip()
-            .eqJoin('localeId', r.table('locale'))
-            .zip()
-            .map(function(item) {
-              return r
-                .expr([
-                  ['id', item('messageId')],
-                  ['nabuId', item('nabuId')],
-                  [item('name'), item('text')],
-                ])
-                .coerceTo('OBJECT');
-            })
-            .group('id')
-            .reduce(function(item1, item2) {
-              return item1.merge(item2);
-            })
-            .ungroup()
-            .getField('reduction');
-
-          if (orderFunc) {
-            q = q.orderBy(orderFunc);
-          }
-          if (filterFunc) {
-            q = q.filter(filterFunc);
-          }
-
-          return (q = q.getField('id'));
-        };
-
-        const sortKey = sort.get('key');
-        let orderFunc =
-          sortKey && sortKey !== ''
-            ? buildOrderByReql(sortKey, sort.get('dir'))
-            : null;
-
-        let filterFunc = filters
-          ? buildFilterReql(filters.toJS(), value => '(?i).*' + value + '.*')
-          : null;
-
-        const query = joinRequest.toString();
-        const listIds = yield r.query({
-          query,
-          args: [orderFunc, filterFunc],
-        });
-
-        // foreach listId in listIds{nabu.loadTranslations(listId) }
-        quest.me.loadTranslations({listIds}, next);
-
-        return listIds;
-      });
-
-      yield listAPI.customizeVisualization({listIdsGetter: idsGetter}, next);
-
-      quest.defer(() => quest.me.loadMessages());
     },
     loadTranslations: function(quest, listIds) {
       const nabuApi = quest.getAPI('nabu');
