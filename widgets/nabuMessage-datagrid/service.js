@@ -112,37 +112,22 @@ const config = {
       yield quest.me.setNeedTranslation(next);
     },
     applyElasticVisualization: function*(quest, value, sort, next) {
-      if (value !== undefined) {
-        quest.me.change({
-          path: `searchValue`,
-          newValue: value,
-        });
-
-        if (isEmptyOrSpaces(value)) {
-          yield quest.me.resetListVisualization(next);
-          return;
-        }
-      } else {
+      if (value === undefined) {
         yield quest.me.toggleSort({field: sort}, next);
+        return;
       }
 
-      const sortValue = quest.goblin.getState().get('sort');
-      let key = 'value.keyword';
-      const sortKey = sortValue.get('key');
-      if (sortKey !== 'nabuId') {
-        key = `${sortKey}-value.keyword`;
-      }
-      const searchValue = quest.goblin.getState().get('searchValue');
-
-      const datagridId = quest.goblin.getX('datagridId');
-      const datagridAPI = quest.getAPI(datagridId);
-      yield datagridAPI.customizeVisualization({
-        filter: searchValue,
-        sort: {
-          key,
-          dir: sortValue.get('dir'),
-        },
+      quest.me.change({
+        path: `searchValue`,
+        newValue: value,
       });
+
+      if (isEmptyOrSpaces(value)) {
+        yield quest.me.resetListVisualization(next);
+        return;
+      }
+
+      yield quest.me.changeData();
     },
     loadTranslations: function(quest, listIds) {
       const nabuApi = quest.getAPI('nabu');
