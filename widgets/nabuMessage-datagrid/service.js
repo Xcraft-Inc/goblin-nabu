@@ -219,7 +219,7 @@ const config = {
           title: 'Messages',
         };
         const sortValue = quest.goblin.getState().get('sort');
-        let key = 'value';
+        let key = 'value.keyword';
         const sortKey = sortValue.get('key');
         if (sortKey !== 'nabuId') {
           key = `${sortKey}-value.keyword`;
@@ -236,10 +236,13 @@ const config = {
           },
         });
       });
-      const listId = quest.goblin.getX('listId');
-      const listAPI = quest.getAPI(listId);
 
-      yield listAPI.customizeVisualization({listIdsGetter: idsGetter}, next);
+      const datagridId = quest.goblin.getX('datagridId');
+      const datagridAPI = quest.getAPI(datagridId);
+      yield datagridAPI.customizeVisualization(
+        {listIdsGetter: idsGetter},
+        next
+      );
       //quest.defer (() => quest.me.loadMessages ());
     },
     loadTranslations: function(quest, listIds) {

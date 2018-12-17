@@ -1,13 +1,9 @@
 import React from 'react';
 import Widget from 'laboratory/widget';
 
-import Button from 'gadgets/button/widget';
-import Container from 'gadgets/container/widget';
 import LabelTextField from 'gadgets/label-text-field/widget';
-import Field from 'gadgets/field/widget';
 
 import NabuLabels from '../nabuWidgets/nabuLabels';
-
 import header from './header';
 import row from './row';
 
