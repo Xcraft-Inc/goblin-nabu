@@ -22,7 +22,7 @@ const entity = {
 
     const localeName = entity.get('meta.summaries.localeName');
     const variableName = `${localeName}-value`;
-    result[variableName] = info;
+    result[variableName] = info.toLowerCase();
 
     return result;
   },

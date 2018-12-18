@@ -77,12 +77,6 @@ const config = {
       newValue: '',
     });
 
-    // Loading translations
-    const datagridId = quest.goblin.getX('datagridId');
-    const datagridAPI = quest.getAPI(datagridId);
-    const listIds = yield datagridAPI.getListIds();
-
-    yield quest.me.loadTranslations({listIds}, next);
     yield quest.me.setNeedTranslation();
   },
   quests: {
@@ -128,15 +122,6 @@ const config = {
       }
 
       yield quest.me.changeData();
-    },
-    loadTranslations: function(quest, listIds) {
-      const nabuApi = quest.getAPI('nabu');
-
-      for (const messageId of listIds) {
-        quest.defer(() =>
-          nabuApi.loadTranslations({messageId, ownerId: quest.goblin.id})
-        );
-      }
     },
     setNeedTranslation: function*(quest) {
       const getNrTranslaton = watt(function*() {

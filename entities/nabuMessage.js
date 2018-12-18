@@ -11,7 +11,7 @@ const entity = {
   },
   indexer: function(quest, entity) {
     const info = entity.get('meta.summaries.description');
-    return {info, value: info};
+    return {info, value: info.toLowerCase()};
   },
   quests: {},
   onNew: function(quest, id, nabuId, description) {
