@@ -50,6 +50,12 @@ const config = {
     const nabuApi = quest.getAPI('nabu');
     const configApi = quest.getAPI('nabuConfiguration@main');
     const locales = (yield nabuApi.get()).get('locales');
+
+    var types = {'value.keyword': 'nabuMessage'};
+    locales.forEach(locale => {
+      types[`${locale.get('name')}-value.keyword`] = 'nabuTranslation';
+    });
+
     const currentLocaleId = (yield configApi.get()).get('localeId');
     const currentLocale = locales.find(
       locale => locale.get('id') === currentLocaleId
