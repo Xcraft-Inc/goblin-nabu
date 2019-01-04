@@ -40,6 +40,11 @@ const label = Widget.connect((state, props) => {
 })(Label);
 
 const sort = Widget.connect((state, props) => {
+  const search = state.get(`backend.${props.id}.searchValue`);
+  if (search) {
+    return {};
+  }
+
   const key = state.get(`backend.${props.id}.sort.key`);
   const dir = state.get(`backend.${props.id}.sort.dir`);
 
