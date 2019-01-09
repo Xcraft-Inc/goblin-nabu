@@ -10,5 +10,5 @@ function ToNabuObject(nabuId, description, values, html) {
 //-----------------------------------------------------------------------------
 
 module.exports = {
-  ToNabuObject,
+  T: ToNabuObject,
 };

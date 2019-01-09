@@ -17,6 +17,10 @@
     "messageformat": "^2.0.2"
   },
   "devDependencies": {
+    "babel-core": "^6.26.3",
+    "babel-preset-es2015": "^6.3.13",
+    "babel-preset-react": "^6.3.13",
+    "babel-preset-stage-0": "^6.3.13",
     "xcraft-dev-rules": "^0.3.0",
     "prettier": "1.15.1"
   }
