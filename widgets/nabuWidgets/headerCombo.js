@@ -13,9 +13,10 @@ class HeaderCombo extends Widget {
       .map(l => {
         const localName = l.get('name');
         return {
-          glyph: hasTranslation.get(`${localName}`)
-            ? GlyphHelpers.getComboGlyph('desk', 'warning')
-            : '',
+          glyph:
+            hasTranslation && hasTranslation.get(`${localName}`)
+              ? GlyphHelpers.getComboGlyph('desk', 'warning')
+              : '',
           text: localName,
         };
       })
