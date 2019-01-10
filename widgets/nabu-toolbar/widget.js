@@ -41,23 +41,23 @@ export default class NabuToolbar extends Widget {
   }
 
   toggleMarks() {
-    this.cmd('nabu.toggle-marks', {});
+    this.do('toggle-marks', {});
   }
 
   toggleSelectionMode() {
-    this.cmd('nabu.toggle-selection-mode', {});
+    this.do('toggle-selection-mode', {});
   }
 
   openDatagrid() {
-    this.cmd('nabu.open-datagrid', {});
+    this.do('open-datagrid', {});
   }
 
   openSingleEntity(entityId) {
-    this.cmd('nabu.open-single-entity', {entityId});
+    this.do('open-single-entity', {entityId});
   }
 
   extract() {
-    this.cmd('nabu.extract-messages', {});
+    this.do('extract-messages', {});
   }
 
   render() {
