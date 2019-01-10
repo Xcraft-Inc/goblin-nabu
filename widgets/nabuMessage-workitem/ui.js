@@ -22,6 +22,10 @@ class NabuMessage extends Form {
     const {locales} = this.props;
     const Form = this.Form;
 
+    if (!this.props.entityId) {
+      return <div>No entity Id in props</div>;
+    }
+
     return (
       <Container kind="column">
         <Container kind="pane">
@@ -69,13 +73,7 @@ const NabuMessageConnected = Widget.connect(state => ({
 }))(NabuMessage);
 
 function renderPanel(props) {
-  return (
-    <NabuMessageConnected
-      entityId={props.entityId}
-      id={props.id}
-      do={props.do}
-    />
-  );
+  return <NabuMessageConnected entityId={props.entityId} id={props.id} />;
 }
 
 /******************************************************************************/
