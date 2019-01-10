@@ -7,6 +7,7 @@ const Goblin = require('xcraft-core-goblin');
 // Define initial logic values
 const logicState = {
   id: goblinName,
+  enabled: false,
 
   marker: false,
   focus: null,
@@ -20,6 +21,17 @@ const logicState = {
 // Define logic handlers according rc.json
 const logicHandlers = {
   create: state => state,
+  enable: state => {
+    return state.set('enabled', true);
+  },
+  disable: state => {
+    return state.set('enabled', false);
+  },
+
+  'toggle-enabled': state => {
+    const newState = !state.get('enabled');
+    return state.set('enabled', newState);
+  },
   'toggle-marks': state => {
     const newState = !state.get('marker');
     return state.set('marker', newState);
@@ -46,8 +58,13 @@ Goblin.registerQuest(goblinName, 'get', function(quest) {
   return quest.goblin.getState();
 });
 
-Goblin.registerQuest(goblinName, 'create', function(quest, desktopId) {
+Goblin.registerQuest(goblinName, 'create', function(quest, desktopId, enabled) {
   quest.goblin.setX('desktopId', desktopId);
+
+  if (enabled) {
+    quest.me.enable();
+  }
+
   quest.do();
 });
 
@@ -123,8 +140,7 @@ Goblin.registerQuest(goblinName, 'set-selected-item', function*(
   messageId,
   next
 ) {
-  const nabu = quest.getAPI('nabu');
-  const enabled = (yield nabu.get(next)).get('enabled');
+  const enabled = quest.goblin.getState().get('enabled');
   if (enabled) {
     const workitemId = quest.goblin.getX('singleEntityWorkitemId');
     if (workitemId) {
@@ -150,12 +166,18 @@ Goblin.registerQuest(goblinName, 'set-selected-item', function*(
 //Dynamic API see reducers for params
 for (const action of Object.keys(logicHandlers)) {
   switch (action) {
+    case 'enable':
+    case 'disable':
+    case 'toggle-enabled':
+      Goblin.registerQuest(goblinName, action, function(quest) {
+        quest.do();
+      });
+      break;
     case 'toggle-selection-mode':
     case 'toggle-marks':
     case 'set-focus':
-      Goblin.registerQuest(goblinName, action, function*(quest, next) {
-        const nabu = quest.getAPI('nabu');
-        const enabled = (yield nabu.get(next)).get('enabled');
+      Goblin.registerQuest(goblinName, action, function(quest) {
+        const enabled = quest.goblin.getState().get('enabled');
         if (enabled) {
           quest.do();
         }
