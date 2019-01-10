@@ -25,8 +25,10 @@ class NabuText extends Widget {
     };
   }
 
-  mustTranslate(message, translation) {
-    return !message || !translation;
+  mustTranslate() {
+    const {message, translation} = this.props;
+
+    return !message || !translation || !translation.get('text');
   }
 
   mustAdd(props) {
@@ -102,11 +104,11 @@ class NabuText extends Widget {
   }
 
   getStyle() {
-    const {focus, message, selectionModeEnabled, locale, marker} = this.props;
+    const {focus, message, selectionModeEnabled, marker} = this.props;
 
     let style = {};
 
-    const markerOn = this.mustTranslate(message, locale) && marker;
+    const markerOn = marker && this.mustTranslate();
     if (markerOn) {
       style = Object.assign(style, this.highliteStyle);
     }
