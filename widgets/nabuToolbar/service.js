@@ -19,6 +19,7 @@ const logicState = {
 
 // Define logic handlers according rc.json
 const logicHandlers = {
+  create: state => state,
   'toggle-marks': state => {
     const newState = !state.get('marker');
     return state.set('marker', newState);
@@ -47,7 +48,10 @@ Goblin.registerQuest(goblinName, 'get', function(quest) {
 
 Goblin.registerQuest(goblinName, 'create', function(quest, desktopId) {
   quest.goblin.setX('desktopId', desktopId);
+  quest.do();
 });
+
+Goblin.registerQuest(goblinName, 'delete', function(quest) {});
 
 Goblin.registerQuest(goblinName, 'message-search', function*(quest, next) {
   const desk = quest.getAPI(quest.goblin.getX('desktopId'));
