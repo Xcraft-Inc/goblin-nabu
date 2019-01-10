@@ -4,7 +4,7 @@ import React from 'react';
 import Container from 'gadgets/container/widget';
 import Button from 'gadgets/button/widget';
 
-class ToolBar extends Widget {
+export default class NabuToolbar extends Widget {
   constructor() {
     super(...arguments);
     this.messageSearch = this.messageSearch.bind(this);
@@ -12,6 +12,7 @@ class ToolBar extends Widget {
     this.toggleMarks = this.toggleMarks.bind(this);
     this.toggleSelectionMode = this.toggleSelectionMode.bind(this);
     this.openDatagrid = this.openDatagrid.bind(this);
+    this.openSingleEntity = this.openSingleEntity.bind(this);
     this.extract = this.extract.bind(this);
   }
 
@@ -27,12 +28,16 @@ class ToolBar extends Widget {
     };
   }
 
+  static connectTo(instance) {
+    return Widget.Wired(NabuToolbar)(`nabu-toolbar@${instance.props.id}`);
+  }
+
   messageSearch() {
-    this.cmd('nabu.message-search', {});
+    this.do('message-search', {});
   }
 
   toggleEnabled() {
-    this.cmd('nabu.toggle-enabled', {});
+    this.do('toggle-enabled', {});
   }
 
   toggleMarks() {
@@ -113,5 +118,3 @@ class ToolBar extends Widget {
     }
   }
 }
-
-export default Widget.Wired(ToolBar)('nabu');

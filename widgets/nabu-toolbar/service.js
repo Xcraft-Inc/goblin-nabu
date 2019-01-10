@@ -1,12 +1,11 @@
 'use strict';
 
-const goblinName = 'nabuToolbar';
+const goblinName = 'nabu-toolbar';
 
 const Goblin = require('xcraft-core-goblin');
 
 // Define initial logic values
 const logicState = {
-  id: goblinName,
   enabled: false,
 
   marker: false,
@@ -20,7 +19,9 @@ const logicState = {
 
 // Define logic handlers according rc.json
 const logicHandlers = {
-  create: state => state,
+  create: (state, action) => {
+    return state.set('id', action.get('id'));
+  },
   enable: state => {
     return state.set('enabled', true);
   },
