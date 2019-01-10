@@ -2,6 +2,7 @@
 
 const crypto = require('xcraft-core-utils/lib/crypto.js');
 import Widget from 'laboratory/widget';
+import _ from 'lodash';
 import React from 'react';
 import Text from 'nabu/text/widget';
 import {isShredder, isImmutable} from 'xcraft-core-shredder';
@@ -11,6 +12,8 @@ const TextConnected = Widget.connect((state, props) => {
 
   let locale = null;
   let translation = null;
+  let wiring = {};
+
   if (localeId) {
     const locales = state.get('backend.nabu.locales');
 
@@ -29,10 +32,30 @@ const TextConnected = Widget.connect((state, props) => {
     }
   }
 
+  if (props.workitemId) {
+    const toolbarId =
+      'nabu-toolbar@desktop@' +
+      _.takeRightWhile(
+        props.workitemId.split('@'),
+        element => element !== 'desktop'
+      ).join('@');
+
+    const toolbar = state.get(`backend.${toolbarId}`);
+    wiring = {
+      id: toolbarId,
+      enabled: toolbar.get('enabled'),
+      marker: toolbar.get('marker'),
+      focus: toolbar.get('focus'),
+      selectionModeEnabled: toolbar.get('selectionMode.enabled'),
+      selectedItem: toolbar.get('selectionMode.selectedItemId'),
+    };
+  }
+
   return {
     message: state.get(`backend.${props.hashedMsgId}`),
     translation,
     locale,
+    ...wiring,
   };
 })(Text);
 
