@@ -3,7 +3,7 @@ import Widget from 'laboratory/widget';
 import React from 'react';
 import formatMessage from '../../lib/format.js';
 
-class NabuText extends Widget {
+export default class NabuText extends Widget {
   constructor() {
     super(...arguments);
     this.onMouseEnter = this.onMouseEnter.bind(this);
@@ -12,17 +12,6 @@ class NabuText extends Widget {
     this.getText = this.getText.bind(this);
     this.getSelectionModeStyle = this.getSelectionModeStyle.bind(this);
     this.getStyle = this.getStyle.bind(this);
-  }
-
-  static get wiring() {
-    return {
-      id: 'id',
-      enabled: 'enabled',
-      marker: 'marker',
-      focus: 'focus',
-      selectionModeEnabled: 'selectionMode.enabled',
-      selectedItem: 'selectionMode.selectedItemId',
-    };
   }
 
   mustTranslate() {
@@ -50,7 +39,7 @@ class NabuText extends Widget {
     if (this.props.selectionModeEnabled && this.props.message) {
       this.timeout = setTimeout(() => {
         if (this.props.enabled) {
-          this.cmd('nabu.set-selected-item', {
+          this.doFor(this.props.id, 'set-selected-item', {
             messageId: this.props.message.get('id'),
           });
         }
@@ -133,6 +122,7 @@ class NabuText extends Widget {
 
   render() {
     const {
+      id,
       enabled,
       marker,
       focus,
@@ -165,5 +155,3 @@ class NabuText extends Widget {
     );
   }
 }
-
-export default Widget.Wired(NabuText)('nabu');

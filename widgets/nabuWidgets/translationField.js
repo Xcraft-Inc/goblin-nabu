@@ -3,6 +3,7 @@ import Form from 'laboratory/form';
 
 import Field from 'gadgets/field/widget';
 import Widget from 'laboratory/widget';
+const {getToolbarId} = require('goblin-nabu/widgets/helpers/t.js');
 
 class TranslationField extends Form {
   constructor() {
@@ -23,7 +24,9 @@ class TranslationField extends Form {
       return;
     }
 
-    this.props.datagrid.doFor('nabu', 'set-focus', {
+    const toolbarId = getToolbarId(this.props.datagrid.props.id);
+
+    this.props.datagrid.doFor(toolbarId, 'set-focus', {
       messageId: this.props.msgId,
       value: true,
     });
@@ -34,7 +37,9 @@ class TranslationField extends Form {
       return;
     }
 
-    this.props.datagrid.doFor('nabu', 'set-focus', {
+    const toolbarId = getToolbarId(this.props.datagrid.props.id);
+
+    this.props.datagrid.doFor(toolbarId, 'set-focus', {
       messageId: this.props.msgId,
       value: false,
     });
