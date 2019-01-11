@@ -9,6 +9,8 @@ export default class NabuText extends Widget {
     this.onMouseEnter = this.onMouseEnter.bind(this);
     this.onMouseLeave = this.onMouseLeave.bind(this);
 
+    this.mustAdd = this.mustAdd.bind(this);
+    this.mustTranslate = this.mustTranslate.bind(this);
     this.getText = this.getText.bind(this);
     this.getSelectionModeStyle = this.getSelectionModeStyle.bind(this);
     this.getStyle = this.getStyle.bind(this);
@@ -27,6 +29,7 @@ export default class NabuText extends Widget {
         nabuId,
         description,
         workitemId,
+        desktopId: this.context.desktopId,
       });
     }
   }

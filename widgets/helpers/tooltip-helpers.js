@@ -42,6 +42,7 @@ function Message(text, state, widget) {
       nabuId: text.nabuId,
       description: text.description,
       workitemId,
+      desktopId: widget.context.desktopId,
     });
 
     return text.nabuId;
