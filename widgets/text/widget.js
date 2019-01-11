@@ -39,7 +39,7 @@ export default class NabuText extends Widget {
     if (this.props.selectionModeEnabled && this.props.message) {
       this.timeout = setTimeout(() => {
         if (this.props.enabled) {
-          this.cmd('nabu.set-selected-item', {
+          this.doFor(this.props.id, 'set-selected-item', {
             messageId: this.props.message.get('id'),
           });
         }
@@ -122,6 +122,7 @@ export default class NabuText extends Widget {
 
   render() {
     const {
+      id,
       enabled,
       marker,
       focus,
