@@ -108,7 +108,8 @@ Goblin.registerQuest(goblinName, 'open-single-entity', function*(
   entityId,
   next
 ) {
-  const desk = quest.getAPI(quest.goblin.getX('desktopId'));
+  const desktopId = quest.goblin.getX('desktopId');
+  const desk = quest.getAPI(desktopId);
 
   if (entityId) {
     const workitem = {
@@ -128,7 +129,10 @@ Goblin.registerQuest(goblinName, 'open-single-entity', function*(
 
     quest.defer(() => {
       const nabu = quest.getAPI('nabu');
-      nabu.loadTranslations({messageId: entityId});
+      nabu.loadTranslations({
+        messageId: entityId,
+        desktopId,
+      });
     });
 
     const workitemId = yield desk.addWorkitem({workitem, navigate: true}, next);
