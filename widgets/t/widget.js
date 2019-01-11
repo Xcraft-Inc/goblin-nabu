@@ -6,6 +6,7 @@ import _ from 'lodash';
 import React from 'react';
 import Text from 'nabu/text/widget';
 import {isShredder, isImmutable} from 'xcraft-core-shredder';
+const {getToolbarId} = require('goblin-nabu/widgets/helpers/t.js');
 
 const TextConnected = Widget.connect((state, props) => {
   const localeId = state.get('backend.nabuConfiguration@main.localeId');
@@ -33,14 +34,9 @@ const TextConnected = Widget.connect((state, props) => {
   }
 
   if (props.workitemId) {
-    const toolbarId =
-      'nabu-toolbar@desktop@' +
-      _.takeRightWhile(
-        props.workitemId.split('@'),
-        element => element !== 'desktop'
-      ).join('@');
-
+    const toolbarId = getToolbarId(props.workitemId);
     const toolbar = state.get(`backend.${toolbarId}`);
+
     wiring = {
       id: toolbarId,
       enabled: toolbar.get('enabled'),

@@ -1,6 +1,7 @@
 import formatMessage from '../../lib/format.js';
 const crypto = require('xcraft-core-utils/lib/crypto.js');
 import {isShredder, isImmutable} from 'xcraft-core-shredder';
+const {getToolbarId} = require('./t.js');
 
 function Message(text, state, widget) {
   if (!text || typeof text === 'string') {
@@ -14,8 +15,11 @@ function Message(text, state, widget) {
   if (!widget) {
     return text.nabuId;
   }
+  const getNearestId = widget.getNearestId.bind(widget);
+  const workitemId = getNearestId();
+  const toolbarId = getToolbarId(workitemId);
 
-  if (!state || !state.get('backend.nabu.enabled')) {
+  if (!state || !state.get(`backend.${toolbarId}.enabled`)) {
     return text.nabuId;
   }
 
@@ -33,12 +37,11 @@ function Message(text, state, widget) {
 
   if (!message) {
     const cmd = widget.cmd.bind(widget);
-    const getNearestId = widget.getNearestId.bind(widget);
 
     cmd('nabu.add-message', {
       nabuId: text.nabuId,
       description: text.description,
-      workitemId: getNearestId(),
+      workitemId,
     });
 
     return text.nabuId;
@@ -71,12 +74,20 @@ function Message(text, state, widget) {
     : text.nabuId;
 }
 
-function Locale(state, text) {
+function Locale(state, text, widget) {
   if (!text || typeof text === 'string') {
     return null;
   }
 
-  if (!state || !state.get('backend.nabu.enabled')) {
+  if (!widget) {
+    return null;
+  }
+
+  const getNearestId = widget.getNearestId.bind(widget);
+  const workitemId = getNearestId();
+  const toolbarId = getToolbarId(workitemId);
+
+  if (!state || !state.get(`backend.${toolbarId}.enabled`)) {
     return null;
   }
 
