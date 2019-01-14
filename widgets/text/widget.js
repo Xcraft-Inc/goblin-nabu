@@ -16,6 +16,10 @@ export default class NabuText extends Widget {
     this.getStyle = this.getStyle.bind(this);
   }
 
+  componentDidUpdate() {
+    this.mustAdd();
+  }
+
   mustTranslate() {
     const {message, translation} = this.props;
 
@@ -142,8 +146,6 @@ export default class NabuText extends Widget {
 
     const text = this.getText();
     const style = this.getStyle();
-
-    this.mustAdd();
 
     return (
       <span
