@@ -1,3 +1,5 @@
+import React from 'react';
+import Widget from 'laboratory/widget';
 import formatMessage from '../../lib/format.js';
 const crypto = require('xcraft-core-utils/lib/crypto.js');
 import {isShredder, isImmutable} from 'xcraft-core-shredder';
@@ -129,10 +131,48 @@ function Format(message, locale, text) {
   return formatMessage(locale, text.html, message, text.values || []);
 }
 
+/**************************************************************************/
+
+const DivItem = props => {
+  const {message, locale, tooltip, children, dispatch, ...other} = props;
+
+  return (
+    <div title={Format(message, locale, tooltip)} {...other}>
+      {children}
+    </div>
+  );
+};
+
+const AItem = props => {
+  const {message, locale, tooltip, children, dispatch, ...other} = props;
+
+  return (
+    <a title={Format(message, locale, tooltip)} {...other}>
+      {children}
+    </a>
+  );
+};
+
+function connectItem(item) {
+  return Widget.connect((state, props) => {
+    return {
+      message: Message(props.tooltip, state, props.this),
+      locale: Locale(state, props.tooltip, props.this),
+      tooltip: props.tooltip,
+    };
+  })(item);
+}
+
+const ConnectedDiv = connectItem(DivItem);
+const ConnectedA = connectItem(AItem);
+
 //-----------------------------------------------------------------------------
 
 module.exports = {
   Message,
   Locale,
   Format,
+
+  ConnectedDiv,
+  ConnectedA,
 };
