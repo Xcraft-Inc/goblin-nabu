@@ -7,7 +7,8 @@ import Button from 'gadgets/button/widget';
 export default class NabuToolbar extends Widget {
   constructor() {
     super(...arguments);
-    this.messageSearch = this.messageSearch.bind(this);
+    this.openMessageSearch = this.openMessageSearch.bind(this);
+    this.openLocaleSearch = this.openLocaleSearch.bind(this);
     this.toggleEnabled = this.toggleEnabled.bind(this);
     this.toggleMarks = this.toggleMarks.bind(this);
     this.toggleSelectionMode = this.toggleSelectionMode.bind(this);
@@ -32,8 +33,16 @@ export default class NabuToolbar extends Widget {
     return Widget.Wired(NabuToolbar)(`nabu-toolbar@${instance.props.id}`);
   }
 
-  messageSearch() {
-    this.do('message-search', {});
+  openMessageSearch() {
+    this.do('open-message-search', {});
+  }
+
+  openLocaleSearch() {
+    this.do('open-locale-search', {});
+  }
+
+  localeSearch() {
+    this.do('open-locale-search', {});
   }
 
   toggleEnabled() {
@@ -68,8 +77,13 @@ export default class NabuToolbar extends Widget {
         <Container kind="row">
           <Button
             kind="button-footer"
-            text="Message search"
-            onClick={this.messageSearch}
+            text="Search messages"
+            onClick={this.openMessageSearch}
+          />
+          <Button
+            kind="button-footer"
+            text="Search locales"
+            onClick={this.openLocaleSearch}
           />
           <Button
             kind="button-footer"
@@ -88,7 +102,7 @@ export default class NabuToolbar extends Widget {
           />
           <Button
             kind="button-footer"
-            text={`Modify messages`}
+            text={`Modify all messages`}
             onClick={this.openDatagrid}
           />
           {selectedItem && selectionMode ? (
@@ -100,7 +114,7 @@ export default class NabuToolbar extends Widget {
           ) : null}
           <Button
             kind="button-footer"
-            text={`Extract messages`}
+            text={`Extract all messages`}
             onClick={this.extract}
           />
         </Container>

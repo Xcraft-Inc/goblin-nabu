@@ -71,10 +71,25 @@ Goblin.registerQuest(goblinName, 'create', function(quest, desktopId, enabled) {
 
 Goblin.registerQuest(goblinName, 'delete', function(quest) {});
 
-Goblin.registerQuest(goblinName, 'message-search', function*(quest, next) {
+Goblin.registerQuest(goblinName, 'open-message-search', function*(quest, next) {
   const desk = quest.getAPI(quest.goblin.getX('desktopId'));
   const workitem = {
     name: 'nabuMessage-search',
+    view: 'default',
+    icon: 'solid/search',
+    kind: 'tab',
+    isClosable: true,
+    navigate: true,
+    maxInstances: 1,
+  };
+
+  yield desk.addWorkitem({workitem, navigate: true}, next);
+});
+
+Goblin.registerQuest(goblinName, 'open-locale-search', function*(quest, next) {
+  const desk = quest.getAPI(quest.goblin.getX('desktopId'));
+  const workitem = {
+    name: 'locale-search',
     view: 'default',
     icon: 'solid/search',
     kind: 'tab',
