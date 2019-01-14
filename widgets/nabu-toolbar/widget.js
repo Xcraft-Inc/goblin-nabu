@@ -77,6 +77,11 @@ export default class NabuToolbar extends Widget {
         <Container kind="row">
           <Button
             kind="button-footer"
+            text="&#x048a;&#x023a;&#x0243;&#x054d;"
+            onClick={this.toggleEnabled}
+          />
+          <Button
+            kind="button-footer"
             text="Search messages"
             onClick={this.openMessageSearch}
           />
@@ -84,11 +89,6 @@ export default class NabuToolbar extends Widget {
             kind="button-footer"
             text="Search locales"
             onClick={this.openLocaleSearch}
-          />
-          <Button
-            kind="button-footer"
-            text="&#x048a;&#x023a;&#x0243;&#x054d;"
-            onClick={this.toggleEnabled}
           />
           <Button
             kind="button-footer"
