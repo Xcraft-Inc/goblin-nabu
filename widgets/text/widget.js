@@ -22,9 +22,9 @@ export default class NabuText extends Widget {
     return !message || !translation || !translation.get('text');
   }
 
-  mustAdd(props) {
-    const {nabuId, description, enabled, workitemId} = props;
-    if (enabled) {
+  mustAdd() {
+    const {message, nabuId, description, enabled, workitemId} = this.props;
+    if (enabled && !message) {
       this.cmd('nabu.add-message', {
         nabuId,
         description,
@@ -32,10 +32,6 @@ export default class NabuText extends Widget {
         desktopId: this.context.desktopId,
       });
     }
-  }
-
-  componentDidMount() {
-    this.mustAdd(this.props);
   }
 
   onMouseEnter() {
@@ -146,6 +142,8 @@ export default class NabuText extends Widget {
 
     const text = this.getText();
     const style = this.getStyle();
+
+    this.mustAdd();
 
     return (
       <span
