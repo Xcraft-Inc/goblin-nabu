@@ -92,25 +92,25 @@ export default class NabuText extends Widget {
   }
 
   getStyle() {
-    const {focus, message, selectionModeEnabled, marker} = this.props;
+    const {enabled, focus, message, selectionModeEnabled, marker} = this.props;
 
     let style = {};
 
     const markerOn = marker && this.mustTranslate();
-    if (markerOn) {
-      style = Object.assign(style, this.highliteStyle);
+    if (enabled && markerOn) {
+      style = Object.assign(style, this.highlitedStyle);
     }
-    if (selectionModeEnabled) {
+    if (enabled && selectionModeEnabled) {
       style = Object.assign(style, this.getSelectionModeStyle());
     }
 
-    if (focus && message && message.get('id') === focus) {
+    if (enabled && focus && message && message.get('id') === focus) {
       style = Object.assign(style, this.focusStyle);
     }
     return style;
   }
 
-  highliteStyle = {
+  highlitedStyle = {
     outline: 'none',
     backgroundColor: 'rgba(10, 200, 100, .8)',
   };
