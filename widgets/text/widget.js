@@ -16,6 +16,10 @@ export default class NabuText extends Widget {
     this.getStyle = this.getStyle.bind(this);
   }
 
+  componentDidMount() {
+    this.mustAdd();
+  }
+
   componentDidUpdate() {
     this.mustAdd();
   }
