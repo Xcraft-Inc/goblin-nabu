@@ -66,7 +66,7 @@ export default class NabuToolbar extends Widget {
   }
 
   extract() {
-    this.do('extract-messages', {});
+    this.cmd('nabu.extract-messages', {});
   }
 
   render() {
