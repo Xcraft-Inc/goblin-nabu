@@ -19,7 +19,7 @@ function Message(text, state, widget) {
   }
   const getNearestId = widget.getNearestId.bind(widget);
   const workitemId = getNearestId();
-  const toolbarId = getToolbarId(workitemId);
+  const toolbarId = getToolbarId(widget.context.desktopId || workitemId);
 
   if (!state || !state.get(`backend.${toolbarId}.enabled`)) {
     return text.nabuId;
@@ -88,7 +88,7 @@ function Locale(state, text, widget) {
 
   const getNearestId = widget.getNearestId.bind(widget);
   const workitemId = getNearestId();
-  const toolbarId = getToolbarId(workitemId);
+  const toolbarId = getToolbarId(widget.context.desktopId || workitemId);
 
   if (!state || !state.get(`backend.${toolbarId}.enabled`)) {
     return null;

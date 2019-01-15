@@ -24,7 +24,10 @@ class TranslationField extends Form {
       return;
     }
 
-    const toolbarId = getToolbarId(this.props.datagrid.props.id);
+    const getNearestId = this.props.datagrid.getNearestId.bind(
+      this.props.datagrid
+    );
+    const toolbarId = getToolbarId(getNearestId());
 
     this.props.datagrid.doFor(toolbarId, 'set-focus', {
       messageId: this.props.msgId,
@@ -37,7 +40,10 @@ class TranslationField extends Form {
       return;
     }
 
-    const toolbarId = getToolbarId(this.props.datagrid.props.id);
+    const getNearestId = this.props.datagrid.getNearestId.bind(
+      this.props.datagrid
+    );
+    const toolbarId = getToolbarId(getNearestId());
 
     this.props.datagrid.doFor(toolbarId, 'set-focus', {
       messageId: this.props.msgId,
