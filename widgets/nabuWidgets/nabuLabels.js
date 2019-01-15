@@ -19,10 +19,13 @@ const label = Widget.connect((state, props) => {
   if (message) {
     // Description label
     if (props.checkDescription) {
-      const desc = message.get('description');
-      if (desc) {
-        glyph = 'regular/info-circle';
-        tooltip = desc;
+      const sources = message.get('sources');
+      if (sources) {
+        const source = sources.first();
+        if (source && source.get('description')) {
+          glyph = 'regular/info-circle';
+          tooltip = source.get('description');
+        }
       }
     } else if (
       (translation1 && !translation1.get('text')) ||
