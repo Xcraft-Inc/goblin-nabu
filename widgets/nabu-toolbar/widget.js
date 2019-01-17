@@ -66,7 +66,9 @@ export default class NabuToolbar extends Widget {
   }
 
   extract() {
-    this.cmd('nabu.extract-messages', {desktopId: this.props.desktopId});
+    this.cmd('nabu.extract-messages', {
+      desktopId: this.props.desktopId,
+    });
   }
 
   render() {
