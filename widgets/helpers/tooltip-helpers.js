@@ -1,6 +1,6 @@
 import React from 'react';
 import Widget from 'laboratory/widget';
-import formatMessage from '../../lib/format.js';
+import formatMessage from './format.js';
 const crypto = require('xcraft-core-utils/lib/crypto.js');
 import {isShredder, isImmutable} from 'xcraft-core-shredder';
 const {getToolbarId} = require('./t.js');
