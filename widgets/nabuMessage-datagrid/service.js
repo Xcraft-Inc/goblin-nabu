@@ -87,6 +87,9 @@ const config = {
     yield quest.me.loadEntities({}, next);
     yield quest.me.setNeedTranslation();
   },
+  afterFetch: function*(quest) {
+    yield quest.me.loadEntities();
+  },
   quests: {
     loadEntities: function*(quest, next) {
       const listId = quest.goblin.getX('listId');
