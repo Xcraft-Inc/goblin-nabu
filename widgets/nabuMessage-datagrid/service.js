@@ -3,6 +3,13 @@
 const watt = require('gigawatts');
 const {buildWorkitem} = require('goblin-workshop');
 
+/*const path = require ('path');
+const common = require ('goblin-workshop').common;
+const goblinName = path.basename (module.parent.filename, '.js');
+const Goblin = require ('xcraft-core-goblin');
+Goblin.registerQuest (goblinName, 'get-entity', common.getEntityQuest);
+Goblin.registerQuest (goblinName, 'load-entity', common.loadEntityQuest);*/
+
 function isEmptyOrSpaces(str) {
   return !str || str.length === 0 || /^\s*$/.test(str);
 }
@@ -86,6 +93,36 @@ const config = {
     yield quest.me.setNeedTranslation();
   },
   quests: {
+    loadEntity: function*(quest, next) {
+      const ids = yield quest.me.getListIds(next);
+      const iterableIds = Object.values(ids);
+
+      quest.defer(() =>
+        iterableIds.forEach(id => {
+          if (id) {
+            quest.me.loadEntity({entityId: id});
+          }
+        })
+      );
+
+      const ownerId = quest.me.id.split('@')[1];
+      if (ownerId === 'nabuMessage-datagrid') {
+        quest.me.loadTranslations({listIds: iterableIds});
+      }
+    },
+    loadTranslations: function(quest, listIds) {
+      const nabuApi = quest.getAPI('nabu');
+
+      const ownerId = quest.me.id
+        .split('@')
+        .slice(1)
+        .join('@');
+      for (const messageId of listIds) {
+        if (messageId) {
+          quest.defer(() => nabuApi.loadTranslations({messageId, ownerId}));
+        }
+      }
+    },
     changeSelectedLocale: function*(quest, index, locale, next) {
       const currentLocale = quest.goblin
         .getState()
@@ -110,6 +147,7 @@ const config = {
       }
 
       yield quest.me.setNeedTranslation(next);
+      yield quest.me.loadEntity(next);
     },
     applyElasticVisualization: function*(quest, value, sort, next) {
       if (value === undefined) {
@@ -128,6 +166,7 @@ const config = {
       }
 
       yield quest.me.changeData();
+      yield quest.me.loadEntity(next);
     },
     setNeedTranslation: function*(quest) {
       const getNrTranslaton = watt(function*() {
