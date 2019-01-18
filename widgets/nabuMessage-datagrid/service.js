@@ -3,13 +3,6 @@
 const watt = require('gigawatts');
 const {buildWorkitem} = require('goblin-workshop');
 
-/*const path = require ('path');
-const common = require ('goblin-workshop').common;
-const goblinName = path.basename (module.parent.filename, '.js');
-const Goblin = require ('xcraft-core-goblin');
-Goblin.registerQuest (goblinName, 'get-entity', common.getEntityQuest);
-Goblin.registerQuest (goblinName, 'load-entity', common.loadEntityQuest);*/
-
 function isEmptyOrSpaces(str) {
   return !str || str.length === 0 || /^\s*$/.test(str);
 }
