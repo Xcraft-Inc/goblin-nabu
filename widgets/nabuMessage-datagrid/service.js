@@ -84,7 +84,7 @@ const config = {
       newValue: '',
     });
 
-    yield quest.me.loadEntities({}, next);
+    yield quest.me.loadEntities();
     yield quest.me.setNeedTranslation();
   },
   afterFetch: function*(quest) {
@@ -96,29 +96,22 @@ const config = {
       const listApi = quest.getAPI(listId);
 
       const ids = yield listApi.getListIds(next);
-      const iterableIds = Object.values(ids);
 
-      iterableIds.forEach(id => {
-        if (id) {
-          quest.me.loadEntity({entityId: id}, next.parallel());
-        }
-      });
+      ids.forEach(id => quest.me.loadEntity({entityId: id}, next.parallel()));
       yield next.sync();
 
-      quest.defer(() => quest.me.loadTranslations({listIds: iterableIds}));
+      quest.defer(() => quest.me.loadTranslations({listIds: ids}));
     },
-    loadTranslations: function(quest, listIds) {
+    loadTranslations: function*(quest, listIds, next) {
       const nabuApi = quest.getAPI('nabu');
 
-      const ownerId = quest.me.id
-        .split('@')
-        .slice(1)
-        .join('@');
       for (const messageId of listIds) {
-        if (messageId) {
-          quest.defer(() => nabuApi.loadTranslations({messageId, ownerId}));
-        }
+        nabuApi.loadTranslations(
+          {messageId, ownerId: quest.me.id},
+          next.parallel()
+        );
       }
+      yield next.sync();
     },
     changeSelectedLocale: function*(quest, index, locale, next) {
       const currentLocale = quest.goblin
