@@ -17,7 +17,9 @@ function isEmptyOrSpaces(str) {
 const config = {
   type: 'nabuMessage',
   kind: 'datagrid',
-  initialState: {},
+  initialState: {
+    hasTranslations: {},
+  },
   listStatus: ['draft', 'published'],
   listOrderBy: 'nabuId',
   listType: 'uniform',
@@ -51,7 +53,6 @@ const config = {
     fields: ['info'],
     title: 'Messages',
   },
-  hasTranslations: {},
   afterCreate: function*(quest, next) {
     // Setting correct selected locales
     const nabuApi = quest.getAPI('nabu');
@@ -214,7 +215,7 @@ const config = {
       const toChange = yield getNrTranslaton();
 
       quest.me.change({
-        path: 'hasTranslation',
+        path: 'hasTranslations',
         newValue: toChange,
       });
     },
