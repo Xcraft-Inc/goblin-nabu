@@ -91,25 +91,25 @@ const config = {
       newValue: '',
     });
 
+    yield quest.me.loadEntities({}, next);
     yield quest.me.setNeedTranslation();
   },
   quests: {
-    loadEntity: function*(quest, next) {
-      const ids = yield quest.me.getListIds(next);
+    loadEntities: function*(quest, next) {
+      const listId = quest.goblin.getX('listId');
+      const listApi = quest.getAPI(listId);
+
+      const ids = yield listApi.getListIds(next);
       const iterableIds = Object.values(ids);
 
-      quest.defer(() =>
-        iterableIds.forEach(id => {
-          if (id) {
-            quest.me.loadEntity({entityId: id});
-          }
-        })
-      );
+      iterableIds.forEach(id => {
+        if (id) {
+          quest.me.loadEntity({entityId: id}, next.parallel());
+        }
+      });
+      yield next.sync();
 
-      const ownerId = quest.me.id.split('@')[1];
-      if (ownerId === 'nabuMessage-datagrid') {
-        quest.me.loadTranslations({listIds: iterableIds});
-      }
+      quest.defer(() => quest.me.loadTranslations({listIds: iterableIds}));
     },
     loadTranslations: function(quest, listIds) {
       const nabuApi = quest.getAPI('nabu');
@@ -144,11 +144,11 @@ const config = {
       const sort = quest.goblin.getState().get('sort');
 
       if (sort.get('key') === currentLocale) {
-        yield quest.me.resetListVisualization(next);
+        yield quest.me.resetListVisualization();
       }
 
-      yield quest.me.setNeedTranslation(next);
-      yield quest.me.loadEntity(next);
+      yield quest.me.setNeedTranslation();
+      yield quest.me.loadEntities();
     },
     applyElasticVisualization: function*(quest, value, sort, next) {
       if (value === undefined) {
@@ -162,12 +162,12 @@ const config = {
       });
 
       if (isEmptyOrSpaces(value)) {
-        yield quest.me.resetListVisualization(next);
+        yield quest.me.resetListVisualization();
         return;
       }
 
       yield quest.me.changeData();
-      yield quest.me.loadEntity(next);
+      yield quest.me.loadEntities();
     },
     setNeedTranslation: function*(quest) {
       const getNrTranslaton = watt(function*() {
