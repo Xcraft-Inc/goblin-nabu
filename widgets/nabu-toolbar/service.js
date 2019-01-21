@@ -135,7 +135,6 @@ Goblin.registerQuest(goblinName, 'open-single-entity', function*(
       kind: 'dialog',
       isClosable: true,
       navigate: true,
-      maxInstances: 1,
       isDone: false,
       payload: {
         entityId,

@@ -35,7 +35,7 @@ class NabuMessage extends Form {
             </Container>
             <Container kind="row-pane">
               <Field
-                width="950px"
+                width={this.props.width || '600px'}
                 labelText="Description"
                 model=".description"
                 readonly={true}
@@ -56,7 +56,7 @@ class NabuMessage extends Form {
                   id={translationId}
                   labelText={l.get('name')}
                   verticalSpacing="5px"
-                  width="950px"
+                  width={this.props.width || '600px'}
                   rows="5"
                 />
               </Container>
