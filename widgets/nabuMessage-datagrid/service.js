@@ -14,7 +14,7 @@ const config = {
     hasTranslations: {},
   },
   listStatus: ['draft', 'published'],
-  listOrderBy: 'nabuId',
+  listOrderBy: 'value.keyword',
   listType: 'uniform',
   columns: [
     {
@@ -25,6 +25,7 @@ const config = {
       name: 'nabuId',
       field: 'nabuId',
       sortable: true,
+      sortKey: 'value.keyword',
       customSort: true,
     },
     {
@@ -52,11 +53,6 @@ const config = {
     const configApi = quest.getAPI('nabuConfiguration@main');
     const locales = (yield nabuApi.get()).get('locales');
 
-    var types = {'value.keyword': 'nabuMessage'};
-    locales.forEach(locale => {
-      types[`${locale.get('name')}-value.keyword`] = 'nabuTranslation';
-    });
-
     const currentLocaleId = (yield configApi.get()).get('localeId');
     const currentLocale = locales.find(
       locale => locale.get('id') === currentLocaleId
@@ -76,9 +72,19 @@ const config = {
       newValue: firstColumn,
     });
     quest.me.change({
+      path: 'columns[2].sortKey',
+      newValue: `${firstColumn}-value.keyword`,
+    });
+
+    quest.me.change({
       path: 'columns[3].field',
       newValue: secondColumn,
     });
+    quest.me.change({
+      path: 'columns[3].sortKey',
+      newValue: `${secondColumn}-value.keyword`,
+    });
+
     quest.me.change({
       path: `searchValue`,
       newValue: '',

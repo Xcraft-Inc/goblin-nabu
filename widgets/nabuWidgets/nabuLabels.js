@@ -54,7 +54,10 @@ const sort = Widget.connect((state, props) => {
   let glyph = 'solid/sort';
   let tooltip = null;
 
-  if (key === props.column.get('field')) {
+  let sortKey = props.column.get('sortKey')
+    ? props.column.get('sortKey')
+    : props.column.get('field');
+  if (key === sortKey) {
     if (dir === 'asc') {
       glyph = 'solid/sort-alpha-up';
       tooltip = props.tooltips.asc;
