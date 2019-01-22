@@ -20,6 +20,7 @@ function Message(text, state, widget) {
   const getNearestId = widget.getNearestId.bind(widget);
   const workitemId = getNearestId();
   const toolbarId = getToolbarId(widget.context.desktopId || workitemId);
+  const hashedMsgId = `nabuMessage@${crypto.sha256(text.nabuId)}`;
 
   if (!state || !state.get(`backend.${toolbarId}.enabled`)) {
     return text.nabuId;
@@ -31,22 +32,6 @@ function Message(text, state, widget) {
       'font-weight: bold;',
       `malformed message in tooltip: '${JSON.stringify(text)}' found`
     );
-    return text.nabuId;
-  }
-
-  const hashedMsgId = `nabuMessage@${crypto.sha256(text.nabuId)}`;
-  const message = state.get(`backend.${hashedMsgId}`);
-
-  if (!message) {
-    const cmd = widget.cmd.bind(widget);
-
-    cmd('nabu.add-message', {
-      nabuId: text.nabuId,
-      description: text.description,
-      workitemId,
-      desktopId: widget.context.desktopId,
-    });
-
     return text.nabuId;
   }
 
@@ -65,6 +50,27 @@ function Message(text, state, widget) {
   const locale = locales.find(locale => locale.get('id') === localeId);
 
   if (!locale) {
+    return text.nabuId;
+  }
+
+  const cachedTranslation = state.get(
+    `backend.nabu.translations.${hashedMsgId}.${locale.get('name')}`
+  );
+
+  if (cachedTranslation) {
+    return cachedTranslation;
+  }
+
+  if (!state.get(`backend.${hashedMsgId}`)) {
+    const cmd = widget.cmd.bind(widget);
+
+    cmd('nabu.add-message', {
+      nabuId: text.nabuId,
+      description: text.description,
+      workitemId,
+      desktopId: widget.context.desktopId,
+    });
+
     return text.nabuId;
   }
 

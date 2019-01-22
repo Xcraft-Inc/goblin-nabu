@@ -15,6 +15,7 @@ export default class NabuToolbar extends Widget {
     this.openDatagrid = this.openDatagrid.bind(this);
     this.openSingleEntity = this.openSingleEntity.bind(this);
     this.extract = this.extract.bind(this);
+    this.pack = this.pack.bind(this);
   }
 
   static get wiring() {
@@ -71,6 +72,12 @@ export default class NabuToolbar extends Widget {
     });
   }
 
+  pack() {
+    this.cmd('nabu.pack-messages', {
+      desktopId: this.props.desktopId,
+    });
+  }
+
   render() {
     const {enabled, marker, selectionMode, selectedItem} = this.props;
 
@@ -118,6 +125,11 @@ export default class NabuToolbar extends Widget {
             kind="button-footer"
             text={`Extract all messages`}
             onClick={this.extract}
+          />
+          <Button
+            kind="button-footer"
+            text={`Pack all messages`}
+            onClick={this.pack}
           />
         </Container>
       );

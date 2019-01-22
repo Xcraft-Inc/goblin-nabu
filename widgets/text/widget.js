@@ -31,8 +31,15 @@ export default class NabuText extends Widget {
   }
 
   mustAdd() {
-    const {message, nabuId, description, enabled, workitemId} = this.props;
-    if (enabled && !message) {
+    const {
+      message,
+      nabuId,
+      description,
+      enabled,
+      workitemId,
+      cachedTranslation,
+    } = this.props;
+    if (!cachedTranslation && enabled && !message) {
       this.cmd('nabu.add-message', {
         nabuId,
         description,
@@ -43,7 +50,11 @@ export default class NabuText extends Widget {
   }
 
   onMouseEnter() {
-    if (this.props.selectionModeEnabled && this.props.message) {
+    if (
+      !this.props.cachedTranslation &&
+      this.props.selectionModeEnabled &&
+      this.props.message
+    ) {
       this.timeout = setTimeout(() => {
         if (this.props.enabled) {
           this.doFor(this.props.id, 'set-selected-item', {
@@ -55,7 +66,11 @@ export default class NabuText extends Widget {
   }
 
   onMouseLeave() {
-    if (this.props.selectionModeEnabled && this.timeout !== undefined) {
+    if (
+      !this.props.cachedTranslation &&
+      this.props.selectionModeEnabled &&
+      this.timeout !== undefined
+    ) {
       clearTimeout(this.timeout);
     }
   }
@@ -68,8 +83,13 @@ export default class NabuText extends Widget {
       locale,
       html,
       values,
+      cachedTranslation,
       translation,
     } = this.props;
+
+    if (cachedTranslation) {
+      return cachedTranslation;
+    }
 
     const translatedMessage =
       enabled &&
@@ -100,9 +120,20 @@ export default class NabuText extends Widget {
   }
 
   getStyle() {
-    const {enabled, focus, message, selectionModeEnabled, marker} = this.props;
+    const {
+      enabled,
+      focus,
+      message,
+      selectionModeEnabled,
+      marker,
+      cachedTranslation,
+    } = this.props;
 
     let style = {};
+
+    if (cachedTranslation) {
+      return style;
+    }
 
     const markerOn = marker && this.mustTranslate();
     if (enabled && markerOn) {
@@ -138,6 +169,7 @@ export default class NabuText extends Widget {
       hashedMsgId,
       message,
       nabuId,
+      cachedTranslation,
       translation,
       locale,
       html,
