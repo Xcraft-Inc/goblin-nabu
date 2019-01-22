@@ -48,6 +48,6 @@ class HeaderCombo extends Widget {
 export default Widget.connect((state, props) => {
   return {
     locales: state.get(`backend.nabu.locales`),
-    hasTranslation: state.get(`backend.${props.id}.hasTranslation`),
+    hasTranslation: state.get(`backend.${props.id}`).get('hasTranslations'),
   };
 })(HeaderCombo);
