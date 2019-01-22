@@ -13,6 +13,7 @@ const config = {
         const nabuMessage = yield quest.me.getEntity({
           entityId: selection.value,
         });
+
         yield desk.addWorkitem({
           workitem: {
             name: 'nabuMessage-workitem',
@@ -28,6 +29,30 @@ const config = {
           navigate: true,
         });
       },
+    },
+  },
+  afterFetch: function*(quest, listId) {
+    yield quest.me.loadEntities({listId});
+  },
+  quests: {
+    loadEntities: function*(quest, listId, next) {
+      // Don't need to load entity since list already have a load
+      // main entity
+      const listApi = quest.getAPI(listId);
+
+      const ids = yield listApi.getListIds(next);
+      quest.defer(() => quest.me.loadTranslations({listIds: ids}));
+    },
+    loadTranslations: function*(quest, listIds, next) {
+      const nabuApi = quest.getAPI('nabu');
+
+      for (const messageId of Object.values(listIds)) {
+        nabuApi.loadTranslations(
+          {messageId, ownerId: quest.me.id},
+          next.parallel()
+        );
+      }
+      yield next.sync();
     },
   },
 };
