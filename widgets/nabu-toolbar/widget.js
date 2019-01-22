@@ -21,6 +21,7 @@ export default class NabuToolbar extends Widget {
   static get wiring() {
     return {
       id: 'id',
+      show: 'show',
       enabled: 'enabled',
       locale: 'selectedLocale',
       marker: 'marker',
@@ -79,7 +80,11 @@ export default class NabuToolbar extends Widget {
   }
 
   render() {
-    const {enabled, marker, selectionMode, selectedItem} = this.props;
+    const {show, enabled, marker, selectionMode, selectedItem} = this.props;
+
+    if (!show) {
+      return <div />;
+    }
 
     if (enabled) {
       return (
