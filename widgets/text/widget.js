@@ -31,15 +31,8 @@ export default class NabuText extends Widget {
   }
 
   mustAdd() {
-    const {
-      message,
-      nabuId,
-      description,
-      enabled,
-      workitemId,
-      cachedTranslation,
-    } = this.props;
-    if (!cachedTranslation && enabled && !message) {
+    const {message, nabuId, description, enabled, workitemId} = this.props;
+    if (enabled && !message) {
       this.cmd('nabu.add-message', {
         nabuId,
         description,
@@ -51,23 +44,21 @@ export default class NabuText extends Widget {
 
   onMouseEnter() {
     if (
-      !this.props.cachedTranslation &&
+      this.props.enabled &&
       this.props.selectionModeEnabled &&
       this.props.message
     ) {
       this.timeout = setTimeout(() => {
-        if (this.props.enabled) {
-          this.doFor(this.props.id, 'set-selected-item', {
-            messageId: this.props.message.get('id'),
-          });
-        }
+        this.doFor(this.props.id, 'set-selected-item', {
+          messageId: this.props.message.get('id'),
+        });
       }, 300);
     }
   }
 
   onMouseLeave() {
     if (
-      !this.props.cachedTranslation &&
+      this.props.enabled &&
       this.props.selectionModeEnabled &&
       this.timeout !== undefined
     ) {
@@ -87,7 +78,7 @@ export default class NabuText extends Widget {
       translation,
     } = this.props;
 
-    if (cachedTranslation) {
+    if (!enabled && cachedTranslation) {
       return cachedTranslation;
     }
 
@@ -131,7 +122,7 @@ export default class NabuText extends Widget {
 
     let style = {};
 
-    if (cachedTranslation) {
+    if (!enabled && cachedTranslation) {
       return style;
     }
 

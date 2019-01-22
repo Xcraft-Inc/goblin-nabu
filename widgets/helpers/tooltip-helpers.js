@@ -14,41 +14,41 @@ function Message(text, state, widget) {
     text = text.toJS();
   }
 
-  if (!widget) {
-    return text.nabuId;
-  }
-  const getNearestId = widget.getNearestId.bind(widget);
-  const workitemId = getNearestId();
-  const toolbarId = getToolbarId(widget.context.desktopId || workitemId);
-  const hashedMsgId = `nabuMessage@${crypto.sha256(text.nabuId)}`;
-
-  if (!state || !state.get(`backend.${toolbarId}.enabled`)) {
-    return text.nabuId;
-  }
-
   if (!text.nabuId) {
     console.warn(
-      '%cNabu Warning',
+      '%cNabu Tooltip Warning',
       'font-weight: bold;',
-      `malformed message in tooltip: '${JSON.stringify(text)}' found`
+      `malformed message in tooltip: '${JSON.stringify(
+        text
+      )}' found (missing nabuId)`
     );
     return text.nabuId;
   }
 
-  const localeId = state.get('backend.nabuConfiguration@main.localeId');
+  if (!widget || !state) {
+    console.warn(
+      '%cNabu Tooltip Warning',
+      'font-weight: bold;',
+      'widget or state arg have not been provided'
+    );
+    return text.nabuId;
+  }
 
+  const getNearestId = widget.getNearestId.bind(widget);
+  const workitemId = getNearestId();
+  const toolbarId = getToolbarId(widget.context.desktopId || workitemId);
+  const hashedMsgId = `nabuMessage@${crypto.sha256(text.nabuId)}`;
+  const enabled = state.get(`backend.${toolbarId}.enabled`);
+
+  const localeId = state.get('backend.nabuConfiguration@main.localeId');
   if (!localeId) {
     return text.nabuId;
   }
-
   const locales = state.get('backend.nabu.locales');
-
   if (!locales) {
     return text.nabuId;
   }
-
   const locale = locales.find(locale => locale.get('id') === localeId);
-
   if (!locale) {
     return text.nabuId;
   }
@@ -57,8 +57,8 @@ function Message(text, state, widget) {
     `backend.nabu.translations.${hashedMsgId}.${locale.get('name')}`
   );
 
-  if (cachedTranslation) {
-    return cachedTranslation;
+  if (!enabled) {
+    return cachedTranslation || text.nabuId;
   }
 
   if (!state.get(`backend.${hashedMsgId}`)) {
