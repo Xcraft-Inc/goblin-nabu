@@ -6,6 +6,7 @@ const Goblin = require('xcraft-core-goblin');
 
 // Define initial logic values
 const logicState = {
+  show: false,
   enabled: false,
 
   marker: false,
@@ -20,7 +21,7 @@ const logicState = {
 // Define logic handlers according rc.json
 const logicHandlers = {
   create: (state, action) => {
-    return state.set('id', action.get('id'));
+    return state.set('id', action.get('id')).set('show', action.get('show'));
   },
   enable: state => {
     return state.set('enabled', true);
