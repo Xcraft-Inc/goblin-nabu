@@ -9,7 +9,7 @@ exports.xcraftCommands = function() {
   return buildHinter({
     type: 'nabuMessage',
     subTypes: ['nabuTranslation'],
-    subJoins: ['ownerId'],
+    subJoins: ['messageId'],
     fields: ['info'],
     title: 'Messages',
     newWorkitem: {

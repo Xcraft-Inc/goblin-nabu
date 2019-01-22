@@ -42,7 +42,7 @@ const config = {
   hinter: {
     type: 'nabuMessage',
     subTypes: ['nabuTranslation'],
-    subJoins: ['ownerId'],
+    subJoins: ['messageId'],
     field: 'id',
     fields: ['info'],
     title: 'Messages',

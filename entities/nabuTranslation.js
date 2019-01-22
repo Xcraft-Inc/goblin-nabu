@@ -16,9 +16,9 @@ const entity = {
   },
   indexer: function(quest, entity) {
     const info = entity.get('meta.summaries.description');
-    const ownerId = entity.get('messageId');
+    const messageId = entity.get('messageId');
 
-    let result = {info, ownerId};
+    let result = {info, messageId};
 
     const localeName = entity.get('meta.summaries.localeName');
     const variableName = `${localeName}-value`;
