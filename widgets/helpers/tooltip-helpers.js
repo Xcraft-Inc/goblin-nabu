@@ -38,7 +38,7 @@ function Message(text, state, widget) {
   const workitemId = getNearestId();
   const toolbarId = getToolbarId(widget.context.desktopId || workitemId);
   const hashedMsgId = `nabuMessage@${crypto.sha256(text.nabuId)}`;
-  const enabled = state.get(`backend.${toolbarId}.enabled`);
+  const enabled = toolbarId ? state.get(`backend.${toolbarId}.enabled`) : false;
 
   const localeId = state.get('backend.nabuConfiguration@main.localeId');
   if (!localeId) {
@@ -96,7 +96,7 @@ function Locale(state, text, widget) {
   const workitemId = getNearestId();
   const toolbarId = getToolbarId(widget.context.desktopId || workitemId);
 
-  if (!state || !state.get(`backend.${toolbarId}.enabled`)) {
+  if (!state || !toolbarId || !state.get(`backend.${toolbarId}.enabled`)) {
     return null;
   }
 

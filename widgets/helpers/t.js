@@ -14,7 +14,7 @@ function getToolbarId(widgetId) {
 
   if (!desktopId) {
     console.warn(`cannot extract desktopId from widget ${widgetId}`);
-    return 'nabu-toolbar';
+    return;
   }
 
   return `nabu-toolbar@${desktopId}`;

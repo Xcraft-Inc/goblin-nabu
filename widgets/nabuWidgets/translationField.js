@@ -29,10 +29,12 @@ class TranslationField extends Form {
     );
     const toolbarId = getToolbarId(getNearestId());
 
-    this.props.datagrid.doFor(toolbarId, 'set-focus', {
-      messageId: this.props.msgId,
-      value: true,
-    });
+    if (toolbarId) {
+      this.props.datagrid.doFor(toolbarId, 'set-focus', {
+        messageId: this.props.msgId,
+        value: true,
+      });
+    }
   }
 
   onBlur() {
@@ -45,10 +47,12 @@ class TranslationField extends Form {
     );
     const toolbarId = getToolbarId(getNearestId());
 
-    this.props.datagrid.doFor(toolbarId, 'set-focus', {
-      messageId: this.props.msgId,
-      value: false,
-    });
+    if (toolbarId) {
+      this.props.datagrid.doFor(toolbarId, 'set-focus', {
+        messageId: this.props.msgId,
+        value: false,
+      });
+    }
   }
 
   render() {

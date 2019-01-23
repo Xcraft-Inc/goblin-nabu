@@ -40,10 +40,10 @@ const TextConnected = Widget.connect((state, props) => {
     }
   }
 
-  if (props.workitemId) {
-    const toolbarId = getToolbarId(props.workitemId);
-    const toolbar = state.get(`backend.${toolbarId}`);
+  const toolbarId = getToolbarId(props.workitemId);
+  const toolbar = toolbarId ? state.get(`backend.${toolbarId}`) : null;
 
+  if (toolbar) {
     wiring = {
       id: toolbarId,
       enabled: toolbar.get('enabled'),
@@ -99,7 +99,7 @@ class T extends Widget {
         description={msg.description}
         html={msg.html}
         values={msg.values}
-        workitemId={self.getNearestId()}
+        workitemId={self.context.desktopId || self.getNearestId()}
         {...other}
       />
     );
