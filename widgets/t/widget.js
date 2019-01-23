@@ -83,11 +83,11 @@ class T extends Widget {
 
     if (!msg.nabuId) {
       console.warn(
-        '%cNabu Warning',
+        '%cNabu T Warning',
         'font-weight: bold;',
-        `malformed message: '${JSON.stringify(msg)}' found`
+        `malformed message: '${JSON.stringify(msg)}' found (missing nabuId)`
       );
-      return null;
+      return msg;
     }
 
     const hashedMsgId = `nabuMessage@${crypto.sha256(msg.nabuId)}`;

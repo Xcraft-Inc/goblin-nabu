@@ -18,11 +18,9 @@ function Message(text, state, widget) {
     console.warn(
       '%cNabu Tooltip Warning',
       'font-weight: bold;',
-      `malformed message in tooltip: '${JSON.stringify(
-        text
-      )}' found (missing nabuId)`
+      `malformed message: '${JSON.stringify(text)}' found (missing nabuId)`
     );
-    return text.nabuId;
+    return text;
   }
 
   if (!widget || !state) {
