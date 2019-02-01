@@ -2,7 +2,7 @@ import React from 'react';
 import Widget from 'laboratory/widget';
 
 import Label from 'gadgets/label/widget';
-import HeaderComboConnected from '../nabuWidgets/headerCombo';
+import HeaderComboConnected from './header-combo';
 
 // ------------------------------------------------------------
 

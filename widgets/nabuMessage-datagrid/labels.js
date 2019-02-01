@@ -1,7 +1,7 @@
 import Widget from 'laboratory/widget';
 import Label from 'gadgets/label/widget';
 
-const label = Widget.connect((state, props) => {
+const InfoLabel = Widget.connect((state, props) => {
   const message = state.get(`backend.${props.id}`);
 
   const locale1 = props.locale1;
@@ -42,7 +42,7 @@ const label = Widget.connect((state, props) => {
   };
 })(Label);
 
-const sort = Widget.connect((state, props) => {
+const SortLabel = Widget.connect((state, props) => {
   const search = state.get(`backend.${props.id}.searchValue`);
   if (search) {
     return {};
@@ -70,4 +70,4 @@ const sort = Widget.connect((state, props) => {
   return {glyph: glyph, tooltip: tooltip};
 })(Label);
 
-export default {label, sort};
+export default {InfoLabel, SortLabel};

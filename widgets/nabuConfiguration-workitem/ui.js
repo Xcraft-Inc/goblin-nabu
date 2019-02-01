@@ -1,5 +1,5 @@
 import React from 'react';
-import NabuConfigurationConnected from '../nabuWidgets/nabuConfiguration';
+import NabuConfigurationConnected from './component';
 
 /******************************************************************************/
 

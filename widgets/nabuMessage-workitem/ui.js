@@ -4,7 +4,7 @@ import Form from 'laboratory/form';
 
 import Container from 'gadgets/container/widget';
 import Field from 'gadgets/field/widget';
-import TranslationFieldConnected from '../nabuWidgets/translationField';
+import TranslationFieldConnected from '../helpers/translation-field';
 
 /******************************************************************************/
 class NabuMessage extends Form {

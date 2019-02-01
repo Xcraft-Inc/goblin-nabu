@@ -3,7 +3,7 @@ import Widget from 'laboratory/widget';
 
 import LabelTextField from 'gadgets/label-text-field/widget';
 
-import NabuLabels from '../nabuWidgets/nabuLabels';
+const {SortLabel} = require('./labels.js');
 import header from './header';
 import row from './row';
 
@@ -16,7 +16,7 @@ const tooltips = {
 
 function renderLocaleSortCell(doAsDatagrid, column, datagridId) {
   return (
-    <NabuLabels.sort
+    <SortLabel
       tooltips={tooltips}
       id={datagridId}
       column={column}

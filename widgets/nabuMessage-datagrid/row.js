@@ -3,14 +3,14 @@ import Widget from 'laboratory/widget';
 
 import Field from 'gadgets/field/widget';
 
-import NabuLabels from '../nabuWidgets/nabuLabels';
-import TranslationFieldConnected from '../nabuWidgets/translationField';
+const {InfoLabel} = require('./labels.js');
+import TranslationFieldConnected from '../helpers/translation-field';
 
 // ------------------------------------------------------------
 
 function renderMissingTranslationsRowCell(id, props) {
   return (
-    <NabuLabels.label
+    <InfoLabel
       id={id}
       spacing="overlap"
       tooltip={Widget.T(
@@ -27,7 +27,7 @@ function renderNabuIdRowCell(id) {
   return (
     <div style={{display: 'flex'}}>
       <Field kind="label" grow="1" labelWidth="0px" model={`.nabuId`} />
-      <NabuLabels.label id={id} checkDescription="true" spacing="overlap" />
+      <InfoLabel id={id} checkDescription="true" spacing="overlap" />
     </div>
   );
 }
