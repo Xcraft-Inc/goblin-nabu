@@ -3,7 +3,7 @@ import Widget from 'laboratory/widget';
 
 import Field from 'gadgets/field/widget';
 
-const {InfoLabel} = require('./labels.js');
+import {InfoLabel} from './labels';
 import TranslationFieldConnected from '../helpers/translation-field';
 
 // ------------------------------------------------------------

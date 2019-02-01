@@ -70,4 +70,4 @@ const SortLabel = Widget.connect((state, props) => {
   return {glyph: glyph, tooltip: tooltip};
 })(Label);
 
-export default {InfoLabel, SortLabel};
+module.exports = {InfoLabel, SortLabel};

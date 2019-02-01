@@ -3,7 +3,7 @@ import Widget from 'laboratory/widget';
 
 import LabelTextField from 'gadgets/label-text-field/widget';
 
-const {SortLabel} = require('./labels.js');
+import {SortLabel} from './labels';
 import header from './header';
 import row from './row';
 
