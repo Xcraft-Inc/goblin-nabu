@@ -13,6 +13,9 @@ const config = {
   initialState: {
     hasTranslations: {},
   },
+  dialog: {
+    height: '700px',
+  },
   listStatus: ['draft', 'published'],
   listOrderBy: 'value.keyword',
   listType: 'uniform',
