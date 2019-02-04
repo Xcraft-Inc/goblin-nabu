@@ -32,9 +32,9 @@ function renderNabuIdRowCell(id) {
   );
 }
 
-function renderLocaleRowCell(id, field, datagrid) {
-  if (field) {
-    const translationId = `nabuTranslation@${field}-${id.split('@')[1]}`;
+function renderLocaleRowCell(id, locale, datagrid) {
+  if (locale) {
+    const translationId = `nabuTranslation@${locale}-${id.split('@')[1]}`;
 
     return (
       <TranslationFieldConnected
