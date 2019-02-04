@@ -27,7 +27,9 @@ class TranslationField extends Form {
     const getNearestId = this.props.component.getNearestId.bind(
       this.props.component
     );
-    const toolbarId = getToolbarId(getNearestId());
+    const toolbarId = getToolbarId(
+      this.props.component.context.desktopId || getNearestId()
+    );
 
     if (toolbarId) {
       this.props.component.doFor(toolbarId, 'set-focus', {
@@ -49,7 +51,9 @@ class TranslationField extends Form {
     const getNearestId = this.props.component.getNearestId.bind(
       this.props.component
     );
-    const toolbarId = getToolbarId(getNearestId());
+    const toolbarId = getToolbarId(
+      this.props.component.context.desktopId || getNearestId()
+    );
 
     if (toolbarId) {
       this.props.component.doFor(toolbarId, 'set-focus', {
@@ -64,7 +68,17 @@ class TranslationField extends Form {
   }
 
   render() {
-    const {id, ...other} = this.props;
+    const {
+      id,
+      model,
+      onFocus,
+      onBlur,
+      component,
+      rows,
+      verticalSpacing,
+      grow,
+      ...other
+    } = this.props;
 
     if (!id) {
       return <div />;
@@ -76,12 +90,11 @@ class TranslationField extends Form {
       <Form {...this.formConfig}>
         <Field
           model={`backend.${id}.text`}
-          grow="1"
-          verticalSpacing="compact"
-          labelWidth={this.props.labelWidth}
+          grow={grow || '1'}
+          verticalSpacing={verticalSpacing || 'compact'}
           onFocus={this.onFocus}
           onBlur={this.onBlur}
-          rows={this.props.rows ? this.props.rows : '1'}
+          rows={rows || '1'}
           {...other}
         />
       </Form>
