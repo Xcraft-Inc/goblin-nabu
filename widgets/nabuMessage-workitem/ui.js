@@ -53,7 +53,6 @@ class NabuMessage extends Form {
               <Container kind="row" key={translationId}>
                 <TranslationFieldConnected
                   translationId={translationId}
-                  id={translationId}
                   labelText={l.get('name')}
                   verticalSpacing="5px"
                   width={this.props.width || '600px'}

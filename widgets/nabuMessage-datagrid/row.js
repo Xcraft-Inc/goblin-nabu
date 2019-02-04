@@ -39,7 +39,7 @@ function renderLocaleRowCell(id, locale, datagrid) {
     return (
       <TranslationFieldConnected
         translationId={translationId}
-        datagrid={datagrid}
+        component={datagrid}
         msgId={id}
         labelWidth="0px"
         width="280px"

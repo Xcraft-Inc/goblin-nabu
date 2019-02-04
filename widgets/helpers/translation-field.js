@@ -20,38 +20,46 @@ class TranslationField extends Form {
   }
 
   onFocus() {
-    if (!this.props.datagrid) {
+    if (!this.props.component) {
       return;
     }
 
-    const getNearestId = this.props.datagrid.getNearestId.bind(
-      this.props.datagrid
+    const getNearestId = this.props.component.getNearestId.bind(
+      this.props.component
     );
     const toolbarId = getToolbarId(getNearestId());
 
     if (toolbarId) {
-      this.props.datagrid.doFor(toolbarId, 'set-focus', {
+      this.props.component.doFor(toolbarId, 'set-focus', {
         messageId: this.props.msgId,
         value: true,
       });
     }
+
+    if (this.props.onFocus) {
+      this.props.onFocus();
+    }
   }
 
   onBlur() {
-    if (!this.props.datagrid) {
+    if (!this.props.component) {
       return;
     }
 
-    const getNearestId = this.props.datagrid.getNearestId.bind(
-      this.props.datagrid
+    const getNearestId = this.props.component.getNearestId.bind(
+      this.props.component
     );
     const toolbarId = getToolbarId(getNearestId());
 
     if (toolbarId) {
-      this.props.datagrid.doFor(toolbarId, 'set-focus', {
+      this.props.component.doFor(toolbarId, 'set-focus', {
         messageId: this.props.msgId,
         value: false,
       });
+    }
+
+    if (this.props.onBlur) {
+      this.props.onBlur();
     }
   }
 
