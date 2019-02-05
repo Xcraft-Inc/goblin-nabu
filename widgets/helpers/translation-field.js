@@ -20,22 +20,20 @@ class TranslationField extends Form {
   }
 
   onFocus() {
-    if (!this.props.component) {
-      return;
-    }
+    if (this.props.component) {
+      const getNearestId = this.props.component.getNearestId.bind(
+        this.props.component
+      );
+      const toolbarId = getToolbarId(
+        this.props.component.context.desktopId || getNearestId()
+      );
 
-    const getNearestId = this.props.component.getNearestId.bind(
-      this.props.component
-    );
-    const toolbarId = getToolbarId(
-      this.props.component.context.desktopId || getNearestId()
-    );
-
-    if (toolbarId) {
-      this.props.component.doFor(toolbarId, 'set-focus', {
-        messageId: this.props.msgId,
-        value: true,
-      });
+      if (toolbarId) {
+        this.props.component.doFor(toolbarId, 'set-focus', {
+          messageId: this.props.msgId,
+          value: true,
+        });
+      }
     }
 
     if (this.props.onFocus) {
@@ -44,22 +42,20 @@ class TranslationField extends Form {
   }
 
   onBlur() {
-    if (!this.props.component) {
-      return;
-    }
+    if (this.props.component) {
+      const getNearestId = this.props.component.getNearestId.bind(
+        this.props.component
+      );
+      const toolbarId = getToolbarId(
+        this.props.component.context.desktopId || getNearestId()
+      );
 
-    const getNearestId = this.props.component.getNearestId.bind(
-      this.props.component
-    );
-    const toolbarId = getToolbarId(
-      this.props.component.context.desktopId || getNearestId()
-    );
-
-    if (toolbarId) {
-      this.props.component.doFor(toolbarId, 'set-focus', {
-        messageId: this.props.msgId,
-        value: false,
-      });
+      if (toolbarId) {
+        this.props.component.doFor(toolbarId, 'set-focus', {
+          messageId: this.props.msgId,
+          value: false,
+        });
+      }
     }
 
     if (this.props.onBlur) {
