@@ -12,16 +12,5 @@ exports.xcraftCommands = function() {
     subJoins: ['messageId'],
     fields: ['info'],
     title: 'Messages',
-    newWorkitem: {
-      name: 'nabuMessage-workitem',
-      newEntityType: 'nabuMessage',
-      view: 'default',
-      icon: 'solid/map',
-      mapNewValueTo: 'nabuId',
-      kind: 'tab',
-      isClosable: true,
-      navigate: true,
-    },
-    newButtonTitle: 'Nouveaux message',
   });
 };
