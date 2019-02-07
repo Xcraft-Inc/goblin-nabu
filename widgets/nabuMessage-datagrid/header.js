@@ -1,6 +1,7 @@
 import React from 'react';
 import Widget from 'laboratory/widget';
 
+import {T} from 'goblin-nabu/widgets/helpers/t.js';
 import Label from 'gadgets/label/widget';
 import HeaderComboConnected from './header-combo';
 
@@ -11,7 +12,7 @@ function renderMissingTranslationsHeaderCell() {
 }
 
 function renderNabuIdHeaderCell() {
-  return <Label spacing="compact" text={Widget.T('Message original')} />;
+  return <Label spacing="compact" text={T('Message original')} />;
 }
 
 function renderLocaleHeaderCell(id, index, doAsDatagrid) {

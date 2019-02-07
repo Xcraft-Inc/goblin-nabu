@@ -3,6 +3,7 @@ import Widget from 'laboratory/widget';
 
 import Field from 'gadgets/field/widget';
 
+import {T} from 'goblin-nabu/widgets/helpers/t.js';
 import {InfoLabel} from './labels';
 import TranslationFieldConnected from '../helpers/translation-field';
 
@@ -13,7 +14,7 @@ function renderMissingTranslationsRowCell(id, props) {
     <InfoLabel
       id={id}
       spacing="overlap"
-      tooltip={Widget.T(
+      tooltip={T(
         "Certaines locales n'ont pas encore été traduites",
         'In Nabu window'
       )}

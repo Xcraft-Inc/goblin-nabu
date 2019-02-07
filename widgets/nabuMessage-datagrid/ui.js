@@ -3,6 +3,7 @@ import Widget from 'laboratory/widget';
 
 import LabelTextField from 'gadgets/label-text-field/widget';
 
+import {T} from 'goblin-nabu/widgets/helpers/t.js';
 import {SortLabel} from './labels';
 import header from './header';
 import row from './row';
@@ -10,8 +11,8 @@ import row from './row';
 // ------------------------------------------------------------
 
 const tooltips = {
-  asc: Widget.T('ascending order'),
-  desc: Widget.T('descending order'),
+  asc: T('ascending order'),
+  desc: T('descending order'),
 };
 
 function renderLocaleSortCell(doAsDatagrid, column, datagridId) {

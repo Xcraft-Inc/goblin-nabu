@@ -1,6 +1,7 @@
 import React from 'react';
 import Widget from 'laboratory/widget';
 
+import {T} from 'goblin-nabu/widgets/helpers/t.js';
 import Container from 'gadgets/container/widget';
 import Field from 'gadgets/field/widget';
 
@@ -19,8 +20,8 @@ class NabuConfiguration extends Widget {
           <Field
             kind="combo"
             fieldWidth="200px"
-            labelText={Widget.T('Locale')}
-            tooltip={Widget.T('Choose your default locale')}
+            labelText={T('Locale')}
+            tooltip={T('Choose your default locale')}
             list={locales
               .map(l => ({value: l.get('id'), text: l.get('name')}))
               .toJS()}
