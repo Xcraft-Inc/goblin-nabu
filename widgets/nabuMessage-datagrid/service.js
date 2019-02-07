@@ -70,25 +70,29 @@ const config = {
 
     var secondColumn = firstColumn === firstLocale ? secondLocale : firstLocale;
 
-    quest.me.change({
+    yield quest.me.change({
       path: 'columns[2].field',
       newValue: firstColumn,
+      muteChanged: true,
     });
-    quest.me.change({
+    yield quest.me.change({
       path: 'columns[2].sortKey',
       newValue: `${firstColumn}-value.keyword`,
+      muteChanged: true,
     });
 
-    quest.me.change({
+    yield quest.me.change({
       path: 'columns[3].field',
       newValue: secondColumn,
+      muteChanged: true,
     });
-    quest.me.change({
+    yield quest.me.change({
       path: 'columns[3].sortKey',
       newValue: `${secondColumn}-value.keyword`,
+      muteChanged: true,
     });
 
-    quest.me.change({
+    yield quest.me.change({
       path: `searchValue`,
       newValue: '',
     });
@@ -154,7 +158,7 @@ const config = {
         return;
       }
 
-      quest.me.change({
+      yield quest.me.change({
         path: `searchValue`,
         newValue: value,
       });
@@ -212,7 +216,7 @@ const config = {
 
       const toChange = yield getNrTranslaton();
 
-      quest.me.change({
+      yield quest.me.change({
         path: 'hasTranslations',
         newValue: toChange,
       });

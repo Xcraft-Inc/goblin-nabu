@@ -6,10 +6,10 @@ const config = {
   kind: 'workitem',
   hinters: {},
   quests: {
-    setLocale: function(quest, localeId) {
+    setLocale: function*(quest, localeId) {
       const entityId = quest.goblin.getX('entityId');
       const entityAPI = quest.getAPI(entityId);
-      entityAPI.setLocale({localeId});
+      yield entityAPI.setLocale({localeId});
     },
   },
 };

@@ -13,7 +13,7 @@ const config = {
         const locale = yield quest.me.getEntity({
           entityId: selection.value,
         });
-        desk.addWorkitem({
+        yield desk.addWorkitem({
           workitem: {
             name: 'locale-workitem',
             view: 'default',

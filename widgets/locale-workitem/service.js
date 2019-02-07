@@ -8,9 +8,9 @@ const config = {
   quests: {},
   hinters: {
     locale: {
-      onValidate: function(quest, selection) {
+      onValidate: function*(quest, selection) {
         const localeApi = quest.getAPI(quest.goblin.getX('entityId'));
-        localeApi.setLocaleId({entityId: selection.value});
+        yield localeApi.setLocaleId({entityId: selection.value});
       },
     },
   },

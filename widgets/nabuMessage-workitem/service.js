@@ -6,9 +6,9 @@ const config = {
   quests: {},
   hinters: {
     nabuMessage: {
-      onValidate: function(quest, selection) {
+      onValidate: function*(quest, selection) {
         const nabuMessageApi = quest.getAPI(quest.goblin.getX('entityId'));
-        nabuMessageApi.setNabuMessageId({entityId: selection.value});
+        yield nabuMessageApi.setNabuMessageId({entityId: selection.value});
       },
     },
   },

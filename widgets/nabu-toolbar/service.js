@@ -60,11 +60,15 @@ Goblin.registerQuest(goblinName, 'get', function(quest) {
   return quest.goblin.getState();
 });
 
-Goblin.registerQuest(goblinName, 'create', function(quest, desktopId, enabled) {
+Goblin.registerQuest(goblinName, 'create', function*(
+  quest,
+  desktopId,
+  enabled
+) {
   quest.goblin.setX('desktopId', desktopId);
 
   if (enabled) {
-    quest.me.enable();
+    yield quest.me.enable();
   }
 
   quest.do();
