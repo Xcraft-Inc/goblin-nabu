@@ -1,12 +1,15 @@
 'use strict';
 
-const crypto = require('xcraft-core-utils/lib/crypto.js');
 import Widget from 'laboratory/widget';
 import _ from 'lodash';
 import React from 'react';
 import Text from 'nabu/text/widget';
 import {isShredder, isImmutable} from 'xcraft-core-shredder';
-const {getToolbarId} = require('goblin-nabu/lib/helpers.js');
+const {
+  getToolbarId,
+  computeMessageId,
+  computeTranslationId,
+} = require('goblin-nabu/lib/helpers.js');
 
 const TextConnected = Widget.connect((state, props) => {
   const localeId = state.get('backend.nabuConfiguration@main.localeId');
@@ -22,20 +25,14 @@ const TextConnected = Widget.connect((state, props) => {
     if (locales) {
       locale = locales.find(locale => locale.get('id') === localeId);
 
-      if (locale) {
-        if (locale.get('name')) {
-          translation = state.get(
-            `backend.nabuTranslation@${locale.get('name')}-${
-              props.hashedMsgId.split('@')[1]
-            }`
-          );
+      if (locale && locale.get('name')) {
+        translation = state.get(
+          `backend.${computeTranslationId(props.msgId, locale.get('name'))}`
+        );
 
-          cachedTranslation = state.get(
-            `backend.nabu.translations.${props.hashedMsgId}.${locale.get(
-              'name'
-            )}`
-          );
-        }
+        cachedTranslation = state.get(
+          `backend.nabu.translations.${props.msgId}.${locale.get('name')}`
+        );
       }
     }
   }
@@ -55,7 +52,7 @@ const TextConnected = Widget.connect((state, props) => {
   }
 
   return {
-    message: state.get(`backend.${props.hashedMsgId}`),
+    message: state.get(`backend.${props.msgId}`),
     cachedTranslation,
     translation,
     locale,
@@ -90,11 +87,9 @@ class T extends Widget {
       return msg;
     }
 
-    const hashedMsgId = `nabuMessage@${crypto.sha256(msg.nabuId)}`;
-
     return (
       <TextConnected
-        hashedMsgId={hashedMsgId}
+        msgId={computeMessageId(msg.nabuId)}
         nabuId={msg.nabuId}
         description={msg.description}
         html={msg.html}

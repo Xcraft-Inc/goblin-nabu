@@ -1,9 +1,12 @@
 import React from 'react';
 import Widget from 'laboratory/widget';
 import formatMessage from './format.js';
-const crypto = require('xcraft-core-utils/lib/crypto.js');
 import {isShredder, isImmutable} from 'xcraft-core-shredder';
-const {getToolbarId} = require('goblin-nabu/lib/helpers.js');
+const {
+  getToolbarId,
+  computeMessageId,
+  computeTranslationId,
+} = require('goblin-nabu/lib/helpers.js');
 
 function Message(text, state, widget) {
   if (!text || typeof text === 'string') {
@@ -35,7 +38,7 @@ function Message(text, state, widget) {
   const getNearestId = widget.getNearestId.bind(widget);
   const workitemId = getNearestId();
   const toolbarId = getToolbarId(widget.context.desktopId || workitemId);
-  const hashedMsgId = `nabuMessage@${crypto.sha256(text.nabuId)}`;
+  const msgId = computeMessageId(text.nabuId);
   const enabled = toolbarId ? state.get(`backend.${toolbarId}.enabled`) : false;
 
   const localeId = state.get('backend.nabuConfiguration@main.localeId');
@@ -52,14 +55,14 @@ function Message(text, state, widget) {
   }
 
   const cachedTranslation = state.get(
-    `backend.nabu.translations.${hashedMsgId}.${locale.get('name')}`
+    `backend.nabu.translations.${msgId}.${locale.get('name')}`
   );
 
   if (!enabled) {
     return cachedTranslation || text.nabuId;
   }
 
-  if (!state.get(`backend.${hashedMsgId}`)) {
+  if (!state.get(`backend.${msgId}`)) {
     const cmd = widget.cmd.bind(widget);
 
     cmd('nabu.add-message', {
@@ -72,9 +75,8 @@ function Message(text, state, widget) {
     return text.nabuId;
   }
 
-  const translatedMessage = state.get(
-    `backend.nabuTranslation@${locale.get('name')}-${hashedMsgId.split('@')[1]}`
-  );
+  const translationId = computeTranslationId(msgId, locale.get('name'));
+  const translatedMessage = state.get(`backend.${translationId}`);
 
   return translatedMessage && translatedMessage.get('text')
     ? translatedMessage.get('text')

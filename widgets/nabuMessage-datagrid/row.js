@@ -1,11 +1,10 @@
 import React from 'react';
-import Widget from 'laboratory/widget';
 
 import Field from 'gadgets/field/widget';
-
 import T from 'goblin-nabu/widgets/helpers/t.js';
 import {InfoLabel} from './labels';
 import TranslationFieldConnected from '../helpers/translation-field';
+const {computeTranslationId} = require('goblin-nabu/lib/helpers.js');
 
 // ------------------------------------------------------------
 
@@ -35,7 +34,7 @@ function renderNabuIdRowCell(id) {
 
 function renderLocaleRowCell(id, locale, datagrid) {
   if (locale) {
-    const translationId = `nabuTranslation@${locale}-${id.split('@')[1]}`;
+    const translationId = computeTranslationId(id, locale);
 
     return (
       <TranslationFieldConnected

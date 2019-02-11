@@ -5,6 +5,7 @@ import Form from 'laboratory/form';
 import Container from 'gadgets/container/widget';
 import Field from 'gadgets/field/widget';
 import TranslationFieldConnected from '../helpers/translation-field';
+const {computeTranslationId} = require('goblin-nabu/lib/helpers.js');
 
 /******************************************************************************/
 class NabuMessage extends Form {
@@ -45,9 +46,10 @@ class NabuMessage extends Form {
           </Form>
 
           {locales.map(l => {
-            const translationId = `nabuTranslation@${l.get('name')}-${
-              this.props.entityId.split('@')[1]
-            }`;
+            const translationId = computeTranslationId(
+              this.props.entityId,
+              l.get('name')
+            );
 
             return (
               <Container kind="row" key={translationId}>

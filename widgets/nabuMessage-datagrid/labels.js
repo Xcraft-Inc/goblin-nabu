@@ -1,16 +1,15 @@
 import Widget from 'laboratory/widget';
 import Label from 'gadgets/label/widget';
+const {computeTranslationId} = require('goblin-nabu/lib/helpers.js');
 
 const InfoLabel = Widget.connect((state, props) => {
   const message = state.get(`backend.${props.id}`);
 
-  const locale1 = props.locale1;
-  const locale2 = props.locale2;
   const translation1 = state.get(
-    `backend.nabuTranslation@${locale1}-${props.id.split('@')[1]}`
+    `backend.${computeTranslationId(props.id, props.locale1)}`
   );
   const translation2 = state.get(
-    `backend.nabuTranslation@${locale2}-${props.id.split('@')[1]}`
+    `backend.${computeTranslationId(props.id, props.locale2)}`
   );
 
   let glyph = null;

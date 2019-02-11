@@ -157,7 +157,7 @@ export default class NabuText extends Widget {
       focus,
       children,
       workitemId,
-      hashedMsgId,
+      msgId,
       message,
       nabuId,
       cachedTranslation,
