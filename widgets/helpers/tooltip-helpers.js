@@ -3,7 +3,7 @@ import Widget from 'laboratory/widget';
 import formatMessage from './format.js';
 const crypto = require('xcraft-core-utils/lib/crypto.js');
 import {isShredder, isImmutable} from 'xcraft-core-shredder';
-const {getToolbarId} = require('./t.js');
+const {getToolbarId} = require('goblin-nabu/lib/helpers.js');
 
 function Message(text, state, widget) {
   if (!text || typeof text === 'string') {

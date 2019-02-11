@@ -6,7 +6,7 @@ import _ from 'lodash';
 import React from 'react';
 import Text from 'nabu/text/widget';
 import {isShredder, isImmutable} from 'xcraft-core-shredder';
-const {getToolbarId} = require('goblin-nabu/widgets/helpers/t.js');
+const {getToolbarId} = require('goblin-nabu/lib/helpers.js');
 
 const TextConnected = Widget.connect((state, props) => {
   const localeId = state.get('backend.nabuConfiguration@main.localeId');

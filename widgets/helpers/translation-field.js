@@ -3,7 +3,7 @@ import Form from 'laboratory/form';
 
 import Field from 'gadgets/field/widget';
 import Widget from 'laboratory/widget';
-const {getToolbarId} = require('goblin-nabu/widgets/helpers/t.js');
+const {getToolbarId} = require('goblin-nabu/lib/helpers.js');
 
 class TranslationField extends Form {
   constructor() {
