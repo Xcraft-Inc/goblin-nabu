@@ -41,11 +41,11 @@ const config = {
       const listApi = quest.getAPI(listId);
 
       const ids = yield listApi.getListIds(next);
-      quest.defer(() => quest.me.loadTranslations({listIds: ids}));
+      yield quest.me.loadTranslations({listIds: ids});
     },
     loadTranslations: function*(quest, listIds, next) {
       const nabuApi = quest.getAPI('nabu');
-
+      // TODO: optimize with delegator
       for (const messageId of Object.values(listIds)) {
         nabuApi.loadTranslations(
           {messageId, ownerId: quest.me.id},

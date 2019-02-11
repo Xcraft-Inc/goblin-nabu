@@ -146,16 +146,15 @@ Goblin.registerQuest(goblinName, 'open-single-entity', function*(
       },
     };
 
-    quest.defer(() => {
-      const nabu = quest.getAPI('nabu');
-      nabu.loadTranslations({
-        messageId: entityId,
-        desktopId,
-      });
-    });
-
     const workitemId = yield desk.addWorkitem({workitem, navigate: true}, next);
     quest.goblin.setX('singleEntityWorkitemId', workitemId);
+
+    const nabu = quest.getAPI('nabu');
+    // TODO: optimize with delegator
+    yield nabu.loadTranslations({
+      messageId: entityId,
+      desktopId,
+    });
   }
 });
 
