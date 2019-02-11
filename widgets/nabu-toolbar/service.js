@@ -12,6 +12,8 @@ const logicState = {
   marker: false,
   focus: null,
 
+  selectedLocaleId: null,
+
   selectionMode: {
     enabled: false,
     selectedItemId: null,
@@ -21,7 +23,10 @@ const logicState = {
 // Define logic handlers according rc.json
 const logicHandlers = {
   create: (state, action) => {
-    return state.set('id', action.get('id')).set('show', action.get('show'));
+    return state
+      .set('id', action.get('id'))
+      .set('show', action.get('show'))
+      .set('selectedLocaleId', action.get('localeId'));
   },
   enable: state => {
     return state.set('enabled', true);
@@ -44,6 +49,10 @@ const logicHandlers = {
       'focus',
       action.get('value') ? action.get('messageId') : null
     );
+  },
+
+  'set-selected-locale-id': (state, action) => {
+    return state.set(`selectedLocaleId`, action.get('localeId'));
   },
 
   'set-selected-item': (state, action) => {
@@ -192,6 +201,7 @@ for (const action of Object.keys(logicHandlers)) {
     case 'enable':
     case 'disable':
     case 'toggle-enabled':
+    case 'set-selected-locale-id':
       Goblin.registerQuest(goblinName, action, function(quest) {
         quest.do();
       });

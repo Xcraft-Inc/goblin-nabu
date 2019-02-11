@@ -12,7 +12,10 @@ const {
 } = require('goblin-nabu/lib/helpers.js');
 
 const TextConnected = Widget.connect((state, props) => {
-  const localeId = state.get('backend.nabuConfiguration@main.localeId');
+  const toolbarId = getToolbarId(props.workitemId);
+  const localeId = toolbarId
+    ? state.get(`backend.${toolbarId}.selectedLocaleId`)
+    : null;
 
   let locale = null;
   let translation = null;
@@ -37,7 +40,6 @@ const TextConnected = Widget.connect((state, props) => {
     }
   }
 
-  const toolbarId = getToolbarId(props.workitemId);
   const toolbar = toolbarId ? state.get(`backend.${toolbarId}`) : null;
 
   if (toolbar) {

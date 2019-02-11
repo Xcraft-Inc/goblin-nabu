@@ -2,6 +2,7 @@
 
 const watt = require('gigawatts');
 const {buildWorkitem} = require('goblin-workshop');
+const {getToolbarId} = require('goblin-nabu/lib/helpers.js');
 
 function isEmptyOrSpaces(str) {
   return !str || str.length === 0 || /^\s*$/.test(str);
@@ -53,10 +54,10 @@ const config = {
   afterCreate: function*(quest, next) {
     // Setting correct selected locales
     const nabuApi = quest.getAPI('nabu');
-    const configApi = quest.getAPI('nabuConfiguration@main');
+    const toolbarApi = quest.getAPI(getToolbarId(quest.me.id));
     const locales = (yield nabuApi.get()).get('locales');
 
-    const currentLocaleId = (yield configApi.get()).get('localeId');
+    const currentLocaleId = (yield toolbarApi.get()).get('selectedLocaleId');
     const currentLocale = locales.find(
       locale => locale.get('id') === currentLocaleId
     );

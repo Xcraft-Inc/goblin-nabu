@@ -41,7 +41,9 @@ function Message(text, state, widget) {
   const msgId = computeMessageId(text.nabuId);
   const enabled = toolbarId ? state.get(`backend.${toolbarId}.enabled`) : false;
 
-  const localeId = state.get('backend.nabuConfiguration@main.localeId');
+  const localeId = toolbarId
+    ? state.get(`backend.${toolbarId}.selectedLocaleId`)
+    : null;
   if (!localeId) {
     return text.nabuId;
   }
@@ -100,7 +102,9 @@ function Locale(state, text, widget) {
     return null;
   }
 
-  const localeId = state.get('backend.nabuConfiguration@main.localeId');
+  const localeId = toolbarId
+    ? state.get(`backend.${toolbarId}.selectedLocaleId`)
+    : null;
 
   if (!localeId) {
     return null;
