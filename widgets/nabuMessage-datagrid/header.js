@@ -1,7 +1,7 @@
 import React from 'react';
 import Widget from 'laboratory/widget';
 
-import {T} from 'goblin-nabu/widgets/helpers/t.js';
+import T from 'goblin-nabu/widgets/helpers/t.js';
 import Label from 'gadgets/label/widget';
 import HeaderComboConnected from './header-combo';
 

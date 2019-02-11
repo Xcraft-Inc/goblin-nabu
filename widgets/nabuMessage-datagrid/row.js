@@ -3,7 +3,7 @@ import Widget from 'laboratory/widget';
 
 import Field from 'gadgets/field/widget';
 
-import {T} from 'goblin-nabu/widgets/helpers/t.js';
+import T from 'goblin-nabu/widgets/helpers/t.js';
 import {InfoLabel} from './labels';
 import TranslationFieldConnected from '../helpers/translation-field';
 
