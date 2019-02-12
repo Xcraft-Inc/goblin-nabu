@@ -8,6 +8,27 @@ const {
   computeTranslationId,
 } = require('goblin-nabu/lib/helpers.js');
 
+function getLocaleName(state, toolbarId) {
+  const localeId = toolbarId
+    ? state.get(`backend.${toolbarId}.selectedLocaleId`)
+    : null;
+  if (!localeId) {
+    return null;
+  }
+
+  const locales = state.get('backend.nabu.locales');
+  if (!locales) {
+    return null;
+  }
+
+  const locale = locales.find(locale => locale.get('id') === localeId);
+  if (!locale) {
+    return null;
+  }
+
+  return locale.get('name');
+}
+
 function Message(text, state, widget) {
   if (!text || typeof text === 'string') {
     return text;
@@ -50,30 +71,7 @@ function Message(text, state, widget) {
   const msgId = computeMessageId(text.nabuId);
   const enabled = toolbarId ? state.get(`backend.${toolbarId}.enabled`) : false;
 
-  const localeId = toolbarId
-    ? state.get(`backend.${toolbarId}.selectedLocaleId`)
-    : null;
-  if (!localeId) {
-    return text.nabuId;
-  }
-  const locales = state.get('backend.nabu.locales');
-  if (!locales) {
-    return text.nabuId;
-  }
-  const locale = locales.find(locale => locale.get('id') === localeId);
-  if (!locale) {
-    return text.nabuId;
-  }
-
-  const cachedTranslation = state.get(
-    `backend.nabu.translations.${msgId}.${locale.get('name')}`
-  );
-
-  if (!enabled) {
-    return cachedTranslation || text.nabuId;
-  }
-
-  if (!state.get(`backend.${msgId}`)) {
+  if (enabled && !state.get(`backend.${msgId}`)) {
     const cmd = widget.cmd.bind(widget);
 
     cmd('nabu.add-message', {
@@ -86,7 +84,20 @@ function Message(text, state, widget) {
     return text.nabuId;
   }
 
-  const translationId = computeTranslationId(msgId, locale.get('name'));
+  const localeName = getLocaleName(state, toolbarId);
+  if (!localeName) {
+    return text.nabuId;
+  }
+
+  if (!enabled) {
+    const cachedTranslation = state.get(
+      `backend.nabu.translations.${msgId}.${localeName}`
+    );
+
+    return cachedTranslation || text.nabuId;
+  }
+
+  const translationId = computeTranslationId(msgId, localeName);
   const translatedMessage = state.get(`backend.${translationId}`);
 
   return translatedMessage && translatedMessage.get('text')
@@ -111,27 +122,7 @@ function Locale(state, text, widget) {
     return null;
   }
 
-  const localeId = toolbarId
-    ? state.get(`backend.${toolbarId}.selectedLocaleId`)
-    : null;
-
-  if (!localeId) {
-    return null;
-  }
-
-  const locales = state.get('backend.nabu.locales');
-
-  if (!locales) {
-    return null;
-  }
-
-  const locale = locales.find(locale => locale.get('id') === localeId);
-
-  if (!locale) {
-    return null;
-  }
-
-  return locale.get('name');
+  return getLocaleName(state, toolbarId);
 }
 
 function Format(message, locale, text) {
