@@ -3,6 +3,7 @@ import Widget from 'laboratory/widget';
 import React from 'react';
 import Container from 'gadgets/container/widget';
 import Button from 'gadgets/button/widget';
+const {getToolbarId} = require('goblin-nabu/lib/helpers.js');
 
 export default class NabuToolbar extends Widget {
   constructor() {
@@ -32,7 +33,7 @@ export default class NabuToolbar extends Widget {
   }
 
   static connectTo(instance) {
-    return Widget.Wired(NabuToolbar)(`nabu-toolbar@${instance.props.id}`);
+    return Widget.Wired(NabuToolbar)(getToolbarId(instance.props.id));
   }
 
   openMessageSearch() {
