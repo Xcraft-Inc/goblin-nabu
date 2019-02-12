@@ -26,11 +26,20 @@ function Message(text, state, widget) {
     return text;
   }
 
-  if (!widget || !state) {
+  if (!widget) {
     console.warn(
       '%cNabu Tooltip Warning',
       'font-weight: bold;',
-      'widget or state arg have not been provided'
+      'widget has not been provided'
+    );
+    return text.nabuId;
+  }
+
+  if (!state) {
+    console.warn(
+      '%cNabu Tooltip Warning',
+      'font-weight: bold;',
+      'state has not been provided'
     );
     return text.nabuId;
   }
@@ -167,8 +176,8 @@ function connectItem(item) {
   return Widget.connect((state, props) => {
     return {
       this: props.self,
-      message: Message(props.tooltip, state, props.this),
-      locale: Locale(state, props.tooltip, props.this),
+      message: Message(props.tooltip, state, props.self),
+      locale: Locale(state, props.tooltip, props.self),
       tooltip: props.tooltip,
     };
   })(item);
