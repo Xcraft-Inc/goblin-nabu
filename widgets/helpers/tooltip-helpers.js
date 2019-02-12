@@ -166,6 +166,7 @@ const AItem = props => {
 function connectItem(item) {
   return Widget.connect((state, props) => {
     return {
+      this: props.self,
       message: Message(props.tooltip, state, props.this),
       locale: Locale(state, props.tooltip, props.this),
       tooltip: props.tooltip,

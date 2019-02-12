@@ -140,9 +140,14 @@ const config = {
         {
           path: `columns[${index}].field`,
           newValue: locale,
+          muteChanged: true,
         },
         next
       );
+      yield quest.me.change({
+        path: `columns[${index}].sortKey`,
+        newValue: `${locale}-value.keyword`,
+      });
 
       const sort = quest.goblin.getState().get('sort');
 
