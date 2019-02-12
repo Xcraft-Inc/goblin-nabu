@@ -51,7 +51,7 @@ const logicHandlers = {
     );
   },
 
-  'set-selected-locale-id': (state, action) => {
+  'set-selected-locale': (state, action) => {
     return state.set(`selectedLocaleId`, action.get('localeId'));
   },
 
@@ -201,7 +201,7 @@ for (const action of Object.keys(logicHandlers)) {
     case 'enable':
     case 'disable':
     case 'toggle-enabled':
-    case 'set-selected-locale-id':
+    case 'set-selected-locale':
       Goblin.registerQuest(goblinName, action, function(quest) {
         quest.do();
       });
