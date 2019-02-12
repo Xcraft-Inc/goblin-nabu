@@ -1,7 +1,7 @@
 import React from 'react';
 
 import Field from 'gadgets/field/widget';
-import T from 'goblin-nabu/widgets/helpers/t.js';
+import T from 't';
 import {InfoLabel} from './labels';
 import TranslationFieldConnected from '../helpers/translation-field';
 const {computeTranslationId} = require('goblin-nabu/lib/helpers.js');
