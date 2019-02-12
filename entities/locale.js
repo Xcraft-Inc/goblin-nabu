@@ -14,11 +14,11 @@ const entity = {
     return {info};
   },
   quests: {},
-  onNew: function(quest, id, name) {
+  onNew: function(quest, id, name, description) {
     return {
       id,
       name: name || '',
-      description: '',
+      description: description || '',
     };
   },
 };
