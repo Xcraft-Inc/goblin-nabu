@@ -8,10 +8,8 @@ const {
   computeTranslationId,
 } = require('goblin-nabu/lib/helpers.js');
 
-function getLocaleName(state, toolbarId) {
-  const localeId = toolbarId
-    ? state.get(`backend.${toolbarId}.selectedLocaleId`)
-    : null;
+function getLocaleName(state, toolbar) {
+  const localeId = toolbar ? toolbar.get('selectedLocaleId') : null;
   if (!localeId) {
     return null;
   }
@@ -29,75 +27,39 @@ function getLocaleName(state, toolbarId) {
   return locale.get('name');
 }
 
-function Message(text, state, widget) {
-  if (!text || typeof text === 'string') {
-    return text;
-  }
-
-  if (isShredder(text) || isImmutable(text)) {
-    text = text.toJS();
-  }
-
-  if (!text.nabuId) {
-    console.warn(
-      '%cNabu Tooltip Warning',
-      'font-weight: bold;',
-      `malformed message: '${JSON.stringify(text)}' found (missing nabuId)`
-    );
-    return text;
-  }
-
-  if (!widget) {
-    console.warn(
-      '%cNabu Tooltip Warning',
-      'font-weight: bold;',
-      'widget has not been provided'
-    );
-    return text.nabuId;
-  }
-
-  if (!state) {
-    console.warn(
-      '%cNabu Tooltip Warning',
-      'font-weight: bold;',
-      'state has not been provided'
-    );
-    return text.nabuId;
-  }
-
+function getToolbar(state, widget) {
   const getNearestId = widget.getNearestId.bind(widget);
   const workitemId = getNearestId();
   const toolbarId = getToolbarId(widget.context.desktopId || workitemId);
+
+  return toolbarId ? state.get(`backend.${toolbarId}`) : null;
+}
+
+function Message(text, state) {
   const msgId = computeMessageId(text.nabuId);
-  const enabled = toolbarId ? state.get(`backend.${toolbarId}.enabled`) : false;
+  return state.get(`backend.${msgId}`);
+}
+
+function Translation(text, state, enabled, locale) {
+  const msgId = computeMessageId(text.nabuId);
 
   if (enabled && !state.get(`backend.${msgId}`)) {
-    const cmd = widget.cmd.bind(widget);
-
-    cmd('nabu.add-message', {
-      nabuId: text.nabuId,
-      description: text.description,
-      workitemId,
-      desktopId: widget.context.desktopId,
-    });
-
     return text.nabuId;
   }
 
-  const localeName = getLocaleName(state, toolbarId);
-  if (!localeName) {
+  if (!locale) {
     return text.nabuId;
   }
 
   if (!enabled) {
     const cachedTranslation = state.get(
-      `backend.nabu.translations.${msgId}.${localeName}`
+      `backend.nabu.translations.${msgId}.${locale}`
     );
 
     return cachedTranslation || text.nabuId;
   }
 
-  const translationId = computeTranslationId(msgId, localeName);
+  const translationId = computeTranslationId(msgId, locale);
   const translatedMessage = state.get(`backend.${translationId}`);
 
   return translatedMessage && translatedMessage.get('text')
@@ -105,85 +67,152 @@ function Message(text, state, widget) {
     : text.nabuId;
 }
 
-function Locale(state, text, widget) {
-  if (!text || typeof text === 'string') {
-    return null;
-  }
-
-  if (!widget) {
-    return null;
-  }
-
-  const getNearestId = widget.getNearestId.bind(widget);
-  const workitemId = getNearestId();
-  const toolbarId = getToolbarId(widget.context.desktopId || workitemId);
-
-  if (!state || !toolbarId || !state.get(`backend.${toolbarId}.enabled`)) {
-    return null;
-  }
-
-  return getLocaleName(state, toolbarId);
-}
-
-function Format(message, locale, text) {
-  if (!message || !text) {
+function Format(translation, locale, text) {
+  if (!translation || !text) {
     return null;
   }
 
   if (!locale) {
-    return message;
+    return translation;
   }
 
   if (isShredder(text) || isImmutable(text)) {
     text = text.toJS();
   }
 
-  return formatMessage(locale, text.html, message, text.values || []);
+  return formatMessage(locale, text.html, translation, text.values || []);
 }
 
 /**************************************************************************/
 
-const DivItem = props => {
-  const {message, locale, tooltip, children, dispatch, ...other} = props;
+class Item extends Widget {
+  constructor() {
+    super(...arguments);
+    this.mustAdd = this.mustAdd.bind(this);
+  }
 
-  return (
-    <div title={Format(message, locale, tooltip)} {...other}>
-      {children}
-    </div>
-  );
-};
+  componentDidMount() {
+    this.mustAdd();
+  }
 
-const AItem = props => {
-  const {message, locale, tooltip, children, dispatch, ...other} = props;
+  componentDidUpdate() {
+    this.mustAdd();
+  }
 
-  return (
-    <a title={Format(message, locale, tooltip)} {...other}>
-      {children}
-    </a>
-  );
-};
+  mustAdd() {
+    const {enabled, message, text, widget} = this.props;
 
-function connectItem(item) {
+    if (
+      enabled &&
+      !message &&
+      text &&
+      typeof text !== 'string' &&
+      text.nabuId
+    ) {
+      const getNearestId = widget.getNearestId.bind(widget);
+      const workitemId = getNearestId();
+
+      this.cmd('nabu.add-message', {
+        nabuId: text.nabuId,
+        description: text.description,
+        workitemId,
+        desktopId: widget.context.desktopId,
+      });
+    }
+  }
+
+  render() {
+    const {
+      enabled,
+      locale,
+      message,
+      translation,
+      text,
+      widget,
+      dispatch,
+      children,
+      renderElement,
+      ...other
+    } = this.props;
+
+    return renderElement(Format(translation, locale, text), children, other);
+  }
+}
+
+function connectItem(item, renderElement) {
   return Widget.connect((state, props) => {
+    const {tooltip, self, ...other} = props;
+    let text = tooltip;
+
+    if (!text || typeof text === 'string') {
+      return {
+        text: text,
+        renderElement,
+        ...other,
+      };
+    }
+
+    if (isShredder(text) || isImmutable(text)) {
+      text = text.toJS();
+    }
+
+    if (!text.nabuId) {
+      console.warn(
+        '%cNabu Tooltip Warning',
+        'font-weight: bold;',
+        `malformed message: '${JSON.stringify(text)}' found (missing nabuId)`
+      );
+      return {
+        text: text,
+        renderElement,
+        ...other,
+      };
+    }
+
+    if (!self) {
+      console.warn(
+        '%cNabu Tooltip Warning',
+        'font-weight: bold;',
+        'widget has not been provided'
+      );
+      return {
+        text: text.nabuId,
+        renderElement,
+        ...other,
+      };
+    }
+
+    const toolbar = getToolbar(state, self);
+    const enabled = toolbar ? toolbar.get('enabled') : false;
+    const locale = enabled ? getLocaleName(state, toolbar) : null;
+
     return {
-      this: props.self,
-      message: Message(props.tooltip, state, props.self),
-      locale: Locale(state, props.tooltip, props.self),
-      tooltip: props.tooltip,
+      enabled,
+      locale,
+      message: Message(text, state),
+      translation: Translation(text, state, enabled, locale),
+      text,
+      widget: self,
+      renderElement,
+      ...other,
     };
   })(item);
 }
 
-const ConnectedDiv = connectItem(DivItem);
-const ConnectedA = connectItem(AItem);
+const ConnectedDiv = connectItem(Item, (tooltip, children, props) => (
+  <div title={tooltip} {...props}>
+    {children}
+  </div>
+));
+const ConnectedA = connectItem(Item, (tooltip, children, props) => (
+  <a title={tooltip} {...props}>
+    {children}
+  </a>
+));
 
 //-----------------------------------------------------------------------------
 
 module.exports = {
-  Message,
-  Locale,
-  Format,
-
   ConnectedDiv,
   ConnectedA,
 };
