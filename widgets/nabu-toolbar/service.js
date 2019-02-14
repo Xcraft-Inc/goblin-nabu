@@ -156,6 +156,12 @@ Goblin.registerQuest(goblinName, 'open-single-entity', function*(
     };
 
     const workitemId = yield desk.addWorkitem({workitem, navigate: true}, next);
+    const workitemApi = quest.getAPI(workitemId);
+    yield workitemApi.setPostRemove({
+      postRemoveAction: () =>
+        quest.goblin.setX('singleEntityWorkitemId', undefined),
+    });
+
     quest.goblin.setX('singleEntityWorkitemId', workitemId);
 
     const nabu = quest.getAPI('nabu');
@@ -177,19 +183,12 @@ Goblin.registerQuest(goblinName, 'set-selected-item', function*(
     const workitemId = quest.goblin.getX('singleEntityWorkitemId');
     if (workitemId) {
       const workitemApi = quest.getAPI(workitemId);
-      try {
-        yield workitemApi.changeEntity(
-          {
-            entityId: messageId,
-          },
-          next
-        );
-      } catch (err) {
-        if (err.code !== 'XCRAFT_CMD_ERROR') {
-          // otherwise, it is just because the workitem has been closed. how to do better??
-          throw err;
-        }
-      }
+      yield workitemApi.changeEntity(
+        {
+          entityId: messageId,
+        },
+        next
+      );
     }
     quest.do();
   }
