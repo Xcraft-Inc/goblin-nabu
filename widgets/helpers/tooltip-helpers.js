@@ -102,13 +102,7 @@ class Item extends Widget {
   mustAdd() {
     const {enabled, message, text, widget} = this.props;
 
-    if (
-      enabled &&
-      !message &&
-      text &&
-      typeof text !== 'string' &&
-      text.nabuId
-    ) {
+    if (enabled && !message && text && text.nabuId) {
       const getNearestId = widget.getNearestId.bind(widget);
       const workitemId = getNearestId();
 
@@ -146,7 +140,8 @@ function connectItem(item, renderElement) {
 
     if (!text || typeof text === 'string') {
       return {
-        text: text,
+        text,
+        translation: text,
         renderElement,
         ...other,
       };
@@ -163,7 +158,8 @@ function connectItem(item, renderElement) {
         `malformed message: '${JSON.stringify(text)}' found (missing nabuId)`
       );
       return {
-        text: text,
+        text,
+        translation: text,
         renderElement,
         ...other,
       };
@@ -176,7 +172,8 @@ function connectItem(item, renderElement) {
         'widget has not been provided'
       );
       return {
-        text: text.nabuId,
+        text,
+        translation: text.nabuId,
         renderElement,
         ...other,
       };
