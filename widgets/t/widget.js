@@ -84,8 +84,9 @@ class T extends Widget {
       console.warn(
         '%cNabu T Warning',
         'font-weight: bold;',
-        `malformed message: '${JSON.stringify(msg)}' found (missing nabuId)`
+        `malformed message found (missing nabuId)`
       );
+      console.warn(msg);
       return msg;
     }
 

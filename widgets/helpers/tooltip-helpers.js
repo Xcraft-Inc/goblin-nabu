@@ -155,8 +155,9 @@ function connectItem(item, renderElement) {
       console.warn(
         '%cNabu Tooltip Warning',
         'font-weight: bold;',
-        `malformed message: '${JSON.stringify(text)}' found (missing nabuId)`
+        `malformed message found (missing nabuId)`
       );
+      console.warn(text);
       return {
         text,
         translation: text,
