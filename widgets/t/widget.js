@@ -81,12 +81,6 @@ class T extends Widget {
     }
 
     if (!msg.nabuId) {
-      console.warn(
-        '%cNabu T Warning',
-        'font-weight: bold;',
-        `malformed message found (missing nabuId)`
-      );
-      console.warn(msg);
       return msg;
     }
 

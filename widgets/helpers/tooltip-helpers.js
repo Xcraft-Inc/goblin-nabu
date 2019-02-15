@@ -129,7 +129,13 @@ class Item extends Widget {
       ...other
     } = this.props;
 
-    return renderElement(Format(translation, locale, text), children, other);
+    return renderElement(
+      typeof translation === 'string'
+        ? Format(translation, locale, text)
+        : text,
+      children,
+      other
+    );
   }
 }
 
@@ -152,12 +158,6 @@ function connectItem(item, renderElement) {
     }
 
     if (!text.nabuId) {
-      console.warn(
-        '%cNabu Tooltip Warning',
-        'font-weight: bold;',
-        `malformed message found (missing nabuId)`
-      );
-      console.warn(text);
       return {
         text,
         translation: text,
