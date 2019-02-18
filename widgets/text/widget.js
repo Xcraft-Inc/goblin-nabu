@@ -1,7 +1,7 @@
 'use strict';
 import Widget from 'laboratory/widget';
 import React from 'react';
-import formatMessage from '../helpers/format.js';
+import formatMessage from 'goblin-nabu/lib/format.js';
 
 export default class NabuText extends Widget {
   constructor() {

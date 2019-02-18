@@ -1,6 +1,6 @@
 import React from 'react';
 import Widget from 'laboratory/widget';
-import formatMessage from './format.js';
+import formatMessage from 'goblin-nabu/lib/format.js';
 import {isShredder, isImmutable} from 'xcraft-core-shredder';
 const {
   getToolbarId,
