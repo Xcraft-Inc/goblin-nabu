@@ -185,7 +185,7 @@ function connectItem(item, renderElement) {
 
     const toolbar = getToolbar(state, self);
     const enabled = toolbar ? toolbar.get('enabled') : false;
-    const locale = enabled ? getLocaleName(state, toolbar) : null;
+    const locale = getLocaleName(state, toolbar);
     const message = state.get(`backend.${computeMessageId(text.nabuId)}`);
 
     return {
