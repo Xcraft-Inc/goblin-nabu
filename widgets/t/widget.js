@@ -10,8 +10,7 @@ const {
   computeTranslationId,
 } = require('goblin-nabu/lib/helpers.js');
 const {
-  messageWithContext,
-  translationWithSublocale,
+  translationWithContextAndSublocale,
 } = require('goblin-nabu/lib/gettext.js');
 
 const TextConnected = Widget.connect((state, props) => {
@@ -24,11 +23,7 @@ const TextConnected = Widget.connect((state, props) => {
   let translation = null;
   let cachedTranslation = null;
   let wiring = {};
-  const messageStruct = messageWithContext(
-    props.nabuId,
-    nabuId => computeMessageId(nabuId),
-    msgId => state.get(`backend.${msgId}`)
-  );
+  const message = state.get(`backend.${computeMessageId(props.nabuId)}`);
 
   if (localeId) {
     const locales = state.get('backend.nabu.locales');
@@ -37,18 +32,20 @@ const TextConnected = Widget.connect((state, props) => {
       locale = locales.find(locale => locale.get('id') === localeId);
 
       if (locale && locale.get('name')) {
-        translation = translationWithSublocale(locale.get('name'), localeName =>
-          state.get(
-            `backend.${computeTranslationId(messageStruct.msgId, localeName)}`
-          )
+        translation = translationWithContextAndSublocale(
+          props.nabuId,
+          locale.get('name'),
+          nabuId => computeMessageId(nabuId),
+          (msgId, localeName) =>
+            state.get(`backend.${computeTranslationId(msgId, localeName)}`)
         );
 
-        cachedTranslation = translationWithSublocale(
+        cachedTranslation = translationWithContextAndSublocale(
+          props.nabuId,
           locale.get('name'),
-          localeName =>
-            state.get(
-              `backend.nabu.translations.${messageStruct.msgId}.${localeName}`
-            )
+          nabuId => computeMessageId(nabuId),
+          (msgId, localeName) =>
+            state.get(`backend.nabu.translations.${msgId}.${localeName}`)
         );
       }
     }
@@ -68,7 +65,7 @@ const TextConnected = Widget.connect((state, props) => {
   }
 
   return {
-    message: messageStruct.message,
+    message,
     cachedTranslation,
     translation,
     locale,

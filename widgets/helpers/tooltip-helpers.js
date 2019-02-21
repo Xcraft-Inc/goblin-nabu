@@ -8,8 +8,7 @@ const {
   computeTranslationId,
 } = require('goblin-nabu/lib/helpers.js');
 const {
-  messageWithContext,
-  translationWithSublocale,
+  translationWithContextAndSublocale,
 } = require('goblin-nabu/lib/gettext.js');
 
 function getLocaleName(state, toolbar) {
@@ -39,33 +38,29 @@ function getToolbar(state, widget) {
   return toolbarId ? state.get(`backend.${toolbarId}`) : null;
 }
 
-function Message(text, state) {
-  return messageWithContext(
-    text.nabuId,
-    nabuId => computeMessageId(nabuId),
-    msgId => state.get(`backend.${msgId}`)
-  );
-}
-
-function Translation(text, state, enabled, msgId, locale) {
-  if (enabled && !state.get(`backend.${msgId}`)) {
-    return text.nabuId;
-  }
-
+function Translation(text, state, enabled, locale) {
   if (!locale) {
     return text.nabuId;
   }
 
   if (!enabled) {
-    const cachedTranslation = translationWithSublocale(locale, localeName =>
-      state.get(`backend.nabu.translations.${msgId}.${localeName}`)
+    const cachedTranslation = translationWithContextAndSublocale(
+      text.nabuId,
+      locale,
+      nabuId => computeMessageId(nabuId),
+      (msgId, localeName) =>
+        state.get(`backend.nabu.translations.${msgId}.${localeName}`)
     );
 
     return cachedTranslation || text.nabuId;
   }
 
-  const translatedMessage = translationWithSublocale(locale, localeName =>
-    state.get(`backend.${computeTranslationId(msgId, localeName)}`)
+  const translatedMessage = translationWithContextAndSublocale(
+    text.nabuId,
+    locale,
+    nabuId => computeMessageId(nabuId),
+    (msgId, localeName) =>
+      state.get(`backend.${computeTranslationId(msgId, localeName)}`)
   );
 
   return translatedMessage && translatedMessage.get('text')
@@ -189,13 +184,13 @@ function connectItem(item, renderElement) {
     const toolbar = getToolbar(state, self);
     const enabled = toolbar ? toolbar.get('enabled') : false;
     const locale = enabled ? getLocaleName(state, toolbar) : null;
-    const msgStruct = Message(text, state);
+    const message = state.get(`backend.${computeMessageId(text.nabuId)}`);
 
     return {
       enabled,
       locale,
-      message: msgStruct.message,
-      translation: Translation(text, state, enabled, msgStruct.msgId, locale),
+      message,
+      translation: Translation(text, state, enabled, locale),
       text,
       widget: self,
       renderElement,
