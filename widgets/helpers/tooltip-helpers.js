@@ -7,6 +7,10 @@ const {
   computeMessageId,
   computeTranslationId,
 } = require('goblin-nabu/lib/helpers.js');
+const {
+  messageWithContext,
+  translationWithSublocale,
+} = require('goblin-nabu/lib/gettext.js');
 
 function getLocaleName(state, toolbar) {
   const localeId = toolbar ? toolbar.get('selectedLocaleId') : null;
@@ -36,12 +40,11 @@ function getToolbar(state, widget) {
 }
 
 function Message(text, state) {
-  const msgId = computeMessageId(text.nabuId);
-
-  return {
-    msgId,
-    message: state.get(`backend.${msgId}`),
-  };
+  return messageWithContext(
+    text.nabuId,
+    nabuId => computeMessageId(nabuId),
+    msgId => state.get(`backend.${msgId}`)
+  );
 }
 
 function Translation(text, state, enabled, msgId, locale) {
@@ -54,15 +57,16 @@ function Translation(text, state, enabled, msgId, locale) {
   }
 
   if (!enabled) {
-    const cachedTranslation = state.get(
-      `backend.nabu.translations.${msgId}.${locale}`
+    const cachedTranslation = translationWithSublocale(locale, localeName =>
+      state.get(`backend.nabu.translations.${msgId}.${localeName}`)
     );
 
     return cachedTranslation || text.nabuId;
   }
 
-  const translationId = computeTranslationId(msgId, locale);
-  const translatedMessage = state.get(`backend.${translationId}`);
+  const translatedMessage = translationWithSublocale(locale, localeName =>
+    state.get(`backend.${computeTranslationId(msgId, localeName)}`)
+  );
 
   return translatedMessage && translatedMessage.get('text')
     ? translatedMessage.get('text')
