@@ -36,6 +36,7 @@ const TextConnected = Widget.connect((state, props) => {
           props.nabuId,
           locale.get('name'),
           nabuId => computeMessageId(nabuId),
+          translation => translation && translation.get('text'),
           (msgId, localeName) =>
             state.get(`backend.${computeTranslationId(msgId, localeName)}`)
         );
@@ -44,6 +45,7 @@ const TextConnected = Widget.connect((state, props) => {
           props.nabuId,
           locale.get('name'),
           nabuId => computeMessageId(nabuId),
+          translation => translation,
           (msgId, localeName) =>
             state.get(`backend.nabu.translations.${msgId}.${localeName}`)
         );

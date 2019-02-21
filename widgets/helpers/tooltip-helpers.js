@@ -48,6 +48,7 @@ function Translation(text, state, enabled, locale) {
       text.nabuId,
       locale,
       nabuId => computeMessageId(nabuId),
+      translation => translation,
       (msgId, localeName) =>
         state.get(`backend.nabu.translations.${msgId}.${localeName}`)
     );
@@ -59,6 +60,7 @@ function Translation(text, state, enabled, locale) {
     text.nabuId,
     locale,
     nabuId => computeMessageId(nabuId),
+    translation => translation && translation.get('text'),
     (msgId, localeName) =>
       state.get(`backend.${computeTranslationId(msgId, localeName)}`)
   );
