@@ -37,12 +37,14 @@ function getToolbar(state, widget) {
 
 function Message(text, state) {
   const msgId = computeMessageId(text.nabuId);
-  return state.get(`backend.${msgId}`);
+
+  return {
+    msgId,
+    message: state.get(`backend.${msgId}`),
+  };
 }
 
-function Translation(text, state, enabled, locale) {
-  const msgId = computeMessageId(text.nabuId);
-
+function Translation(text, state, enabled, msgId, locale) {
   if (enabled && !state.get(`backend.${msgId}`)) {
     return text.nabuId;
   }
@@ -183,12 +185,13 @@ function connectItem(item, renderElement) {
     const toolbar = getToolbar(state, self);
     const enabled = toolbar ? toolbar.get('enabled') : false;
     const locale = enabled ? getLocaleName(state, toolbar) : null;
+    const msgStruct = Message(text, state);
 
     return {
       enabled,
       locale,
-      message: Message(text, state),
-      translation: Translation(text, state, enabled, locale),
+      message: msgStruct.message,
+      translation: Translation(text, state, enabled, msgStruct.msgId, locale),
       text,
       widget: self,
       renderElement,
