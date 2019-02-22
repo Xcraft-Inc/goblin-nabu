@@ -126,6 +126,7 @@ class Item extends Widget {
       dispatch,
       children,
       renderElement,
+      self,
       ...other
     } = this.props;
 
