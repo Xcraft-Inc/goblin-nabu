@@ -1,7 +1,6 @@
 'use strict';
 
 import Widget from 'laboratory/widget';
-import _ from 'lodash';
 import React from 'react';
 import Text from 'nabu/text/widget';
 import {isShredder, isImmutable} from 'xcraft-core-shredder';
@@ -10,6 +9,9 @@ const {
   computeMessageId,
   computeTranslationId,
 } = require('goblin-nabu/lib/helpers.js');
+const {
+  translationWithContextAndSublocale,
+} = require('goblin-nabu/lib/gettext.js');
 
 const TextConnected = Widget.connect((state, props) => {
   const toolbarId = getToolbarId(props.workitemId);
@@ -21,6 +23,7 @@ const TextConnected = Widget.connect((state, props) => {
   let translation = null;
   let cachedTranslation = null;
   let wiring = {};
+  const message = state.get(`backend.${computeMessageId(props.nabuId)}`);
 
   if (localeId) {
     const locales = state.get('backend.nabu.locales');
@@ -29,12 +32,22 @@ const TextConnected = Widget.connect((state, props) => {
       locale = locales.find(locale => locale.get('id') === localeId);
 
       if (locale && locale.get('name')) {
-        translation = state.get(
-          `backend.${computeTranslationId(props.msgId, locale.get('name'))}`
+        translation = translationWithContextAndSublocale(
+          props.nabuId,
+          locale.get('name'),
+          nabuId => computeMessageId(nabuId),
+          translation => translation && translation.get('text'),
+          (msgId, localeName) =>
+            state.get(`backend.${computeTranslationId(msgId, localeName)}`)
         );
 
-        cachedTranslation = state.get(
-          `backend.nabu.translations.${props.msgId}.${locale.get('name')}`
+        cachedTranslation = translationWithContextAndSublocale(
+          props.nabuId,
+          locale.get('name'),
+          nabuId => computeMessageId(nabuId),
+          translation => translation,
+          (msgId, localeName) =>
+            state.get(`backend.nabu.translations.${msgId}.${localeName}`)
         );
       }
     }
@@ -54,7 +67,7 @@ const TextConnected = Widget.connect((state, props) => {
   }
 
   return {
-    message: state.get(`backend.${props.msgId}`),
+    message,
     cachedTranslation,
     translation,
     locale,
@@ -86,7 +99,6 @@ class T extends Widget {
 
     return (
       <TextConnected
-        msgId={computeMessageId(msg.nabuId)}
         nabuId={msg.nabuId}
         description={msg.description}
         html={msg.html}
