@@ -4,7 +4,7 @@ import Form from 'laboratory/form';
 
 import Container from 'gadgets/container/widget';
 import Field from 'gadgets/field/widget';
-import TranslationFieldConnected from '../helpers/translation-field';
+import TranslationFieldConnected from '../translation-field/widget.js';
 const {computeTranslationId} = require('goblin-nabu/lib/helpers.js');
 
 /******************************************************************************/
