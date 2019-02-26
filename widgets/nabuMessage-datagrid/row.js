@@ -37,14 +37,20 @@ function renderLocaleRowCell(id, locale, datagrid) {
     const translationId = computeTranslationId(id, locale);
 
     return (
-      <TranslationFieldConnected
-        translationId={translationId}
-        component={datagrid}
-        msgId={id}
-        labelWidth="0px"
-        width="280px"
-        spacing="compact"
-      />
+      <div
+        style={{
+          borderBottom: 'solid thin #c1d1e0',
+          width: '280px',
+        }}
+      >
+        <TranslationFieldConnected
+          translationId={translationId}
+          component={datagrid}
+          msgId={id}
+          labelWidth="0px"
+          spacing="compact"
+        />
+      </div>
     );
   }
 
