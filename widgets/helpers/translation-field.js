@@ -3,6 +3,8 @@ import Form from 'laboratory/form';
 
 import Field from 'gadgets/field/widget';
 import Widget from 'laboratory/widget';
+import {HighlightLabel} from '../nabuMessage-datagrid/labels.js';
+
 const {getToolbarId} = require('goblin-nabu/lib/helpers.js');
 
 class TranslationField extends Form {
@@ -11,6 +13,11 @@ class TranslationField extends Form {
 
     this.onFocus = this.onFocus.bind(this);
     this.onBlur = this.onBlur.bind(this);
+    this.onUpdate = this.onUpdate.bind(this);
+
+    this.state = {
+      showField: false,
+    };
   }
 
   static get wiring() {
@@ -63,6 +70,10 @@ class TranslationField extends Form {
     }
   }
 
+  onUpdate() {
+    this.setState({showField: true});
+  }
+
   render() {
     const {
       id,
@@ -73,6 +84,7 @@ class TranslationField extends Form {
       rows,
       verticalSpacing,
       grow,
+      highlight,
       ...other
     } = this.props;
 
@@ -81,6 +93,18 @@ class TranslationField extends Form {
     }
 
     const Form = this.Form;
+
+    const text = highlight ? highlight.get(id) : undefined;
+    if (text && !this.state.showField) {
+      return (
+        <HighlightLabel
+          id={id}
+          datagridId={component.props.id}
+          insideButton="false"
+          onClick={this.onUpdate}
+        />
+      );
+    }
 
     return (
       <Form {...this.formConfig}>
@@ -103,5 +127,6 @@ export default Widget.connect((state, props) => {
     id: state.get(`backend.${props.translationId}`)
       ? props.translationId
       : null,
+    highlight: state.get(`backend.list@${props.component.props.id}.highlights`),
   };
 })(TranslationField);
