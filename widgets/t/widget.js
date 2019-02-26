@@ -4,6 +4,8 @@ import Widget from 'laboratory/widget';
 import React from 'react';
 import Text from 'nabu/text/widget';
 import {isShredder, isImmutable} from 'xcraft-core-shredder';
+import ReactMarkdown from 'react-markdown';
+
 const {
   getToolbarId,
   computeMessageId,
@@ -93,7 +95,22 @@ class T extends Widget {
       msg = msg.toJS();
     }
 
-    if (!msg.nabuId) {
+    if (msg._type === 'markdownWithRefs') {
+      return (
+        <ReactMarkdown
+          source={msg._string.substring(3, msg._string.length - 3)}
+          renderers={{
+            text: text => {
+              if (text.startsWith('@{') && text.endsWith('}')) {
+                return <T msgid={msg._refs[text.slice(2, text.length - 1)]} />;
+              } else {
+                return text;
+              }
+            },
+          }}
+        />
+      );
+    } else if (!msg.nabuId) {
       return <span {...other}>{msg}</span>;
     }
 
