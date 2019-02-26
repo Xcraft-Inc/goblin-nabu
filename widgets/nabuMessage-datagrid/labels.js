@@ -74,8 +74,10 @@ const HighlightLabel = Widget.connect((state, props) => {
   const message = state.get(`backend.${props.id}`);
 
   let text = highlight ? highlight.get(props.id) : undefined;
-  if (!text) {
-    text = message.get('nabuId');
+  if (!text || props.fromState) {
+    const nabuId = message.get('nabuId');
+    const translation = message.get('text');
+    text = nabuId || translation;
   }
 
   return {
