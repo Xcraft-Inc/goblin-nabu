@@ -82,7 +82,7 @@ class T extends Widget {
     let msg = msgid;
 
     if (!msg) {
-      return null;
+      return <span {...other}>{msg}</span>;
     }
 
     if (typeof msg === 'string') {
@@ -94,7 +94,7 @@ class T extends Widget {
     }
 
     if (!msg.nabuId) {
-      return msg;
+      return <span {...other}>{msg}</span>;
     }
 
     return (

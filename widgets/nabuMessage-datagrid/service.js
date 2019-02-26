@@ -13,6 +13,7 @@ const config = {
   kind: 'datagrid',
   initialState: {
     hasTranslations: {},
+    needColumns: ['missingTranslations'],
   },
   dialog: {
     height: '700px',
