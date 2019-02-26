@@ -3,7 +3,7 @@ import Form from 'laboratory/form';
 
 import Field from 'gadgets/field/widget';
 import Widget from 'laboratory/widget';
-import {HighlightLabel} from '../nabuMessage-datagrid/labels.js';
+import HighlightLabel from '../highlight-label/widget.js';
 
 const {getToolbarId} = require('goblin-nabu/lib/helpers.js');
 
@@ -107,6 +107,7 @@ class TranslationField extends Form {
           datagridId={component.props.id}
           insideButton="false"
           onClick={this.onUpdate}
+          underline={true}
           {...other}
         />
       );
@@ -121,7 +122,9 @@ class TranslationField extends Form {
           onFocus={this.onFocus}
           onBlur={this.onBlur}
           rows={rows || '1'}
-          style={this.props.labelText ? {} : {border: 'hidden'}}
+          className={
+            this.props.labelText ? undefined : this.styles.classNames.bottomLine
+          }
           {...other}
         />
       </Form>
