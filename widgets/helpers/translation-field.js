@@ -85,6 +85,7 @@ class TranslationField extends Form {
       verticalSpacing,
       grow,
       highlight,
+      text,
       ...other
     } = this.props;
 
@@ -94,14 +95,19 @@ class TranslationField extends Form {
 
     const Form = this.Form;
 
-    const text = highlight ? highlight.get(id) : undefined;
-    if (text && !this.state.showField) {
+    const highlightText = highlight ? highlight.get(id) : undefined;
+    if (
+      highlightText &&
+      text === highlightText.replace(new RegExp('`', 'g'), '') &&
+      !this.state.showField
+    ) {
       return (
         <HighlightLabel
           id={id}
           datagridId={component.props.id}
           insideButton="false"
           onClick={this.onUpdate}
+          {...other}
         />
       );
     }
@@ -115,6 +121,7 @@ class TranslationField extends Form {
           onFocus={this.onFocus}
           onBlur={this.onBlur}
           rows={rows || '1'}
+          style={this.props.labelText ? {} : {border: 'hidden'}}
           {...other}
         />
       </Form>
@@ -123,10 +130,17 @@ class TranslationField extends Form {
 }
 
 export default Widget.connect((state, props) => {
+  const highlight = props.component
+    ? state.get(`backend.list@${props.component.props.id}.highlights`)
+    : undefined;
+
   return {
     id: state.get(`backend.${props.translationId}`)
       ? props.translationId
       : null,
-    highlight: state.get(`backend.list@${props.component.props.id}.highlights`),
+    highlight,
+    text: state.get(`backend.${props.translationId}`)
+      ? state.get(`backend.${props.translationId}.text`)
+      : undefined,
   };
 })(TranslationField);
