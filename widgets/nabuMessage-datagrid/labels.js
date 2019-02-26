@@ -69,25 +69,4 @@ const SortLabel = Widget.connect((state, props) => {
   return {glyph: glyph, tooltip: tooltip};
 })(Label);
 
-const HighlightLabel = Widget.connect((state, props) => {
-  const highlight = state.get(`backend.list@${props.datagridId}.highlights`);
-  const message = state.get(`backend.${props.id}`);
-
-  let text = highlight ? highlight.get(props.id) : undefined;
-  if (!text || props.fromState) {
-    const nabuId = message.get('nabuId');
-    const translation = message.get('text');
-    text = nabuId || translation;
-  }
-
-  return {
-    text,
-    style: {
-      paddingBottom: '8px',
-      paddingTop: '8px',
-      marginLeft: '10px',
-    },
-  };
-})(Label);
-
-module.exports = {InfoLabel, SortLabel, HighlightLabel};
+module.exports = {InfoLabel, SortLabel};
