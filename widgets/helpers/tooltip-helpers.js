@@ -71,19 +71,18 @@ function Translation(text, state, enabled, locale) {
 }
 
 function Format(translation, locale, text) {
-  if (!translation || !text) {
+  if (!text) {
     return null;
-  }
-
-  if (!locale) {
-    return translation;
   }
 
   if (isShredder(text) || isImmutable(text)) {
     text = text.toJS();
   }
 
-  return formatMessage(locale, text.html, translation, text.values || []);
+  const txt =
+    translation && typeof translation === 'string' ? translation : text.nabuId;
+
+  return formatMessage(locale, text.html, txt, text.values || {});
 }
 
 /**************************************************************************/
@@ -133,13 +132,7 @@ class Item extends Widget {
       ...other
     } = this.props;
 
-    return renderElement(
-      typeof translation === 'string'
-        ? Format(translation, locale, text)
-        : text,
-      children,
-      other
-    );
+    return renderElement(Format(translation, locale, text), children, other);
   }
 }
 

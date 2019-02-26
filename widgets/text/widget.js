@@ -82,19 +82,14 @@ export default class NabuText extends Widget {
       return cachedTranslation;
     }
 
+    const localeName = locale && locale.get('name');
+
     const translatedMessage =
-      enabled &&
-      message &&
-      translation &&
-      translation.get('text') &&
-      locale &&
-      locale.get('name')
+      enabled && message && translation && translation.get('text') && localeName
         ? translation.get('text')
         : nabuId;
 
-    return locale && locale.get('name')
-      ? formatMessage(locale.get('name'), html, translatedMessage, values || [])
-      : nabuId;
+    return formatMessage(localeName, html, translatedMessage, values || {});
   }
 
   getSelectionModeStyle() {
