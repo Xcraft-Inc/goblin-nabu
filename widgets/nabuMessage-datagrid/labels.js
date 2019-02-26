@@ -78,7 +78,14 @@ const HighlightLabel = Widget.connect((state, props) => {
     text = message.get('nabuId');
   }
 
-  return {text};
+  return {
+    text,
+    style: {
+      paddingBottom: '8px',
+      paddingTop: '8px',
+      marginLeft: '10px',
+    },
+  };
 })(Label);
 
 module.exports = {InfoLabel, SortLabel, HighlightLabel};
