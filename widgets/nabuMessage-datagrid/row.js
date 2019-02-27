@@ -1,9 +1,9 @@
 import React from 'react';
 
-import Field from 'gadgets/field/widget';
 import T from 't';
-import {InfoLabel, HighlightLabel} from './labels';
-import TranslationFieldConnected from '../helpers/translation-field';
+import {InfoLabel} from './labels';
+import TranslationFieldConnected from '../translation-field/widget.js';
+import HighlightLabel from '../highlight-label/widget.js';
 const {computeTranslationId} = require('goblin-nabu/lib/helpers.js');
 
 // ------------------------------------------------------------
@@ -26,7 +26,11 @@ function renderMissingTranslationsRowCell(id, props) {
 function renderNabuIdRowCell(id, datagrid) {
   return (
     <div style={{display: 'flex'}}>
-      <HighlightLabel id={id} datagridId={datagrid.props.id} />
+      <HighlightLabel
+        id={id}
+        datagridId={datagrid.props.id}
+        underline="false"
+      />
       <InfoLabel id={id} checkDescription="true" spacing="overlap" />
     </div>
   );
@@ -42,7 +46,6 @@ function renderLocaleRowCell(id, locale, datagrid) {
         component={datagrid}
         msgId={id}
         labelWidth="0px"
-        width="280px"
         spacing="compact"
       />
     );
