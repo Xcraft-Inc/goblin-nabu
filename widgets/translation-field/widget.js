@@ -5,7 +5,7 @@ import Field from 'gadgets/field/widget';
 import Widget from 'laboratory/widget';
 import HighlightLabel from '../highlight-label/widget.js';
 
-const {getToolbarId} = require('goblin-nabu/lib/helpers.js');
+import {getToolbarId} from 'goblin-nabu/lib/helpers.js';
 
 class TranslationField extends Form {
   constructor() {

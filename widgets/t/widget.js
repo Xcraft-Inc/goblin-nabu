@@ -4,14 +4,12 @@ import Widget from 'laboratory/widget';
 import React from 'react';
 import Text from 'nabu/text/widget';
 import {isShredder, isImmutable} from 'xcraft-core-shredder';
-const {
+import {
   getToolbarId,
   computeMessageId,
   computeTranslationId,
-} = require('goblin-nabu/lib/helpers.js');
-const {
-  translationWithContextAndSublocale,
-} = require('goblin-nabu/lib/gettext.js');
+} from 'goblin-nabu/lib/helpers.js';
+import {translationWithContextAndSublocale} from 'goblin-nabu/lib/gettext.js';
 
 const TextConnected = Widget.connect((state, props) => {
   const toolbarId = getToolbarId(props.workitemId);
