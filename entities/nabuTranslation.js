@@ -15,7 +15,7 @@ const entity = {
     return {info: ref, description: ref, localeName};
   },
   indexer: function(quest, entity) {
-    const info = entity.get('meta.summaries.description');
+    const info = entity.get('meta.summaries.description', '');
     const messageId = entity.get('messageId');
 
     let result = {info, messageId};
