@@ -1,5 +1,7 @@
 'use strict';
+//T:2019-02-27
 
+const T = require('goblin-nabu/widgets/helpers/t.js');
 const watt = require('gigawatts');
 const {buildWorkitem} = require('goblin-workshop');
 const {getToolbarId} = require('goblin-nabu/lib/helpers.js');
@@ -50,7 +52,7 @@ const config = {
     subJoins: ['messageId'],
     field: 'id',
     fields: ['info'],
-    title: 'Messages',
+    title: T('Messages'),
   },
   afterCreate: function*(quest, next) {
     // Setting correct selected locales

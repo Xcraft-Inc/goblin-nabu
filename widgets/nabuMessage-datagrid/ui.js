@@ -1,3 +1,4 @@
+//T:2019-02-27
 import React from 'react';
 import Widget from 'laboratory/widget';
 
@@ -40,7 +41,7 @@ function renderHinterRow(doAsDatagrid) {
       onDebouncedChange={value =>
         doAsDatagrid('applyElasticVisualization', {value})
       }
-      hintText={`Search message or translation`}
+      hintText={T('Search message or translation')}
       width="95%"
       verticalSpacing="5px"
     />

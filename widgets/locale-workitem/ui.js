@@ -1,3 +1,6 @@
+//T:2019-02-27
+
+import T from 't';
 import React from 'react';
 
 import Container from 'gadgets/container/widget';
@@ -9,11 +12,11 @@ function renderPanel(props) {
     <Container kind="column" grow="1">
       <Container kind="pane">
         <Container kind="row-pane">
-          <Label text="Locale" grow="1" kind="title" />
+          <Label text={T('Locale')} grow="1" kind="title" />
         </Container>
 
         <Container kind="column">
-          <Field grow="1" labelText="Nom" model=".name" />
+          <Field grow="1" labelText={T('Nom')} model=".name" />
         </Container>
       </Container>
     </Container>

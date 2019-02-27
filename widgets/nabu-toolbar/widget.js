@@ -1,4 +1,7 @@
 'use strict';
+//T:2019-02-27
+
+import T from 't';
 import Widget from 'laboratory/widget';
 import React from 'react';
 import Container from 'gadgets/container/widget';
@@ -92,17 +95,17 @@ export default class NabuToolbar extends Widget {
         <Container kind="row">
           <Button
             kind="button-footer"
-            text="&#x048a;&#x023a;&#x0243;&#x054d;"
+            text={T('&#x048a;&#x023a;&#x0243;&#x054d;')}
             onClick={this.toggleEnabled}
           />
           <Button
             kind="button-footer"
-            text="Search messages"
+            text={T('Search messages')}
             onClick={this.openMessageSearch}
           />
           <Button
             kind="button-footer"
-            text="Search locales"
+            text={T('Search locales')}
             onClick={this.openLocaleSearch}
           />
           <Button
@@ -144,7 +147,7 @@ export default class NabuToolbar extends Widget {
         <Container kind="row">
           <Button
             kind="button-footer"
-            text="&#x048a;&#x023a;&#x0243;&#x054d;"
+            text={T('&#x048a;&#x023a;&#x0243;&#x054d;')}
             onClick={this.toggleEnabled}
           />
         </Container>
