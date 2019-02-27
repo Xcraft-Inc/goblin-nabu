@@ -69,6 +69,10 @@ Goblin.registerQuest(goblinName, 'get', function(quest) {
   return quest.goblin.getState();
 });
 
+Goblin.registerQuest(goblinName, 'getSelectedLocaleId', function(quest) {
+  return quest.goblin.getState().get('selectedLocaleId');
+});
+
 Goblin.registerQuest(goblinName, 'create', function*(
   quest,
   desktopId,
