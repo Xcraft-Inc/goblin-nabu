@@ -3,7 +3,7 @@ import Widget from 'laboratory/widget';
 import React from 'react';
 import Container from 'gadgets/container/widget';
 import Button from 'gadgets/button/widget';
-const {getToolbarId} = require('goblin-nabu/lib/helpers.js');
+import {getToolbarId} from 'goblin-nabu/lib/helpers.js';
 
 export default class NabuToolbar extends Widget {
   constructor() {
