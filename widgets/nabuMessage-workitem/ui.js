@@ -1,9 +1,13 @@
+//T:2019-02-27
+
+import T from 't';
 import React from 'react';
 import Widget from 'laboratory/widget';
 import Form from 'laboratory/form';
 
 import Container from 'gadgets/container/widget';
 import Field from 'gadgets/field/widget';
+import Label from 'gadgets/label/widget';
 import TranslationFieldConnected from '../translation-field/widget.js';
 const {computeTranslationId} = require('goblin-nabu/lib/helpers.js');
 
@@ -24,7 +28,11 @@ class NabuMessage extends Form {
     const Form = this.Form;
 
     if (!this.props.entityId) {
-      return <div>No entity Id in props</div>;
+      return (
+        <div>
+          <Label text={T('No entity Id in props')} />
+        </div>
+      );
     }
 
     return (
@@ -37,7 +45,7 @@ class NabuMessage extends Form {
             <Container kind="row-pane">
               <Field
                 width={this.props.width || '600px'}
-                labelText="Description"
+                labelText={T('Description')}
                 model=".description"
                 readonly={true}
                 spacing="compact"
