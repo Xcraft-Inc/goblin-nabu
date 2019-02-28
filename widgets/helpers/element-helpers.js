@@ -140,8 +140,8 @@ class Item extends Widget {
 
 function connectItem(item, renderElement) {
   return Widget.connect((state, props) => {
-    const {tooltip, self, ...other} = props;
-    let text = tooltip;
+    const {msgid, self, ...other} = props;
+    let text = msgid;
 
     if (!text || typeof text === 'string') {
       return {
@@ -197,20 +197,34 @@ function connectItem(item, renderElement) {
   })(item);
 }
 
-const ConnectedDiv = connectItem(Item, (tooltip, children, props) => (
+const TranslatableDiv = connectItem(Item, (tooltip, children, props) => (
   <div title={tooltip} {...props}>
     {children}
   </div>
 ));
-const ConnectedA = connectItem(Item, (tooltip, children, props) => (
+
+const TranslatableA = connectItem(Item, (tooltip, children, props) => (
   <a title={tooltip} {...props}>
     {children}
   </a>
 ));
 
+const TranslatableTextarea = connectItem(
+  Item,
+  (placeholder, children, props) => (
+    <textarea placeholder={placeholder} {...props} />
+  )
+);
+
+const TranslatableInput = connectItem(Item, (placeholder, children, props) => (
+  <input placeholder={placeholder} {...props} />
+));
+
 //-----------------------------------------------------------------------------
 
 module.exports = {
-  ConnectedDiv,
-  ConnectedA,
+  TranslatableDiv,
+  TranslatableA,
+  TranslatableTextarea,
+  TranslatableInput,
 };
