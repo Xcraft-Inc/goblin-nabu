@@ -131,10 +131,16 @@ class Item extends Widget {
       children,
       renderElement,
       self,
+      onRef,
       ...other
     } = this.props;
 
-    return renderElement(Format(translation, locale, text), children, other);
+    return renderElement(
+      Format(translation, locale, text),
+      children,
+      onRef,
+      other
+    );
   }
 }
 
@@ -197,28 +203,31 @@ function connectItem(item, renderElement) {
   })(item);
 }
 
-const TranslatableDiv = connectItem(Item, (tooltip, children, props) => (
-  <div title={tooltip} {...props}>
+const TranslatableDiv = connectItem(Item, (tooltip, children, onRef, props) => (
+  <div ref={onRef} title={tooltip} {...props}>
     {children}
   </div>
 ));
 
-const TranslatableA = connectItem(Item, (tooltip, children, props) => (
-  <a title={tooltip} {...props}>
+const TranslatableA = connectItem(Item, (tooltip, children, onRef, props) => (
+  <a ref={onRef} title={tooltip} {...props}>
     {children}
   </a>
 ));
 
 const TranslatableTextarea = connectItem(
   Item,
-  (placeholder, children, props) => (
-    <textarea placeholder={placeholder} {...props} />
+  (placeholder, children, onRef, props) => (
+    <textarea ref={onRef} placeholder={placeholder} {...props} />
   )
 );
 
-const TranslatableInput = connectItem(Item, (placeholder, children, props) => (
-  <input placeholder={placeholder} {...props} />
-));
+const TranslatableInput = connectItem(
+  Item,
+  (placeholder, children, onRef, props) => (
+    <input ref={onRef} placeholder={placeholder} {...props} />
+  )
+);
 
 //-----------------------------------------------------------------------------
 
