@@ -120,24 +120,24 @@ export default class NabuToolbar extends Widget {
           />
           <Button
             kind="button-footer"
-            text={`Modify all messages`}
+            text={T(`Modify all messages`)}
             onClick={this.openDatagrid}
           />
           {selectedItem && selectionMode ? (
             <Button
               kind="button-footer"
-              text={`Modify single message`}
+              text={T(`Modify single message`)}
               onClick={() => this.openSingleEntity(selectedItem)}
             />
           ) : null}
           <Button
             kind="button-footer"
-            text={`Extract all messages`}
+            text={T(`Extract all messages`)}
             onClick={this.extract}
           />
           <Button
             kind="button-footer"
-            text={`Pack all messages`}
+            text={T(`Pack all messages`)}
             onClick={this.pack}
           />
         </Container>
