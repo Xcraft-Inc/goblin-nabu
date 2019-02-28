@@ -1,9 +1,10 @@
+//T:2019-02-28
 'use strict';
-//T:2019-02-27
 
 const goblinName = 'nabu-toolbar';
 
 const Goblin = require('xcraft-core-goblin');
+const T = require('goblin-nabu/widgets/helpers/t.js');
 
 // Define initial logic values
 const logicState = {
@@ -101,6 +102,7 @@ Goblin.registerQuest(goblinName, 'open-message-search', function*(quest, next) {
   const desk = quest.getAPI(quest.goblin.getX('desktopId'));
   const workitem = {
     name: 'nabuMessage-search',
+    description: T("Recherche d'un message nabu"),
     view: 'default',
     icon: 'solid/search',
     kind: 'tab',
@@ -116,6 +118,7 @@ Goblin.registerQuest(goblinName, 'open-locale-search', function*(quest, next) {
   const desk = quest.getAPI(quest.goblin.getX('desktopId'));
   const workitem = {
     name: 'locale-search',
+    description: T("Recherche d'une locale"),
     view: 'default',
     icon: 'solid/search',
     kind: 'tab',
