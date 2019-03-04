@@ -81,7 +81,7 @@ export default class NabuText extends Widget {
     } = this.props;
 
     if (!enabled && cachedTranslation) {
-      return cachedTranslation;
+      return formatMessage(localeName, html, cachedTranslation, values || {});
     }
 
     const localeName = locale && locale.get('name');

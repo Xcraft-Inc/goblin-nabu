@@ -81,11 +81,7 @@ class T extends Widget {
     const self = this;
     let msg = msgid;
 
-    if (!msg) {
-      return <span {...other}>{msg}</span>;
-    }
-
-    if (typeof msg === 'string') {
+    if (!msg || typeof msg === 'string') {
       return <span {...other}>{msg}</span>;
     }
 

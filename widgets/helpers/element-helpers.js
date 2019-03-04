@@ -56,20 +56,20 @@ function Translation(text, state, enabled, locale) {
     );
 
     return cachedTranslation || text.nabuId;
+  } else {
+    const translatedMessage = translationWithContextAndSublocale(
+      text.nabuId,
+      locale,
+      nabuId => computeMessageId(nabuId),
+      translation => translation && translation.get('text'),
+      (msgId, localeName) =>
+        state.get(`backend.${computeTranslationId(msgId, localeName)}`)
+    );
+
+    return translatedMessage && translatedMessage.get('text')
+      ? translatedMessage.get('text')
+      : text.nabuId;
   }
-
-  const translatedMessage = translationWithContextAndSublocale(
-    text.nabuId,
-    locale,
-    nabuId => computeMessageId(nabuId),
-    translation => translation && translation.get('text'),
-    (msgId, localeName) =>
-      state.get(`backend.${computeTranslationId(msgId, localeName)}`)
-  );
-
-  return translatedMessage && translatedMessage.get('text')
-    ? translatedMessage.get('text')
-    : text.nabuId;
 }
 
 function Format(translation, locale, text) {
