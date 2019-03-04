@@ -80,11 +80,11 @@ export default class NabuText extends Widget {
       translation,
     } = this.props;
 
+    const localeName = locale && locale.get('name');
+
     if (!enabled && cachedTranslation) {
       return formatMessage(localeName, html, cachedTranslation, values || {});
     }
-
-    const localeName = locale && locale.get('name');
 
     const translatedMessage =
       enabled && message && translation && translation.get('text') && localeName
