@@ -96,7 +96,12 @@ class T extends Widget {
           renderers={{
             text: text => {
               if (text.startsWith('@{') && text.endsWith('}')) {
-                return <T msgid={msg._refs[text.slice(2, text.length - 1)]} />;
+                return (
+                  <T
+                    key={text}
+                    msgid={msg._refs[text.slice(2, text.length - 1)]}
+                  />
+                );
               } else {
                 return text;
               }
