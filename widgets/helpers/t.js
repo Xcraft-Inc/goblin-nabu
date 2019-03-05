@@ -1,9 +1,5 @@
 //T:2019-02-27
 
-const fasterStringify = require('faster-stable-stringify');
-
-const cache = {};
-
 module.exports = function ToNabuObject(nabuId, description, values, html) {
   if (!nabuId) {
     throw new Error('Error in function T: nabuId is undefined');
@@ -21,28 +17,20 @@ module.exports = function ToNabuObject(nabuId, description, values, html) {
     throw new Error('Error in function T: html is not a boolean');
   }
 
-  const refId = `${nabuId}.${description || ''}.${
-    values && Object.keys(values).length > 0 ? fasterStringify(values) : ''
-  }.${html || ''}`;
+  const nabuObject = {};
 
-  if (!cache[refId]) {
-    const nabuObject = {};
+  // This is done so that we avoid having undefined fields (rethinkdb does not like it)
+  nabuObject.nabuId = nabuId;
 
-    // This is done so that we avoid having undefined fields (rethinkdb does not like it)
-    nabuObject.nabuId = nabuId;
-
-    if (description) {
-      nabuObject.description = description;
-    }
-    if (values) {
-      nabuObject.values = values;
-    }
-    if (html) {
-      nabuObject.html = html;
-    }
-
-    cache[refId] = nabuObject;
+  if (description) {
+    nabuObject.description = description;
+  }
+  if (values) {
+    nabuObject.values = values;
+  }
+  if (html) {
+    nabuObject.html = html;
   }
 
-  return cache[refId];
+  return nabuObject;
 };
