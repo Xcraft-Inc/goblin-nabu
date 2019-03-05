@@ -89,7 +89,7 @@ function Format(translation, locale, text) {
 
 /**************************************************************************/
 
-class Item extends Widget {
+class TranslatableElement extends Widget {
   constructor() {
     super(...arguments);
     this.mustAdd = this.mustAdd.bind(this);
@@ -144,7 +144,7 @@ class Item extends Widget {
   }
 }
 
-function connectItem(item, renderElement) {
+function connectTranslatableElement(renderElement) {
   return Widget.connect((state, props) => {
     const {msgid, self, ...other} = props;
     let text = msgid;
@@ -200,30 +200,32 @@ function connectItem(item, renderElement) {
       renderElement,
       ...other,
     };
-  })(item);
+  })(TranslatableElement);
 }
 
-const TranslatableDiv = connectItem(Item, (tooltip, children, onRef, props) => (
-  <div ref={onRef} title={tooltip} {...props}>
-    {children}
-  </div>
-));
+const TranslatableDiv = connectTranslatableElement(
+  (tooltip, children, onRef, props) => (
+    <div ref={onRef} title={tooltip} {...props}>
+      {children}
+    </div>
+  )
+);
 
-const TranslatableA = connectItem(Item, (tooltip, children, onRef, props) => (
-  <a ref={onRef} title={tooltip} {...props}>
-    {children}
-  </a>
-));
+const TranslatableA = connectTranslatableElement(
+  (tooltip, children, onRef, props) => (
+    <a ref={onRef} title={tooltip} {...props}>
+      {children}
+    </a>
+  )
+);
 
-const TranslatableTextarea = connectItem(
-  Item,
+const TranslatableTextarea = connectTranslatableElement(
   (placeholder, children, onRef, props) => (
     <textarea ref={onRef} placeholder={placeholder} {...props} />
   )
 );
 
-const TranslatableInput = connectItem(
-  Item,
+const TranslatableInput = connectTranslatableElement(
   (placeholder, children, onRef, props) => (
     <input ref={onRef} placeholder={placeholder} {...props} />
   )
