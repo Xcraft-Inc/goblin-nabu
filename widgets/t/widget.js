@@ -89,7 +89,7 @@ class T extends Widget {
       msg = msg.toJS();
     }
 
-    if (msg._type === 'markdownWithRefs') {
+    if (msg._type === 'translatableMarkdown') {
       return (
         <ReactMarkdown
           source={msg._string.substring(3, msg._string.length - 3)}
