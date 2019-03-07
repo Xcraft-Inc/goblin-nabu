@@ -27,34 +27,30 @@ describe('String Builder Combine', function() {
     const result = StringBuilder.combine('hello ', T('world'));
     assert.equal('translatableString', result._type);
     assert.ok(result._string);
-    assert.ok(result._refs);
-    assert.equal(1, Object.keys(result._refs).length);
+    assert.equal(2, result._string.length);
   });
 
   it('#Test NullAndT', function() {
     const result = StringBuilder.combine(null, T('world'));
     assert.equal('translatableString', result._type);
     assert.ok(result._string);
-    assert.ok(result._refs);
-    assert.equal(1, Object.keys(result._refs).length);
+    assert.equal(1, result._string.length);
   });
 
   it('#Test MultipleTAndStrings', function() {
     const result = StringBuilder.combine(T('hello'), T('world'), '!!!');
     assert.equal('translatableString', result._type);
     assert.ok(result._string);
-    assert.ok(result._refs);
-    assert.equal(2, Object.keys(result._refs).length);
+    assert.equal(3, result._string.length);
   });
 
   it('#Test MultipleTranslatableStrings', function() {
-    const result1 = StringBuilder.combine(T('hello'), ', ');
+    const result1 = StringBuilder.combine(T('hello'), ',', ' ');
     const result2 = StringBuilder.combine(T('world'), '!!!');
     const result3 = StringBuilder.combine(result1, result2);
     assert.equal('translatableString', result3._type);
     assert.ok(result3._string);
-    assert.ok(result3._refs);
-    assert.equal(2, Object.keys(result3._refs).length);
+    assert.equal(4, result3._string.length);
   });
 });
 
@@ -66,7 +62,7 @@ describe('String Builder Join', function() {
 
   it('#Test Nulls', function() {
     const result = StringBuilder.join([null, null], ',');
-    assert.equal('', result);
+    assert.equal(null, result);
   });
 
   it('#Test StringsAndNulls', function() {
@@ -78,8 +74,7 @@ describe('String Builder Join', function() {
     const result = StringBuilder.joinSentences([null, 'a', T('b'), 'c']);
     assert.equal('translatableString', result._type);
     assert.ok(result._string);
-    assert.ok(result._refs);
-    assert.equal(1, Object.keys(result._refs).length);
+    assert.equal(3, result._string.length);
   });
 
   it('#Test TAndTranslatableStrings', function() {
@@ -87,7 +82,21 @@ describe('String Builder Join', function() {
     const result2 = StringBuilder.joinSentences([result, null, T('d')]);
     assert.equal('translatableString', result2._type);
     assert.ok(result2._string);
-    assert.ok(result2._refs);
-    assert.equal(2, Object.keys(result2._refs).length);
+    assert.equal(4, result2._string.length);
+  });
+
+  it('#Test MultipleTranslatableStrings', function() {
+    const result1 = StringBuilder.joinSentences([null, 'a', T('b'), 'c']);
+    const result2 = StringBuilder.joinSentences([null, 'd', T('e'), 'f']);
+    const result3 = StringBuilder.joinSentences([
+      result1,
+      result2,
+      'g',
+      'h',
+      T('i'),
+    ]);
+    assert.equal('translatableString', result3._type);
+    assert.ok(result3._string);
+    assert.equal(6, result3._string.length);
   });
 });
