@@ -40,7 +40,7 @@ function getToolbar(state, widget) {
   return toolbarId ? state.get(`backend.${toolbarId}`) : null;
 }
 
-function Translation(text, state, enabled, locale) {
+function translate(text, state, enabled, locale) {
   if (!locale) {
     return text.nabuId;
   }
@@ -72,19 +72,47 @@ function Translation(text, state, enabled, locale) {
   }
 }
 
-function Format(translation, locale, text) {
+function format(translation, locale, text) {
   if (!text) {
     return null;
-  }
-
-  if (isShredder(text) || isImmutable(text)) {
-    text = text.toJS();
   }
 
   const txt =
     translation && typeof translation === 'string' ? translation : text.nabuId;
 
   return formatMessage(locale, text.html, txt, text.values || {});
+}
+
+function getTranslationInfo(text, enabled, locale, state) {
+  if (typeof text === 'string') {
+    return {
+      translatableElements: [],
+      translation: text,
+    };
+  } else if (text.nabuId) {
+    return {
+      translatableElements: [
+        {
+          nabuObject: text,
+          message: state.get(`backend.${computeMessageId(text.nabuId)}`),
+        },
+      ],
+      translation: format(
+        translate(text, state, enabled, locale),
+        locale,
+        text
+      ),
+    };
+  } else {
+    // translatable string
+    const infos = text._string.map(item =>
+      getTranslationInfo(item, enabled, locale, state)
+    );
+    return {
+      translatableElements: infos.map(item => item.translatableElements).flat(),
+      translation: infos.map(item => item.translation).join(''),
+    };
+  }
 }
 
 /**************************************************************************/
@@ -104,28 +132,35 @@ class TranslatableElement extends Widget {
   }
 
   mustAdd() {
-    const {enabled, message, text, widget} = this.props;
+    const {enabled, translatableElements, widget} = this.props;
 
-    if (enabled && !message && text && text.nabuId) {
+    if (enabled) {
       const getNearestId = widget.getNearestId.bind(widget);
       const workitemId = getNearestId();
+      const desktopId = widget.context.desktopId;
 
-      this.cmd('nabu.add-message', {
-        nabuId: text.nabuId,
-        description: text.description,
-        workitemId,
-        desktopId: widget.context.desktopId,
-      });
+      for (let element of translatableElements) {
+        if (
+          element.nabuObject &&
+          element.nabuObject.nabuId &&
+          !element.message
+        ) {
+          this.cmd('nabu.add-message', {
+            nabuId: element.nabuObject.nabuId,
+            description: element.nabuObject.description,
+            workitemId,
+            desktopId,
+          });
+        }
+      }
     }
   }
 
   render() {
     const {
       enabled,
-      locale,
-      message,
+      translatableElements,
       translation,
-      text,
       widget,
       dispatch,
       children,
@@ -135,12 +170,7 @@ class TranslatableElement extends Widget {
       ...other
     } = this.props;
 
-    return renderElement(
-      Format(translation, locale, text),
-      children,
-      onRef,
-      other
-    );
+    return renderElement(translation, children, onRef, other);
   }
 }
 
@@ -149,9 +179,15 @@ function connectTranslatableElement(renderElement) {
     const {msgid, self, ...other} = props;
     let text = msgid;
 
+    if (!self) {
+      throw new Error(
+        `Error in Translatable Element: widget (self property) has not been provided`
+      );
+    }
+
     if (!text || typeof text === 'string') {
       return {
-        text,
+        translatableElements: [],
         translation: text,
         renderElement,
         ...other,
@@ -162,42 +198,33 @@ function connectTranslatableElement(renderElement) {
       text = text.toJS();
     }
 
-    if (!text.nabuId) {
-      return {
-        text,
-        translation: text,
-        renderElement,
-        ...other,
-      };
+    if (text._type === 'translatableMarkdown') {
+      throw new Error(
+        `Cannot render markdown in Translatable Element. Markdown is ${JSON.stringify(
+          text
+        )}`
+      );
     }
 
-    if (!self) {
-      console.warn(
-        '%cNabu Tooltip Warning',
-        'font-weight: bold;',
-        'widget has not been provided'
+    if (!text.nabuId && text._type !== 'translatableString') {
+      throw new Error(
+        `Cannot render object in Translatable Element. Object is ${JSON.stringify(
+          text
+        )}`
       );
-      return {
-        text,
-        translation: text.nabuId,
-        renderElement,
-        ...other,
-      };
     }
 
     const toolbar = getToolbar(state, self);
     const enabled = toolbar ? toolbar.get('enabled') : false;
     const locale = getLocaleName(state, toolbar);
-    const message = state.get(`backend.${computeMessageId(text.nabuId)}`);
+
+    const translationInfo = getTranslationInfo(text, enabled, locale, state);
 
     return {
       enabled,
-      locale,
-      message,
-      translation: Translation(text, state, enabled, locale),
-      text,
       widget: self,
       renderElement,
+      ...translationInfo,
       ...other,
     };
   })(TranslatableElement);
