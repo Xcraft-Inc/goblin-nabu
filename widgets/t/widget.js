@@ -81,7 +81,7 @@ class T extends Widget {
     const self = this;
     let msg = msgid;
 
-    if (!msg || typeof msg === 'string') {
+    if (!msg || typeof msg !== 'object') {
       return <span {...other}>{msg}</span>;
     }
 
@@ -117,13 +117,10 @@ class T extends Widget {
           )}
         </span>
       );
-    } else if (typeof msg === 'object' && !msg.nabuId) {
+    } else if (!msg.nabuId) {
       throw new Error(
         `Cannot render object in T component. Object is ${JSON.stringify(msg)}`
       );
-    } else if (typeof msg !== 'object') {
-      // Primitive type
-      return <span {...other}>{msg}</span>;
     }
 
     return (

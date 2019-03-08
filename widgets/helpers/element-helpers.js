@@ -185,7 +185,7 @@ function connectTranslatableElement(renderElement) {
       );
     }
 
-    if (!text || typeof text === 'string') {
+    if (!text || typeof text !== 'object') {
       return {
         translatableElements: [],
         translation: text,
@@ -204,24 +204,12 @@ function connectTranslatableElement(renderElement) {
           text
         )}`
       );
-    } else if (
-      typeof text === 'object' &&
-      !text.nabuId &&
-      text._type !== 'translatableString'
-    ) {
+    } else if (!text.nabuId && text._type !== 'translatableString') {
       throw new Error(
         `Cannot render object in Translatable Element. Object is ${JSON.stringify(
           text
         )}`
       );
-    } else if (typeof text !== 'object') {
-      // Primitive type
-      return {
-        translatableElements: [],
-        translation: text,
-        renderElement,
-        ...other,
-      };
     }
 
     const toolbar = getToolbar(state, self);
