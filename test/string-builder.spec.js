@@ -13,6 +13,11 @@ describe('String Builder Combine', function() {
     assert.equal('abc', result);
   });
 
+  it('#Test Numbers', function() {
+    const result = StringBuilder.combine(1, 2, 3);
+    assert.equal('123', result);
+  });
+
   it('#Test NullsAndStringw', function() {
     const result = StringBuilder.combine('a', null, 'c');
     assert.equal('ac', result);
