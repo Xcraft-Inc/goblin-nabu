@@ -109,6 +109,14 @@ class T extends Widget {
           }}
         />
       );
+    } else if (msg._type === 'translatableString') {
+      return (
+        <span {...other}>
+          {msg._string.map((item, index) =>
+            typeof item === 'string' ? item : <T key={index} msgid={item} />
+          )}
+        </span>
+      );
     } else if (!msg.nabuId) {
       return <span {...other}>{msg}</span>;
     }
