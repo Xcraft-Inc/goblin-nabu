@@ -103,7 +103,7 @@ const config = {
     yield quest.me.setNeedTranslation();
   },
   afterFetch: function*(quest) {
-    yield quest.me.loadEntities();
+    quest.defer(() => quest.me.loadEntities());
   },
   quests: {
     loadEntities: function*(quest, next) {
@@ -115,7 +115,7 @@ const config = {
       ids.forEach(id => quest.me.loadEntity({entityId: id}, next.parallel()));
       yield next.sync();
 
-      yield quest.me.loadTranslations({listIds: ids});
+      quest.defer(() => quest.me.loadTranslations({listIds: ids}));
     },
     loadTranslations: function*(quest, listIds, next) {
       const nabuApi = quest.getAPI('nabu');
