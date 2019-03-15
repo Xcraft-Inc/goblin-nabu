@@ -48,6 +48,7 @@ function renderLocaleRowCell(id, locale, datagrid) {
         msgId={id}
         labelWidth="0px"
         spacing="compact"
+        width="200%"
       />
     );
   }

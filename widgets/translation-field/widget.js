@@ -125,6 +125,7 @@ class TranslationField extends Form {
           className={
             this.props.labelText ? undefined : this.styles.classNames.bottomLine
           }
+          width={this.props.width}
           {...other}
         />
       </Form>
