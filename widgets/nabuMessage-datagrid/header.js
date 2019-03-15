@@ -26,6 +26,7 @@ function renderLocaleHeaderCell(id, index, doAsDatagrid) {
 function renderHeaderCell(props) {
   switch (props.column.get('name')) {
     case 'missingTranslations':
+    case 'openExtern':
       return renderMissingTranslationsHeaderCell();
     case 'nabuId':
       return renderNabuIdHeaderCell();

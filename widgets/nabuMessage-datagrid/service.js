@@ -43,6 +43,10 @@ const config = {
       sortable: true,
       customSort: true,
     },
+    {
+      name: 'openExtern',
+      width: '40px',
+    },
   ],
   hinter: {
     type: 'nabuMessage',
@@ -106,6 +110,10 @@ const config = {
     quest.defer(() => quest.me.loadEntities());
   },
   quests: {
+    openSingleEntity: function(quest, entityId) {
+      const toolbarApi = quest.getAPI(getToolbarId(quest.me.id));
+      toolbarApi.openSingleEntity({entityId});
+    },
     loadEntities: function*(quest, next) {
       const listId = quest.goblin.getX('listId');
       const listApi = quest.getAPI(listId);
