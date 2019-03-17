@@ -4,11 +4,11 @@
 import Widget from 'laboratory/widget';
 import React from 'react';
 import Text from 'nabu/text/widget';
-import {isShredder, isImmutable} from 'xcraft-core-shredder';
 import {
   getToolbarId,
   computeMessageId,
   computeTranslationId,
+  resolvePlainMessage,
 } from 'goblin-nabu/lib/helpers.js';
 import ReactMarkdown from 'react-markdown';
 import {translationWithContextAndSublocale} from 'goblin-nabu/lib/gettext.js';
@@ -85,9 +85,7 @@ class T extends Widget {
       return <span {...other}>{msg}</span>;
     }
 
-    if (isShredder(msg) || isImmutable(msg)) {
-      msg = msg.toJS();
-    }
+    msg = resolvePlainMessage(msg);
 
     if (msg._type === 'translatableMarkdown') {
       return (
