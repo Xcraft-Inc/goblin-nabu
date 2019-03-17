@@ -186,6 +186,12 @@ function connectTranslatableElement(renderElement) {
       );
     }
 
+    if (React.isValidElement(text)) {
+      throw new Error(
+        `Error in Translatable Element: a React component has been provided`
+      );
+    }
+
     if (!text || typeof text !== 'object') {
       return {
         translatableElements: [],
@@ -204,11 +210,8 @@ function connectTranslatableElement(renderElement) {
         )}`
       );
     } else if (!text.nabuId && text._type !== 'translatableString') {
-      throw new Error(
-        `Cannot render object in Translatable Element. Object is ${JSON.stringify(
-          text
-        )}`
-      );
+      console.err(text);
+      throw new Error('Cannot render object in Translatable Element');
     }
 
     const toolbar = getToolbar(state, self);

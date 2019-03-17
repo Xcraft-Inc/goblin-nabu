@@ -116,9 +116,8 @@ class T extends Widget {
         </span>
       );
     } else if (!msg.nabuId) {
-      throw new Error(
-        `Cannot render object in T component. Object is ${JSON.stringify(msg)}`
-      );
+      // All other objects
+      return <span {...other}>{msg}</span>;
     }
 
     return (
