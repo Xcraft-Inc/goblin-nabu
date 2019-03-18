@@ -4,7 +4,10 @@
 const T = require('goblin-nabu/widgets/helpers/t.js');
 const watt = require('gigawatts');
 const {buildWorkitem} = require('goblin-workshop');
-const {getToolbarId} = require('goblin-nabu/lib/helpers.js');
+const {
+  getToolbarId,
+  computeTranslationId,
+} = require('goblin-nabu/lib/helpers.js');
 
 function isEmptyOrSpaces(str) {
   return !str || str.length === 0 || /^\s*$/.test(str);
@@ -104,8 +107,23 @@ const config = {
     yield quest.me.loadEntities();
     yield quest.me.setNeedTranslation();
   },
-  afterFetch: function*(quest) {
-    quest.defer(() => quest.me.loadEntities());
+  drillDown: function*(quest, entityIds, _goblinFeed, next) {
+    const nabuApi = quest.getAPI('nabu');
+    const locales = yield nabuApi.getLocales();
+
+    const translationIds = entityIds
+      .map(messageId =>
+        locales
+          .map(locale => computeTranslationId(messageId, locale.get('name')))
+          .toJS()
+      )
+      .flat();
+
+    quest.evt('drill-down-requested', {
+      entityIds: entityIds.concat(translationIds),
+      _goblinFeed,
+      desktopId: quest.goblin.getX('desktopId'),
+    });
   },
   quests: {
     loadEntities: function*(quest, next) {
