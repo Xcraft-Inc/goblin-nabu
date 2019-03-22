@@ -5,6 +5,7 @@ import T from 't';
 import {InfoLabel} from './labels';
 import TranslationFieldConnected from '../translation-field/widget.js';
 import HighlightLabel from '../highlight-label/widget.js';
+import Button from 'gadgets/button/widget';
 const {computeTranslationId} = require('goblin-nabu/lib/helpers.js');
 
 // ------------------------------------------------------------
@@ -48,11 +49,22 @@ function renderLocaleRowCell(id, locale, datagrid) {
         msgId={id}
         labelWidth="0px"
         spacing="compact"
+        width="200%"
       />
     );
   }
 
   return <div />;
+}
+
+function renderOpenExternRowCell(id, doAsDatagrid) {
+  return (
+    <Button
+      glyph="solid/pencil"
+      tooltipText="Open single translation"
+      onClick={() => doAsDatagrid('openSingleEntity', {entityId: id})}
+    />
+  );
 }
 
 // ------------------------------------------------------------
@@ -61,6 +73,8 @@ function renderRowCell(props) {
   switch (props.column.get('name')) {
     case 'missingTranslations':
       return renderMissingTranslationsRowCell(props.id, props);
+    case 'openExtern':
+      return renderOpenExternRowCell(props.id, props.doAsDatagrid);
     case 'nabuId':
       return renderNabuIdRowCell(props.id, props.datagrid);
     case 'locale_1':

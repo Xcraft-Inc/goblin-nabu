@@ -137,7 +137,7 @@ Goblin.registerQuest(goblinName, 'open-datagrid', function*(quest, next) {
     name: 'nabuMessage-datagrid',
     view: 'default',
     icon: 'solid/file-alt',
-    kind: 'dialog',
+    kind: 'tab',
     isClosable: true,
     navigate: true,
     maxInstances: 1,

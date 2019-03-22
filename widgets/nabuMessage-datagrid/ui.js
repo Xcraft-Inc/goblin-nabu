@@ -44,6 +44,7 @@ function renderHinterRow(doAsDatagrid) {
       hintText={T('Search message or translation')}
       width="95%"
       verticalSpacing="5px"
+      customMarginLeft="20px"
     />
   );
 }
