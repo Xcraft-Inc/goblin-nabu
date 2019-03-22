@@ -17,7 +17,7 @@ const entity = {
   onNew: function(quest, id, name, description) {
     return {
       id,
-      name: name || '',
+      name: name || `locale-${quest.uuidV4().slice(0, 6)}`,
       description: description || '',
     };
   },
