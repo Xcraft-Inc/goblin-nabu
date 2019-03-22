@@ -34,12 +34,8 @@ function renderComponent(props) {
 }
 
 const renderPanel = Widget.connect((state, props) => {
-  const locale = state
-    .get(`backend.nabu.locales`)
-    .find(locale => locale.get('id') === props.entityId);
-
   return {
-    status: locale ? locale.get('meta.status') : 'draft',
+    status: state.get(`backend.${props.entityId}.meta.status`),
   };
 })(renderComponent);
 
