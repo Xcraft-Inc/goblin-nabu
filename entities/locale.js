@@ -3,7 +3,7 @@ const {buildEntity} = require('goblin-workshop');
 
 const entity = {
   type: 'locale',
-  newEntityStatus: 'published',
+  newEntityStatus: 'draft',
 
   buildSummaries: function(quest, locale, peers, MD) {
     const ref = locale.get('name', '');
