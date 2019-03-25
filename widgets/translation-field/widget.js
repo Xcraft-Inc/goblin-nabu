@@ -112,7 +112,7 @@ class TranslationField extends Form {
     const loaded = translationId && id;
 
     if (!loaded) {
-      if (this.props.onDrillDown & translationId) {
+      if (this.props.onDrillDown && translationId) {
         const entityInfo = {
           entityId: translationId,
           messageId: msgId,
