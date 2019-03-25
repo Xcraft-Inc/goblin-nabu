@@ -49,6 +49,10 @@ const config = {
       sortable: true,
       customSort: true,
     },
+    {
+      name: 'openExtern',
+      width: '40px',
+    },
   ],
   hinter: {
     type: 'nabuMessage',
@@ -108,6 +112,10 @@ const config = {
     yield quest.me.setNeedTranslation();
   },
   quests: {
+    openSingleEntity: function(quest, entityId) {
+      const toolbarApi = quest.getAPI(getToolbarId(quest.me.id));
+      toolbarApi.openSingleEntity({entityId});
+    },
     changeSelectedLocale: function*(quest, index, locale, next) {
       const currentLocale = quest.goblin
         .getState()

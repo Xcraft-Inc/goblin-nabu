@@ -15,6 +15,10 @@ const config = {
       },
     },
   },
+  buttons: function(quest, buttons) {
+    const index = buttons.findIndex(button => button.get('id') === 'reset');
+    return index >= 0 ? buttons.delete(index) : buttons;
+  },
 };
 
 module.exports = buildWorkitem(config);

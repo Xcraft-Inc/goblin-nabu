@@ -3,11 +3,20 @@
 import T from 't';
 import React from 'react';
 
+import Widget from 'laboratory/widget';
 import Container from 'gadgets/container/widget';
 import Field from 'gadgets/field/widget';
 import Label from 'gadgets/label/widget';
 
-function renderPanel(props) {
+function renderName(status) {
+  if (status === 'draft') {
+    return <Field grow="1" labelText={T('Nom')} model=".name" />;
+  } else {
+    return <Field grow="1" readonly labelText={T('Nom')} model=".name" />;
+  }
+}
+
+function renderComponent(props) {
   return (
     <Container kind="column" grow="1">
       <Container kind="pane">
@@ -16,12 +25,19 @@ function renderPanel(props) {
         </Container>
 
         <Container kind="column">
-          <Field grow="1" labelText={T('Nom')} model=".name" />
+          {renderName(props.status)}
+          <Field grow="1" labelText={T('Description')} model=".description" />
         </Container>
       </Container>
     </Container>
   );
 }
+
+const renderPanel = Widget.connect((state, props) => {
+  return {
+    status: state.get(`backend.${props.entityId}.meta.status`),
+  };
+})(renderComponent);
 
 /******************************************************************************/
 export default {
