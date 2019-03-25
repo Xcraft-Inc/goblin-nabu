@@ -104,50 +104,9 @@ const config = {
       newValue: '',
     });
 
-    yield quest.me.loadEntities();
     yield quest.me.setNeedTranslation();
   },
-  drillDown: function*(quest, entityIds, _goblinFeed, next) {
-    const nabuApi = quest.getAPI('nabu');
-    const locales = yield nabuApi.getLocales();
-
-    const translationIds = entityIds
-      .map(messageId =>
-        locales
-          .map(locale => computeTranslationId(messageId, locale.get('name')))
-          .toJS()
-      )
-      .flat();
-
-    quest.evt('drill-down-requested', {
-      entityIds: entityIds.concat(translationIds),
-      _goblinFeed,
-      desktopId: quest.goblin.getX('desktopId'),
-    });
-  },
   quests: {
-    loadEntities: function*(quest, next) {
-      const listId = quest.goblin.getX('listId');
-      const listApi = quest.getAPI(listId);
-
-      const ids = yield listApi.getListIds(next);
-
-      ids.forEach(id => quest.me.loadEntity({entityId: id}, next.parallel()));
-      yield next.sync();
-
-      quest.defer(() => quest.me.loadTranslations({listIds: ids}));
-    },
-    loadTranslations: function*(quest, listIds, next) {
-      const nabuApi = quest.getAPI('nabu');
-      // TODO: optimize with delegator
-      for (const messageId of listIds) {
-        nabuApi.loadTranslations(
-          {messageId, ownerId: quest.me.id},
-          next.parallel()
-        );
-      }
-      yield next.sync();
-    },
     changeSelectedLocale: function*(quest, index, locale, next) {
       const currentLocale = quest.goblin
         .getState()
@@ -177,7 +136,6 @@ const config = {
       }
 
       yield quest.me.setNeedTranslation();
-      yield quest.me.loadEntities();
     },
     applyElasticVisualization: function*(quest, value, sort, next) {
       if (value === undefined) {
@@ -196,7 +154,6 @@ const config = {
       }
 
       yield quest.me.changeData();
-      yield quest.me.loadEntities();
     },
     setNeedTranslation: function*(quest) {
       const getNrTranslaton = watt(function*() {
