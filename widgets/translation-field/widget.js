@@ -8,14 +8,10 @@ import Widget from 'laboratory/widget';
 import HighlightLabel from '../highlight-label/widget.js';
 import FontAwesomeIcon from '@fortawesome/react-fontawesome';
 
-import {getToolbarId} from 'goblin-nabu/lib/helpers.js';
-
 class TranslationField extends Form {
   constructor() {
     super(...arguments);
 
-    this.onFocus = this.onFocus.bind(this);
-    this.onBlur = this.onBlur.bind(this);
     this.onUpdate = this.onUpdate.bind(this);
     this.renewTTL = this.renewTTL.bind(this);
     this._renewInterval = null;
@@ -44,50 +40,6 @@ class TranslationField extends Form {
     };
   }
 
-  onFocus() {
-    if (this.props.component) {
-      const getNearestId = this.props.component.getNearestId.bind(
-        this.props.component
-      );
-      const toolbarId = getToolbarId(
-        this.props.component.context.desktopId || getNearestId()
-      );
-
-      if (toolbarId) {
-        this.props.component.doFor(toolbarId, 'set-focus', {
-          messageId: this.props.msgId,
-          value: true,
-        });
-      }
-    }
-
-    if (this.props.onFocus) {
-      this.props.onFocus();
-    }
-  }
-
-  onBlur() {
-    if (this.props.component) {
-      const getNearestId = this.props.component.getNearestId.bind(
-        this.props.component
-      );
-      const toolbarId = getToolbarId(
-        this.props.component.context.desktopId || getNearestId()
-      );
-
-      if (toolbarId) {
-        this.props.component.doFor(toolbarId, 'set-focus', {
-          messageId: this.props.msgId,
-          value: false,
-        });
-      }
-    }
-
-    if (this.props.onBlur) {
-      this.props.onBlur();
-    }
-  }
-
   onUpdate() {
     this.setState({showField: true});
   }
@@ -98,9 +50,6 @@ class TranslationField extends Form {
       translationId,
       msgId,
       locale,
-      model,
-      onFocus,
-      onBlur,
       component,
       rows,
       verticalSpacing,
@@ -151,8 +100,6 @@ class TranslationField extends Form {
           model={`backend.${id}.text`}
           grow={grow || '1'}
           verticalSpacing={verticalSpacing || 'compact'}
-          onFocus={this.onFocus}
-          onBlur={this.onBlur}
           rows={rows || '1'}
           className={
             this.props.labelText ? undefined : this.styles.classNames.bottomLine
