@@ -158,11 +158,11 @@ const config = {
     },
     setNeedTranslation: function*(quest) {
       const getNrTranslaton = watt(function*() {
-        const getTranslationQuery = (r, id) => {
+        const getTranslationQuery = (r, localeName) => {
           return r.table('nabuTranslation').filter(
             r
-              .row('localeId')
-              .match(id)
+              .row('locale')
+              .match(localeName)
               .and(
                 r
                   .row('text')
@@ -183,7 +183,7 @@ const config = {
         while (i < nrLocales) {
           const locale = locales.get(i);
 
-          const args = [locale.get('id')];
+          const args = [locale.get('name')];
           const localTranslation = yield r.query({query, args});
 
           let value = false;

@@ -5,8 +5,8 @@ const entity = {
   type: 'nabuMessage',
   newEntityStatus: 'published',
 
-  buildSummaries: function(quest, message) {
-    const ref = message.get('nabuId', '');
+  buildSummaries: function(quest, nabuMessage) {
+    const ref = nabuMessage.get('nabuId', '');
     return {info: ref, description: ref};
   },
   indexer: function(quest, entity) {
