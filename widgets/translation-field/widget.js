@@ -6,6 +6,7 @@ import Form from 'laboratory/form';
 import Field from 'gadgets/field/widget';
 import Widget from 'laboratory/widget';
 import HighlightLabel from '../highlight-label/widget.js';
+import FontAwesomeIcon from '@fortawesome/react-fontawesome';
 
 import {getToolbarId} from 'goblin-nabu/lib/helpers.js';
 
@@ -16,10 +17,25 @@ class TranslationField extends Form {
     this.onFocus = this.onFocus.bind(this);
     this.onBlur = this.onBlur.bind(this);
     this.onUpdate = this.onUpdate.bind(this);
+    this.renewTTL = this.renewTTL.bind(this);
+    this._renewInterval = null;
 
     this.state = {
       showField: false,
     };
+  }
+
+  renewTTL(id) {
+    if (this._renewInterval) {
+      clearInterval(this._renewInterval);
+    }
+    this._renewInterval = setInterval(this.props.onDrillDown, 15000, id);
+  }
+
+  componentWillUnmount() {
+    if (this._renewInterval) {
+      clearInterval(this._renewInterval);
+    }
   }
 
   static get wiring() {
@@ -79,6 +95,7 @@ class TranslationField extends Form {
   render() {
     const {
       id,
+      translationId,
       model,
       onFocus,
       onBlur,
@@ -90,9 +107,14 @@ class TranslationField extends Form {
       text,
       ...other
     } = this.props;
+    const loaded = translationId && id;
 
-    if (!id) {
-      return <div />;
+    if (!loaded) {
+      if (this.props.onDrillDown & translationId) {
+        setTimeout(this.props.onDrillDown, 0, translationId);
+        this.renewTTL(translationId);
+      }
+      return <FontAwesomeIcon icon={[`fas`, 'spinner']} size={'1x'} pulse />;
     }
 
     const Form = this.Form;

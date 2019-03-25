@@ -37,7 +37,7 @@ function renderNabuIdRowCell(id, datagrid) {
   );
 }
 
-function renderLocaleRowCell(id, locale, datagrid) {
+function renderLocaleRowCell(id, locale, datagrid, onDrillDown) {
   if (locale) {
     const translationId = computeTranslationId(id, locale);
 
@@ -45,6 +45,7 @@ function renderLocaleRowCell(id, locale, datagrid) {
       <TranslationFieldConnected
         translationId={translationId}
         component={datagrid}
+        onDrillDown={onDrillDown}
         msgId={id}
         labelWidth="0px"
         spacing="compact"
@@ -68,7 +69,8 @@ function renderRowCell(props) {
       return renderLocaleRowCell(
         props.id,
         props.column.get('field'),
-        props.datagrid
+        props.datagrid,
+        props.onDrillDown
       );
     default:
       return <div />;
