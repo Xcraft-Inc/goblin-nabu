@@ -4,10 +4,7 @@
 const T = require('goblin-nabu/widgets/helpers/t.js');
 const watt = require('gigawatts');
 const {buildWorkitem} = require('goblin-workshop');
-const {
-  getToolbarId,
-  computeTranslationId,
-} = require('goblin-nabu/lib/helpers.js');
+const {getToolbarId} = require('goblin-nabu/lib/helpers.js');
 
 function isEmptyOrSpaces(str) {
   return !str || str.length === 0 || /^\s*$/.test(str);
@@ -18,7 +15,6 @@ const config = {
   kind: 'datagrid',
   initialState: {
     hasTranslations: {},
-    needColumns: ['missingTranslations'],
   },
   dialog: {
     height: '700px',

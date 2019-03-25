@@ -4,19 +4,20 @@ import Label from 'gadgets/label/widget';
 const {computeTranslationId} = require('goblin-nabu/lib/helpers.js');
 
 const InfoLabel = Widget.connect((state, props) => {
-  const message = state.get(`backend.${props.id}`);
-
-  const translation1 = state.get(
-    `backend.${computeTranslationId(props.id, props.locale1)}`
-  );
-  const translation2 = state.get(
-    `backend.${computeTranslationId(props.id, props.locale2)}`
-  );
+  const message = state.get(`backend.${props.messageId}`);
+  const columns = state.get(`backend.${props.datagridId}.columns`);
 
   let glyph = null;
   let tooltip = null;
 
-  if (message) {
+  if (message && columns) {
+    const translation1 = state.get(
+      `backend.${computeTranslationId(props.messageId, columns.get('2.field'))}`
+    );
+    const translation2 = state.get(
+      `backend.${computeTranslationId(props.messageId, columns.get('3.field'))}`
+    );
+
     // Description label
     if (props.checkDescription) {
       const sources = message.get('sources');
@@ -43,13 +44,13 @@ const InfoLabel = Widget.connect((state, props) => {
 })(Label);
 
 const SortLabel = Widget.connect((state, props) => {
-  const search = state.get(`backend.${props.id}.searchValue`);
+  const search = state.get(`backend.${props.datagridId}.searchValue`);
   if (search) {
     return {};
   }
 
-  const key = state.get(`backend.${props.id}.sort.key`);
-  const dir = state.get(`backend.${props.id}.sort.dir`);
+  const key = state.get(`backend.${props.datagridId}.sort.key`);
+  const dir = state.get(`backend.${props.datagridId}.sort.dir`);
 
   let glyph = 'solid/sort';
   let tooltip = null;

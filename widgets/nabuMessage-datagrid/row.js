@@ -10,17 +10,16 @@ const {computeTranslationId} = require('goblin-nabu/lib/helpers.js');
 
 // ------------------------------------------------------------
 
-function renderMissingTranslationsRowCell(id, props) {
+function renderMissingTranslationsRowCell(id, datagridId) {
   return (
     <InfoLabel
-      id={id}
+      messageId={id}
+      datagridId={datagridId}
       spacing="overlap"
       tooltip={T(
         "Certaines locales n'ont pas encore été traduites",
         'In Nabu window'
       )}
-      locale1={props.columns.get('2').get('field')}
-      locale2={props.columns.get('3').get('field')}
     />
   );
 }
@@ -74,7 +73,10 @@ function renderOpenExternRowCell(id, doAsDatagrid) {
 function renderRowCell(props) {
   switch (props.column.get('name')) {
     case 'missingTranslations':
-      return renderMissingTranslationsRowCell(props.id, props);
+      return renderMissingTranslationsRowCell(
+        props.id,
+        props.datagrid.props.id
+      );
     case 'openExtern':
       return renderOpenExternRowCell(props.id, props.doAsDatagrid);
     case 'nabuId':

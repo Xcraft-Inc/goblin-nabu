@@ -20,7 +20,7 @@ function renderLocaleSortCell(doAsDatagrid, column, datagridId) {
   return (
     <SortLabel
       tooltips={tooltips}
-      id={datagridId}
+      datagridId={datagridId}
       column={column}
       onClick={() =>
         doAsDatagrid('applyElasticVisualization', {
