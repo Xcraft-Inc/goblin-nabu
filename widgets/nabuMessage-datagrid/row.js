@@ -24,27 +24,23 @@ function renderMissingTranslationsRowCell(id, datagridId) {
   );
 }
 
-function renderNabuIdRowCell(id, datagrid) {
+function renderNabuIdRowCell(id, datagridId) {
   return (
     <div style={{display: 'flex'}}>
-      <HighlightLabel
-        id={id}
-        datagridId={datagrid.props.id}
-        underline="false"
-      />
+      <HighlightLabel id={id} datagridId={datagridId} underline="false" />
       <InfoLabel id={id} checkDescription="true" spacing="overlap" />
     </div>
   );
 }
 
-function renderLocaleRowCell(id, locale, datagrid, onDrillDown) {
+function renderLocaleRowCell(id, locale, datagridId, onDrillDown) {
   if (locale) {
     const translationId = computeTranslationId(id, locale);
 
     return (
       <TranslationFieldConnected
         translationId={translationId}
-        component={datagrid}
+        datagridId={datagridId}
         onDrillDown={onDrillDown}
         msgId={id}
         locale={locale}
@@ -73,20 +69,17 @@ function renderOpenExternRowCell(id, doAsDatagrid) {
 function renderRowCell(props) {
   switch (props.column.get('name')) {
     case 'missingTranslations':
-      return renderMissingTranslationsRowCell(
-        props.id,
-        props.datagrid.props.id
-      );
+      return renderMissingTranslationsRowCell(props.id, props.datagridId);
     case 'openExtern':
       return renderOpenExternRowCell(props.id, props.doAsDatagrid);
     case 'nabuId':
-      return renderNabuIdRowCell(props.id, props.datagrid);
+      return renderNabuIdRowCell(props.id, props.datagridId);
     case 'locale_1':
     case 'locale_2':
       return renderLocaleRowCell(
         props.id,
         props.column.get('field'),
-        props.datagrid,
+        props.datagridId,
         props.onDrillDown
       );
     default:

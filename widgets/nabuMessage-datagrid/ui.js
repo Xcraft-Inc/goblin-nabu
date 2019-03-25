@@ -1,6 +1,5 @@
 //T:2019-02-27
 import React from 'react';
-import Widget from 'laboratory/widget';
 
 import LabelTextField from 'gadgets/label-text-field/widget';
 
@@ -62,7 +61,7 @@ function renderSortCell(props) {
       return renderLocaleSortCell(
         props.doAsDatagrid,
         props.column,
-        props.datagrid.props.id
+        props.datagridId
       );
     default:
       return <div />;

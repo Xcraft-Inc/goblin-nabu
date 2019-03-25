@@ -50,7 +50,7 @@ class TranslationField extends Form {
       translationId,
       msgId,
       locale,
-      component,
+      datagridId,
       rows,
       verticalSpacing,
       grow,
@@ -85,7 +85,7 @@ class TranslationField extends Form {
       return (
         <HighlightLabel
           id={id}
-          datagridId={component.props.id}
+          datagridId={datagridId}
           insideButton="false"
           onClick={this.onUpdate}
           underline={true}
@@ -113,9 +113,7 @@ class TranslationField extends Form {
 }
 
 export default Widget.connect((state, props) => {
-  const highlight = props.component
-    ? state.get(`backend.list@${props.component.props.id}.highlights`)
-    : undefined;
+  const highlight = state.get(`backend.list@${props.datagridId}.highlights`);
 
   return {
     id: state.get(`backend.${props.translationId}`)
