@@ -47,6 +47,7 @@ function renderLocaleRowCell(id, locale, datagrid, onDrillDown) {
         component={datagrid}
         onDrillDown={onDrillDown}
         msgId={id}
+        locale={locale}
         labelWidth="0px"
         spacing="compact"
       />

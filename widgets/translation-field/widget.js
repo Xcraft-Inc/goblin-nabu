@@ -96,6 +96,8 @@ class TranslationField extends Form {
     const {
       id,
       translationId,
+      msgId,
+      locale,
       model,
       onFocus,
       onBlur,
@@ -111,8 +113,14 @@ class TranslationField extends Form {
 
     if (!loaded) {
       if (this.props.onDrillDown & translationId) {
-        setTimeout(this.props.onDrillDown, 0, translationId);
-        this.renewTTL(translationId);
+        const entityInfo = {
+          entityId: translationId,
+          messageId: msgId,
+          locale,
+        };
+
+        setTimeout(this.props.onDrillDown, 0, entityInfo);
+        this.renewTTL(entityInfo);
       }
       return <FontAwesomeIcon icon={[`fas`, 'spinner']} size={'1x'} pulse />;
     }
