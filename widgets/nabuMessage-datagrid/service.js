@@ -26,6 +26,7 @@ const config = {
   listStatus: ['draft', 'published'],
   listOrderBy: 'value.keyword',
   listType: 'uniform',
+  createMissingDrillDownEntities: true,
   columns: [
     {
       name: 'missingTranslations',
