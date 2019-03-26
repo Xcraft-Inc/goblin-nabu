@@ -6,7 +6,6 @@ import Widget from 'laboratory/widget';
 import Form from 'laboratory/form';
 
 import Container from 'gadgets/container/widget';
-import Field from 'gadgets/field/widget';
 import Label from 'gadgets/label/widget';
 import TranslationFieldConnected from '../translation-field/widget.js';
 const {computeTranslationId} = require('goblin-nabu/lib/helpers.js');
@@ -18,12 +17,18 @@ class NabuMessage extends Form {
 
     this.renderTranslations = this.renderTranslations.bind(this);
     this.renderSources = this.renderSources.bind(this);
+    this.copyNabuIdToClipboard = this.copyNabuIdToClipboard.bind(this);
   }
 
   static get wiring() {
     return {
       id: 'id',
     };
+  }
+
+  copyNabuIdToClipboard() {
+    const {nabuId} = this.props;
+    this.cmd('client.copy-to-clipboard', {text: nabuId});
   }
 
   renderSources() {
@@ -91,6 +96,7 @@ class NabuMessage extends Form {
   }
 
   render() {
+    const {nabuId} = this.props;
     const Form = this.Form;
 
     if (!this.props.entityId) {
@@ -104,18 +110,14 @@ class NabuMessage extends Form {
     return (
       <Container kind="column">
         <Form {...this.formConfig} model={`backend.${this.props.entityId}`}>
-          <Container kind="row-pane">
-            <Field
-              kind="label"
-              labelText={T('Message original')}
-              model={`.nabuId`}
-              fieldWidth="160px"
-            />
+          <Container kind="row">
+            <Label text={T('Message original')} width="80px" />
             <Label
               glyph="solid/copy"
               tooltip={T('Copy to clipboard')}
-              onCLick={() => console.log('copied')}
+              onClick={this.copyNabuIdToClipboard}
             />
+            <Label text={nabuId} />
           </Container>
         </Form>
         {this.renderTranslations()}
@@ -126,6 +128,7 @@ class NabuMessage extends Form {
 }
 
 const NabuMessageConnected = Widget.connect((state, props) => ({
+  nabuId: state.get(`backend.${props.entityId}.nabuId`),
   locales: state.get(`backend.nabu.locales`),
   sources: state.get(`backend.${props.entityId}.sources`),
 }))(NabuMessage);
