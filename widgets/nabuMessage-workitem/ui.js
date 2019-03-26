@@ -15,6 +15,9 @@ const {computeTranslationId} = require('goblin-nabu/lib/helpers.js');
 class NabuMessage extends Form {
   constructor() {
     super(...arguments);
+
+    this.renderTranslations = this.renderTranslations.bind(this);
+    this.renderSources = this.renderSources.bind(this);
   }
 
   static get wiring() {
@@ -23,8 +26,71 @@ class NabuMessage extends Form {
     };
   }
 
-  render() {
+  renderSources() {
+    const {sources} = this.props;
+
+    return (
+      <Container kind="column">
+        {sources.map((source, index) => {
+          return (
+            <Container kind="pane" key={`source_${index}`}>
+              <Container kind="row-pane">
+                <Label
+                  kind="title"
+                  text={T(`Source {sourceNo}`, '', {sourceNo: index + 1})}
+                />
+              </Container>
+              <Container kind="row-pane">
+                <Label
+                  text={
+                    source.get('path')
+                      ? `${source.get('path')}:${source.getIn([
+                          'location',
+                          'start',
+                          'line',
+                        ])};${source.getIn(['location', 'start', 'column'])}`
+                      : ''
+                  }
+                />
+              </Container>
+              <Container kind="row-pane">
+                <Label text={source.get(`description`)} />
+              </Container>
+            </Container>
+          );
+        })}
+      </Container>
+    );
+  }
+
+  renderTranslations() {
     const {locales} = this.props;
+
+    return (
+      <Container kind="column">
+        {locales.map(l => {
+          const translationId = computeTranslationId(
+            this.props.entityId,
+            l.get('name')
+          );
+
+          return (
+            <Container kind="row" key={translationId}>
+              <TranslationFieldConnected
+                translationId={translationId}
+                labelText={l.get('name')}
+                verticalSpacing="5px"
+                width={this.props.width || '600px'}
+                rows="5"
+              />
+            </Container>
+          );
+        })}
+      </Container>
+    );
+  }
+
+  render() {
     const Form = this.Form;
 
     if (!this.props.entityId) {
@@ -37,48 +103,31 @@ class NabuMessage extends Form {
 
     return (
       <Container kind="column">
-        <Container kind="pane">
-          <Form {...this.formConfig} model={`backend.${this.props.entityId}`}>
-            <Container kind="row-pane">
-              <Field kind="title" grow="1" model={`.nabuId`} />
-            </Container>
-            <Container kind="row-pane">
-              <Field
-                width={this.props.width || '600px'}
-                labelText={T('Description')}
-                model=".description"
-                readonly={true}
-                spacing="compact"
-              />
-            </Container>
-          </Form>
-
-          {locales.map(l => {
-            const translationId = computeTranslationId(
-              this.props.entityId,
-              l.get('name')
-            );
-
-            return (
-              <Container kind="row" key={translationId}>
-                <TranslationFieldConnected
-                  translationId={translationId}
-                  labelText={l.get('name')}
-                  verticalSpacing="5px"
-                  width={this.props.width || '600px'}
-                  rows="5"
-                />
-              </Container>
-            );
-          })}
-        </Container>
+        <Form {...this.formConfig} model={`backend.${this.props.entityId}`}>
+          <Container kind="row-pane">
+            <Field
+              kind="label"
+              labelText={T('Message original')}
+              model={`.nabuId`}
+              fieldWidth="160px"
+            />
+            <Label
+              glyph="solid/copy"
+              tooltip={T('Copy to clipboard')}
+              onCLick={() => console.log('copied')}
+            />
+          </Container>
+        </Form>
+        {this.renderTranslations()}
+        {this.renderSources()}
       </Container>
     );
   }
 }
 
-const NabuMessageConnected = Widget.connect(state => ({
+const NabuMessageConnected = Widget.connect((state, props) => ({
   locales: state.get(`backend.nabu.locales`),
+  sources: state.get(`backend.${props.entityId}.sources`),
 }))(NabuMessage);
 
 function renderPanel(props) {
