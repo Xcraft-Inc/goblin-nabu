@@ -78,25 +78,15 @@ const config = {
 
     var secondColumn = firstColumn === firstLocale ? secondLocale : firstLocale;
 
-    yield quest.me.change({
-      path: 'columns[2].field',
-      newValue: firstColumn,
-      muteChanged: true,
-    });
-    yield quest.me.change({
-      path: 'columns[2].sortKey',
-      newValue: `${firstColumn}-value.keyword`,
+    yield quest.me.apply({
+      path: 'columns[2]',
+      patch: {field: firstColumn, sortKey: `${firstColumn}-value.keyword`},
       muteChanged: true,
     });
 
-    yield quest.me.change({
-      path: 'columns[3].field',
-      newValue: secondColumn,
-      muteChanged: true,
-    });
-    yield quest.me.change({
-      path: 'columns[3].sortKey',
-      newValue: `${secondColumn}-value.keyword`,
+    yield quest.me.apply({
+      path: 'columns[3]',
+      patch: {field: secondColumn, sortKey: `${secondColumn}-value.keyword`},
       muteChanged: true,
     });
 
@@ -121,17 +111,9 @@ const config = {
         return;
       }
 
-      yield quest.me.change(
-        {
-          path: `columns[${index}].field`,
-          newValue: locale,
-          muteChanged: true,
-        },
-        next
-      );
-      yield quest.me.change({
-        path: `columns[${index}].sortKey`,
-        newValue: `${locale}-value.keyword`,
+      yield quest.me.apply({
+        path: `columns[${index}]`,
+        patch: {field: locale, sortKey: `${locale}-value.keyword`},
       });
 
       const sort = quest.goblin.getState().get('sort');
