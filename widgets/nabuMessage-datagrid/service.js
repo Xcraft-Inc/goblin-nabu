@@ -63,11 +63,7 @@ const config = {
     const nabuApi = quest.getAPI('nabu');
     const toolbarApi = quest.getAPI(getToolbarId(quest.me.id));
     const locales = (yield nabuApi.get()).get('locales');
-
-    const currentLocaleId = (yield toolbarApi.get()).get('selectedLocaleId');
-    const currentLocale = locales.find(
-      locale => locale.get('id') === currentLocaleId
-    );
+    const currentLocale = yield toolbarApi.getSelectedLocale();
 
     var firstLocale = locales.size > 0 ? `${locales.first().get('name')}` : '';
     var secondLocale = locales.size > 1 ? `${locales.get(1).get('name')}` : '';
