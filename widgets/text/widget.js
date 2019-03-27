@@ -33,11 +33,19 @@ export default class NabuText extends Widget {
   }
 
   mustAdd() {
-    const {message, nabuId, description, enabled, workitemId} = this.props;
-    if (enabled && !message) {
+    const {
+      message,
+      nabuId,
+      description,
+      custom,
+      enabled,
+      workitemId,
+    } = this.props;
+    if ((enabled || custom) && !message) {
       this.cmd('nabu.add-message', {
         nabuId,
         description,
+        custom,
         workitemId,
         desktopId: this.context.desktopId,
       });
@@ -76,13 +84,14 @@ export default class NabuText extends Widget {
       locale,
       html,
       values,
+      custom,
       cachedTranslation,
       translation,
     } = this.props;
 
     const localeName = locale && locale.get('name');
 
-    if (!enabled && cachedTranslation) {
+    if (!enabled && !custom && cachedTranslation) {
       return formatMessage(localeName, html, cachedTranslation, values || {});
     }
 
@@ -156,6 +165,7 @@ export default class NabuText extends Widget {
       workitemId,
       message,
       nabuId,
+      custom,
       cachedTranslation,
       translation,
       locale,

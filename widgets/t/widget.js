@@ -124,6 +124,7 @@ class T extends Widget {
       <TextConnected
         nabuId={msg.nabuId}
         description={msg.description}
+        custom={msg.custom}
         html={msg.html}
         values={msg.values}
         workitemId={self.context.desktopId || self.getNearestId()}

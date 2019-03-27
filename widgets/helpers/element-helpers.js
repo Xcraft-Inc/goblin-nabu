@@ -46,18 +46,7 @@ function translate(text, state, enabled, locale) {
     return text.nabuId;
   }
 
-  if (!enabled) {
-    const cachedTranslation = translationWithContextAndSublocale(
-      text.nabuId,
-      locale,
-      nabuId => computeMessageId(nabuId),
-      translation => translation,
-      (msgId, localeName) =>
-        state.get(`backend.nabu.translations.${msgId}.${localeName}`)
-    );
-
-    return cachedTranslation || text.nabuId;
-  } else {
+  if (enabled || text.custom) {
     const translatedMessage = translationWithContextAndSublocale(
       text.nabuId,
       locale,
@@ -70,6 +59,17 @@ function translate(text, state, enabled, locale) {
     return translatedMessage && translatedMessage.get('text')
       ? translatedMessage.get('text')
       : text.nabuId;
+  } else {
+    const cachedTranslation = translationWithContextAndSublocale(
+      text.nabuId,
+      locale,
+      nabuId => computeMessageId(nabuId),
+      translation => translation,
+      (msgId, localeName) =>
+        state.get(`backend.nabu.translations.${msgId}.${localeName}`)
+    );
+
+    return cachedTranslation || text.nabuId;
   }
 }
 
@@ -135,13 +135,14 @@ class TranslatableElement extends Widget {
   mustAdd() {
     const {enabled, translatableElements, widget} = this.props;
 
-    if (enabled) {
+    if (widget) {
       const getNearestId = widget.getNearestId.bind(widget);
       const workitemId = getNearestId();
       const desktopId = widget.context.desktopId;
 
       for (let element of translatableElements) {
         if (
+          (enabled || element.nabuObject.custom) &&
           element.nabuObject &&
           element.nabuObject.nabuId &&
           !element.message
@@ -149,6 +150,7 @@ class TranslatableElement extends Widget {
           this.cmd('nabu.add-message', {
             nabuId: element.nabuObject.nabuId,
             description: element.nabuObject.description,
+            custom: element.nabuObject.custom,
             workitemId,
             desktopId,
           });
