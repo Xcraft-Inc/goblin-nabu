@@ -14,6 +14,15 @@ export default class NabuText extends Widget {
     this.getText = this.getText.bind(this);
     this.getSelectionModeStyle = this.getSelectionModeStyle.bind(this);
     this.getStyle = this.getStyle.bind(this);
+
+    this.highlitedStyle = {
+      outline: 'none',
+      backgroundColor: 'rgba(10, 200, 100, .8)',
+    };
+
+    this.focusStyle = {
+      boxShadow: '0 0 10px 5px rgba(200, 0, 0, .8)',
+    };
   }
 
   componentDidMount() {
@@ -139,15 +148,6 @@ export default class NabuText extends Widget {
     }
     return style;
   }
-
-  highlitedStyle = {
-    outline: 'none',
-    backgroundColor: 'rgba(10, 200, 100, .8)',
-  };
-
-  focusStyle = {
-    boxShadow: '0 0 10px 5px rgba(200, 0, 0, .8)',
-  };
 
   render() {
     const {
