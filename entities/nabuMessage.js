@@ -14,10 +14,11 @@ const entity = {
     return {info, value: info.toLowerCase()};
   },
   quests: {},
-  onNew: function(quest, id, nabuId, sources) {
+  onNew: function(quest, id, nabuId, custom, sources) {
     return {
       id: id,
       nabuId: nabuId || '',
+      custom: custom || false,
       sources: sources || [],
     };
   },

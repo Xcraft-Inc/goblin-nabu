@@ -1,6 +1,12 @@
 //T:2019-02-27
 
-module.exports = function ToNabuObject(nabuId, description, values, html) {
+module.exports = function ToNabuObject(
+  nabuId,
+  description,
+  values,
+  html,
+  custom
+) {
   if (!nabuId) {
     throw new Error('Error in function T: nabuId is undefined');
   }
@@ -16,6 +22,9 @@ module.exports = function ToNabuObject(nabuId, description, values, html) {
   if (html && typeof html !== 'boolean') {
     throw new Error('Error in function T: html is not a boolean');
   }
+  if (custom && typeof custom !== 'boolean') {
+    throw new Error('Error in function T: custom is not a boolean');
+  }
 
   const nabuObject = {};
 
@@ -30,6 +39,9 @@ module.exports = function ToNabuObject(nabuId, description, values, html) {
   }
   if (html) {
     nabuObject.html = html;
+  }
+  if (custom) {
+    nabuObject.dynamic = custom;
   }
 
   return nabuObject;
