@@ -27,7 +27,6 @@ export default class NabuToolbar extends Widget {
       id: 'id',
       show: 'show',
       enabled: 'enabled',
-      locale: 'selectedLocale',
       marker: 'marker',
       focus: 'focus',
       selectionMode: 'selectionMode.enabled',

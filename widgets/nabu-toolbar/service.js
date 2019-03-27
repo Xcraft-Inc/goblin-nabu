@@ -15,7 +15,6 @@ const logicState = {
   focus: null,
 
   selectedLocaleId: null,
-  selectedLocale: null,
   selectionMode: {
     enabled: false,
     selectedItemId: null,
@@ -28,8 +27,7 @@ const logicHandlers = {
     return state
       .set('id', action.get('id'))
       .set('show', action.get('show'))
-      .set('selectedLocaleId', action.get('localeId'))
-      .set('selectedLocale', action.get('locale'));
+      .set('selectedLocaleId', action.get('localeId'));
   },
   enable: state => {
     return state.set('enabled', true);
@@ -55,9 +53,7 @@ const logicHandlers = {
   },
 
   'set-selected-locale': (state, action) => {
-    return state
-      .set(`selectedLocaleId`, action.get('localeId'))
-      .set(`selectedLocale`, action.get('locale'));
+    return state.set(`selectedLocaleId`, action.get('localeId'));
   },
 
   'set-selected-item': (state, action) => {
@@ -74,12 +70,12 @@ Goblin.registerQuest(goblinName, 'get', function(quest) {
   return quest.goblin.getState();
 });
 
-Goblin.registerQuest(goblinName, 'getSelectedLocaleId', function(quest) {
-  return quest.goblin.getState().get('selectedLocaleId');
-});
+Goblin.registerQuest(goblinName, 'getSelectedLocale', function*(quest) {
+  const selectedLocaleId = quest.goblin.getState().get('selectedLocaleId');
+  const nabuApi = quest.getAPI('nabu');
+  const locales = yield nabuApi.getLocales();
 
-Goblin.registerQuest(goblinName, 'getSelectedLocale', function(quest) {
-  return quest.goblin.getState().get('selectedLocale');
+  return locales.find(locale => locale.get('id') === selectedLocaleId);
 });
 
 Goblin.registerQuest(goblinName, 'create', function*(
