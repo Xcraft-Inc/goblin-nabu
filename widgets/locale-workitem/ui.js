@@ -10,9 +10,11 @@ import Label from 'gadgets/label/widget';
 
 function renderName(status) {
   if (status === 'draft') {
-    return <Field grow="1" labelText={T('Nom')} model=".name" />;
+    return <Field grow="1" labelText={T('Technical name')} model=".name" />;
   } else {
-    return <Field grow="1" readonly labelText={T('Nom')} model=".name" />;
+    return (
+      <Field grow="1" readonly labelText={T('Technical name')} model=".name" />
+    );
   }
 }
 
@@ -26,6 +28,7 @@ function renderComponent(props) {
 
         <Container kind="column">
           {renderName(props.status)}
+          <Field grow="1" labelText={T('Common name')} model=".text" />
           <Field grow="1" labelText={T('Description')} model=".description" />
         </Container>
       </Container>

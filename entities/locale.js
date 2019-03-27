@@ -6,7 +6,7 @@ const entity = {
   newEntityStatus: 'draft',
 
   buildSummaries: function(quest, locale, peers, MD) {
-    const ref = locale.get('name', '');
+    const ref = locale.get('text', locale.get('name', ''));
     return {info: ref, description: ref};
   },
   indexer: function(quest, entity) {
@@ -14,10 +14,11 @@ const entity = {
     return {info};
   },
   quests: {},
-  onNew: function(quest, id, name, description) {
+  onNew: function(quest, id, name, text, description) {
     return {
       id,
       name: name || `locale-${quest.uuidV4().slice(0, 6)}`,
+      text: text || '',
       description: description || '',
     };
   },
