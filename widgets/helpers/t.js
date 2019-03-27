@@ -41,7 +41,7 @@ module.exports = function ToNabuObject(
     nabuObject.html = html;
   }
   if (custom) {
-    nabuObject.dynamic = custom;
+    nabuObject.custom = custom;
   }
 
   return nabuObject;
