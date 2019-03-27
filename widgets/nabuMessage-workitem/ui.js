@@ -7,6 +7,7 @@ import Form from 'laboratory/form';
 
 import Container from 'gadgets/container/widget';
 import Label from 'gadgets/label/widget';
+import Button from 'gadgets/button/widget';
 import TranslationFieldConnected from '../translation-field/widget.js';
 const {computeTranslationId} = require('goblin-nabu/lib/helpers.js');
 
@@ -112,7 +113,7 @@ class NabuMessage extends Form {
         <Form {...this.formConfig} model={`backend.${this.props.entityId}`}>
           <Container kind="row">
             <Label text={T('Message original')} width="80px" />
-            <Label
+            <Button
               glyph="solid/copy"
               tooltip={T('Copy to clipboard')}
               onClick={this.copyNabuIdToClipboard}
