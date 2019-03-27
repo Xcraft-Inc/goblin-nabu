@@ -96,7 +96,11 @@ export default class NabuText extends Widget {
     }
 
     const translatedMessage =
-      enabled && message && translation && translation.get('text') && localeName
+      (enabled || custom) &&
+      message &&
+      translation &&
+      translation.get('text') &&
+      localeName
         ? translation.get('text')
         : nabuId;
 
