@@ -95,14 +95,16 @@ class TranslationField extends Form {
     }
 
     return (
-      <Form {...this.formConfig}>
+      <Form {...this.formConfigWithoutStyle}>
         <Field
           model={`backend.${id}.text`}
           grow={grow || '1'}
           verticalSpacing={verticalSpacing || 'compact'}
           rows={rows || '1'}
           className={
-            this.props.labelText ? undefined : this.styles.classNames.bottomLine
+            this.props.labelText
+              ? this.props.style
+              : this.styles.classNames.bottomLine
           }
           width={this.props.width}
           {...other}
