@@ -28,7 +28,7 @@ class NabuMessage extends Form {
 
   copyNabuIdToClipboard() {
     const {nabuId} = this.props;
-    this.copyTextToClipboard(nabuId);
+    Form.copyTextToClipboard(nabuId);
   }
 
   renderSources() {
