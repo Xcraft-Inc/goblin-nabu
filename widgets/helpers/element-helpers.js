@@ -151,7 +151,6 @@ class TranslatableElement extends Widget {
       enabled,
       translatableElements,
       locale,
-      widget,
       dispatch,
       children,
       renderElement,
