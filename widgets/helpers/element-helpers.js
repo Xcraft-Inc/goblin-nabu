@@ -3,6 +3,7 @@
 import React from 'react';
 import Widget from 'laboratory/widget';
 import formatMessage from 'goblin-nabu/lib/format.js';
+const {fromJS} = require('immutable');
 
 const {
   getToolbarId,
@@ -33,11 +34,8 @@ function getLocaleName(state, toolbar) {
   return locale.get('name');
 }
 
-function getToolbar(state, widget) {
-  const getNearestId = widget.getNearestId.bind(widget);
-  const workitemId = getNearestId();
-  const toolbarId = getToolbarId(widget.context.desktopId || workitemId);
-
+function getToolbar(state, workitemId) {
+  const toolbarId = getToolbarId(workitemId);
   return toolbarId ? state.get(`backend.${toolbarId}`) : null;
 }
 
@@ -79,40 +77,35 @@ function format(translation, locale, text) {
   }
 
   const txt =
-    translation && typeof translation === 'string' ? translation : text.nabuId;
+    translation && typeof translation === 'string'
+      ? translation
+      : text.get('nabuId');
 
-  return formatMessage(locale, text.html, txt, text.values || {});
+  const values = text.get('values') ? text.get('values').toJS() : {};
+
+  return formatMessage(locale, text.get('html'), txt, values);
 }
 
-function getTranslationInfo(text, enabled, locale, state) {
+function getTranslatableElements(text, enabled, locale, state) {
   if (typeof text === 'string') {
-    return {
-      translatableElements: [],
-      translation: text,
-    };
+    return [
+      {
+        translation: text,
+      },
+    ];
   } else if (text.nabuId) {
-    return {
-      translatableElements: [
-        {
-          nabuObject: text,
-          message: state.get(`backend.${computeMessageId(text.nabuId)}`),
-        },
-      ],
-      translation: format(
-        translate(text, state, enabled, locale),
-        locale,
-        text
-      ),
-    };
+    return [
+      {
+        nabuObject: text,
+        message: state.get(`backend.${computeMessageId(text.nabuId)}`),
+        translation: translate(text, state, enabled, locale),
+      },
+    ];
   } else {
     // translatable string
-    const infos = text._string.map(item =>
-      getTranslationInfo(item, enabled, locale, state)
-    );
-    return {
-      translatableElements: infos.map(item => item.translatableElements).flat(),
-      translation: infos.map(item => item.translation).join(''),
-    };
+    return text._string
+      .map(item => getTranslatableElements(item, enabled, locale, state))
+      .flat();
   }
 }
 
@@ -133,26 +126,20 @@ class TranslatableElement extends Widget {
   }
 
   mustAdd() {
-    const {enabled, translatableElements, widget} = this.props;
+    const {enabled, translatableElements, workitemId} = this.props;
 
-    if (widget) {
-      const getNearestId = widget.getNearestId.bind(widget);
-      const workitemId = getNearestId();
-      const desktopId = widget.context.desktopId;
-
+    if (workitemId && translatableElements) {
       for (let element of translatableElements) {
         if (
-          (enabled || element.nabuObject.custom) &&
-          element.nabuObject &&
-          element.nabuObject.nabuId &&
-          !element.message
+          (enabled || element.getIn(['nabuObject', 'custom'])) &&
+          element.getIn(['nabuObject', 'nabuId'], null) &&
+          !element.get('message', null)
         ) {
           this.cmd('nabu.add-message', {
-            nabuId: element.nabuObject.nabuId,
-            description: element.nabuObject.description,
-            custom: element.nabuObject.custom,
+            nabuId: element.getIn(['nabuObject', 'nabuId']),
+            description: element.getIn(['nabuObject', 'description']),
+            custom: element.getIn(['nabuObject', 'custom']),
             workitemId,
-            desktopId,
           });
         }
       }
@@ -163,15 +150,29 @@ class TranslatableElement extends Widget {
     const {
       enabled,
       translatableElements,
-      translation,
+      locale,
       widget,
       dispatch,
       children,
       renderElement,
-      self,
+      workitemId,
       onRef,
       ...other
     } = this.props;
+    const translation = translatableElements
+      ? translatableElements
+          .map(element =>
+            element.get('nabuObject', null)
+              ? format(
+                  element.get('translation'),
+                  locale,
+                  element.get('nabuObject')
+                )
+              : element.get('translation')
+          )
+          .toJS()
+          .join('')
+      : null;
 
     return renderElement(translation, children, onRef, other);
   }
@@ -179,14 +180,8 @@ class TranslatableElement extends Widget {
 
 function connectTranslatableElement(renderElement) {
   return Widget.connect((state, props) => {
-    const {msgid, self, ...other} = props;
+    const {msgid, workitemId, ...other} = props;
     let text = msgid;
-
-    if (!self) {
-      throw new Error(
-        `Error in Translatable Element: widget (self property) has not been provided`
-      );
-    }
 
     if (React.isValidElement(text)) {
       throw new Error(
@@ -194,10 +189,19 @@ function connectTranslatableElement(renderElement) {
       );
     }
 
-    if (!text || typeof text !== 'object') {
+    if (!text) {
       return {
-        translatableElements: [],
-        translation: text,
+        renderElement,
+        ...other,
+      };
+    }
+    if (typeof text !== 'object') {
+      return {
+        translatableElements: fromJS([
+          {
+            translation: text,
+          },
+        ]),
         renderElement,
         ...other,
       };
@@ -216,55 +220,49 @@ function connectTranslatableElement(renderElement) {
       throw new Error('Cannot render object in Translatable Element');
     }
 
-    const toolbar = getToolbar(state, self);
+    const toolbar = getToolbar(state, workitemId);
     const enabled = toolbar ? toolbar.get('enabled') : false;
     const locale = getLocaleName(state, toolbar);
 
-    const translationInfo = getTranslationInfo(text, enabled, locale, state);
+    const translatableElements = fromJS(
+      getTranslatableElements(text, enabled, locale, state)
+    );
 
     return {
       enabled,
-      widget: self,
       renderElement,
-      ...translationInfo,
+      locale,
+      translatableElements,
       ...other,
     };
   })(TranslatableElement);
 }
 
-const TranslatableDiv = connectTranslatableElement(
-  (tooltip, children, onRef, props) => (
-    <div ref={onRef} title={tooltip} {...props}>
-      {children}
-    </div>
-  )
+const renderDiv = (tooltip, children, onRef, props) => (
+  <div ref={onRef} title={tooltip} {...props}>
+    {children}
+  </div>
 );
 
-const TranslatableA = connectTranslatableElement(
-  (tooltip, children, onRef, props) => (
-    <a ref={onRef} title={tooltip} {...props}>
-      {children}
-    </a>
-  )
+const renderA = (tooltip, children, onRef, props) => (
+  <a ref={onRef} title={tooltip} {...props}>
+    {children}
+  </a>
 );
 
-const TranslatableTextarea = connectTranslatableElement(
-  (placeholder, children, onRef, props) => (
-    <textarea ref={onRef} placeholder={placeholder} {...props} />
-  )
+const renderTextarea = (placeholder, children, onRef, props) => (
+  <textarea ref={onRef} placeholder={placeholder} {...props} />
 );
 
-const TranslatableInput = connectTranslatableElement(
-  (placeholder, children, onRef, props) => (
-    <input ref={onRef} placeholder={placeholder} {...props} />
-  )
+const renderInput = (placeholder, children, onRef, props) => (
+  <input ref={onRef} placeholder={placeholder} {...props} />
 );
 
 //-----------------------------------------------------------------------------
 
 module.exports = {
-  TranslatableDiv,
-  TranslatableA,
-  TranslatableTextarea,
-  TranslatableInput,
+  TranslatableDiv: connectTranslatableElement(renderDiv),
+  TranslatableA: connectTranslatableElement(renderA),
+  TranslatableTextarea: connectTranslatableElement(renderTextarea),
+  TranslatableInput: connectTranslatableElement(renderInput),
 };
