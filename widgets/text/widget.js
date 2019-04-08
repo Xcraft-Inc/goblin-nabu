@@ -101,7 +101,12 @@ export default class NabuText extends Widget {
     const localeName = locale && locale.get('name');
 
     if (!enabled && !custom && cachedTranslation) {
-      return formatMessage(localeName, html, cachedTranslation, values || {});
+      return formatMessage(
+        localeName,
+        html,
+        cachedTranslation,
+        values ? values.toJS() : {}
+      );
     }
 
     const translatedMessage =
@@ -113,7 +118,12 @@ export default class NabuText extends Widget {
         ? translation.get('text')
         : nabuId;
 
-    return formatMessage(localeName, html, translatedMessage, values || {});
+    return formatMessage(
+      localeName,
+      html,
+      translatedMessage,
+      values ? values.toJS() : {}
+    );
   }
 
   getSelectionModeStyle() {

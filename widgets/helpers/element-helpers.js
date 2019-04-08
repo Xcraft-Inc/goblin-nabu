@@ -4,12 +4,12 @@ import React from 'react';
 import Widget from 'laboratory/widget';
 import formatMessage from 'goblin-nabu/lib/format.js';
 const {fromJS} = require('immutable');
+const {isShredder, isImmutable} = require('xcraft-core-shredder');
 
 const {
   getToolbarId,
   computeMessageId,
   computeTranslationId,
-  resolvePlainMessage,
 } = require('goblin-nabu/lib/helpers.js');
 const {
   translationWithContextAndSublocale,
@@ -206,7 +206,9 @@ function connectTranslatableElement(renderElement) {
       };
     }
 
-    text = resolvePlainMessage(text);
+    if (isShredder(text) || isImmutable(text)) {
+      text = text.toJS();
+    }
 
     if (text._type === 'translatableMarkdown') {
       throw new Error(
