@@ -202,6 +202,7 @@ function connectTranslatableElement(renderElement) {
         ...other,
       };
     }
+
     if (typeof text !== 'object') {
       return {
         translatableElements: fromJS([
