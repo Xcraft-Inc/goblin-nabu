@@ -1,10 +1,13 @@
 'use strict';
+//T:2019-04-09
+
+const T = require('goblin-nabu/widgets/helpers/t.js');
 const {buildWorkitem} = require('goblin-workshop');
 
 const config = {
   type: 'nabuMessage',
   kind: 'search',
-  title: 'Messages',
+  title: T('Messages'),
   list: 'nabuMessage',
   hinters: {
     nabuMessage: {
