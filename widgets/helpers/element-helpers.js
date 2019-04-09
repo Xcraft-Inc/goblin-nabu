@@ -15,6 +15,9 @@ const {
   translationWithContextAndSublocale,
 } = require('goblin-nabu/lib/gettext.js');
 
+const get = (obj, key) =>
+  isShredder(obj) || isImmutable(obj) ? obj.get(key) : obj[key];
+
 function getLocaleName(state, toolbar) {
   const localeId = toolbar ? toolbar.get('selectedLocaleId') : null;
   if (!localeId) {
@@ -40,13 +43,15 @@ function getToolbar(state, workitemId) {
 }
 
 function translate(text, state, enabled, locale) {
+  const nabuId = get(text, 'nabuId');
+
   if (!locale) {
-    return text.nabuId;
+    return nabuId;
   }
 
-  if (enabled || text.custom) {
+  if (enabled || get(text, 'custom')) {
     const translatedMessage = translationWithContextAndSublocale(
-      text.nabuId,
+      nabuId,
       locale,
       nabuId => computeMessageId(nabuId),
       translation => translation && translation.get('text'),
@@ -56,10 +61,10 @@ function translate(text, state, enabled, locale) {
 
     return translatedMessage && translatedMessage.get('text')
       ? translatedMessage.get('text')
-      : text.nabuId;
+      : nabuId;
   } else {
     const cachedTranslation = translationWithContextAndSublocale(
-      text.nabuId,
+      nabuId,
       locale,
       nabuId => computeMessageId(nabuId),
       translation => translation,
@@ -67,7 +72,7 @@ function translate(text, state, enabled, locale) {
         state.get(`backend.nabu.translations.${msgId}.${localeName}`)
     );
 
-    return cachedTranslation || text.nabuId;
+    return cachedTranslation || nabuId;
   }
 }
 
@@ -93,20 +98,23 @@ function getTranslatableElements(text, enabled, locale, state) {
         translation: text,
       },
     ];
-  } else if (text.nabuId) {
+  }
+
+  const nabuId = get(text, 'nabuId');
+  if (nabuId) {
     return [
       {
         nabuObject: text,
-        message: state.get(`backend.${computeMessageId(text.nabuId)}`),
+        message: state.get(`backend.${computeMessageId(nabuId)}`),
         translation: translate(text, state, enabled, locale),
       },
     ];
-  } else {
-    // translatable string
-    return text._string
-      .map(item => getTranslatableElements(item, enabled, locale, state))
-      .flat();
   }
+
+  // translatable string
+  return get(text, '_string')
+    .map(item => getTranslatableElements(item, enabled, locale, state))
+    .flat();
 }
 
 /**************************************************************************/
@@ -206,17 +214,18 @@ function connectTranslatableElement(renderElement) {
       };
     }
 
-    if (isShredder(text) || isImmutable(text)) {
-      text = text.toJS();
+    const type = get(text, '_type');
+    const nabuId = get(text, 'nabuId');
+
+    if (type === 'translatableMarkdown') {
+      throw new Error(
+        `Cannot render markdown in Translatable Element. Markdown is ${
+          isShredder(text) || isImmutable(text) ? text : JSON.stringify(text)
+        }`
+      );
     }
 
-    if (text._type === 'translatableMarkdown') {
-      throw new Error(
-        `Cannot render markdown in Translatable Element. Markdown is ${JSON.stringify(
-          text
-        )}`
-      );
-    } else if (!text.nabuId && text._type !== 'translatableString') {
+    if (!nabuId && type !== 'translatableString') {
       console.err(text);
       throw new Error('Cannot render object in Translatable Element');
     }
