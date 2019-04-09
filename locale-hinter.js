@@ -1,4 +1,7 @@
 'use strict';
+//T:2019-04-09
+
+const T = require('goblin-nabu/widgets/helpers/t.js');
 const nabuConfig = require('xcraft-core-etc')().load('goblin-nabu');
 
 if (nabuConfig.storageAvailable) {
@@ -12,10 +15,10 @@ if (nabuConfig.storageAvailable) {
     return buildHinter({
       type: 'locale',
       fields: ['name'],
-      title: 'Locales',
       newWorkitem: {
         name: 'locale-workitem',
         newEntityType: 'locale',
+        description: T('Nouvelle locale'),
         view: 'default',
         icon: 'solid/map',
         mapNewValueTo: 'name',
@@ -23,7 +26,8 @@ if (nabuConfig.storageAvailable) {
         isClosable: true,
         navigate: true,
       },
-      newButtonTitle: 'Nouvelle locale',
+      title: T('Locales'),
+      newButtonTitle: T('Nouvelle locale'),
     });
   };
 }
