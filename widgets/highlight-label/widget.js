@@ -10,9 +10,15 @@ class HighlightLabel extends Widget {
   }
 
   render() {
+    const text = this.props.text;
+    const oneLineText =
+      text !== undefined ? text.replace(new RegExp('\n', 'g'), ' ') : text;
+
     return (
       <Label
         {...this.props}
+        tooltip={text}
+        text={oneLineText}
         className={
           this.props.underline && this.props.underline === true
             ? this.styles.classNames.highlight
