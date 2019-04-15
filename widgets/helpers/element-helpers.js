@@ -269,6 +269,26 @@ const renderInput = (placeholder, children, onRef, props) => (
   <input ref={onRef} placeholder={placeholder} {...props} />
 );
 
+const withT = (Component, textPropName, servicePropName) => {
+  const TranslatableComponent = connectTranslatableElement(
+    (translation, children, onRef, props) => (
+      <Component ref={onRef} {...{[textPropName]: translation}} {...props}>
+        {children}
+      </Component>
+    )
+  );
+  return props => {
+    const {[textPropName]: msgid, ...otherProps} = props;
+    return (
+      <TranslatableComponent
+        msgid={msgid}
+        workitemId={props[servicePropName]}
+        {...otherProps}
+      />
+    );
+  };
+};
+
 //-----------------------------------------------------------------------------
 
 module.exports = {
@@ -276,4 +296,5 @@ module.exports = {
   TranslatableA: connectTranslatableElement(renderA),
   TranslatableTextarea: connectTranslatableElement(renderTextarea),
   TranslatableInput: connectTranslatableElement(renderInput),
+  withT,
 };
