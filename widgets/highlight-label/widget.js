@@ -11,8 +11,11 @@ class HighlightLabel extends Widget {
 
   render() {
     const text = this.props.text;
-    const oneLineText =
+    let oneLineText =
       text !== undefined ? text.replace(new RegExp('\n', 'g'), ' ') : text;
+    if (text !== undefined && oneLineText.length > 40) {
+      oneLineText = `${oneLineText.substring(0, 40)}...`;
+    }
 
     return (
       <Label
