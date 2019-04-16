@@ -138,17 +138,18 @@ class TranslatableElement extends Widget {
 
     if (workitemId && translatableElements) {
       for (let element of translatableElements) {
-        if (
-          (enabled || element.getIn(['nabuObject', 'custom'])) &&
-          element.getIn(['nabuObject', 'nabuId'], null) &&
-          !element.get('message', null)
-        ) {
-          this.cmd('nabu.add-message', {
-            nabuId: element.getIn(['nabuObject', 'nabuId']),
-            description: element.getIn(['nabuObject', 'description']),
-            custom: element.getIn(['nabuObject', 'custom']),
-            workitemId,
-          });
+        const nabuObject = element.get('nabuObject');
+        if (nabuObject) {
+          const custom = nabuObject.get('custom');
+          const nabuId = nabuObject.get('nabuId');
+          if ((enabled || custom) && nabuId && !element.get('message', null)) {
+            this.cmd('nabu.add-message', {
+              nabuId,
+              description: nabuObject.get('description'),
+              custom,
+              workitemId,
+            });
+          }
         }
       }
     }
