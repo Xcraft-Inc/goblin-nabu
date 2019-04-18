@@ -7,15 +7,37 @@ import Widget from 'laboratory/widget';
 class HighlightLabel extends Widget {
   constructor() {
     super(...arguments);
+
+    this.evaluateText = this.evaluateText.bind(this);
+    this.shrinkText = this.shrinkText.bind(this);
   }
 
-  render() {
-    const text = this.props.text;
+  evaluateText() {
+    let text = this.props.highlight
+      ? this.props.highlight.get(this.props.id)
+      : undefined;
+    if (!text) {
+      const nabuId = this.props.message.get('nabuId');
+      const translation = this.props.message.get('text');
+      text = nabuId || translation;
+    }
+
+    return text;
+  }
+
+  shrinkText(text) {
     let oneLineText =
       text !== undefined ? text.replace(new RegExp('\n', 'g'), ' ') : text;
     if (text !== undefined && oneLineText.length > 40) {
       oneLineText = `${oneLineText.substring(0, 40)}...`;
     }
+
+    return oneLineText;
+  }
+
+  render() {
+    const text = this.evaluateText();
+    const oneLineText = this.shrinkText(text);
 
     return (
       <Label
@@ -36,14 +58,8 @@ export default Widget.connect((state, props) => {
   const highlight = state.get(`backend.list@${props.datagridId}.highlights`);
   const message = state.get(`backend.${props.id}`);
 
-  let text = highlight ? highlight.get(props.id) : undefined;
-  if (!text) {
-    const nabuId = message.get('nabuId');
-    const translation = message.get('text');
-    text = nabuId || translation;
-  }
-
   return {
-    text,
+    highlight,
+    message,
   };
 })(HighlightLabel);
