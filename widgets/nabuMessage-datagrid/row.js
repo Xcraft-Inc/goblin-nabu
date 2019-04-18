@@ -43,7 +43,6 @@ function renderLocaleRowCell(id, locale, datagridId, onDrillDown) {
         datagridId={datagridId}
         onDrillDown={onDrillDown}
         msgId={id}
-        locale={locale}
         labelWidth="0px"
         spacing="compact"
         width="200%"

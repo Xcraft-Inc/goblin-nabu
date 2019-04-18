@@ -7,6 +7,8 @@ import Field from 'gadgets/field/widget';
 import Widget from 'laboratory/widget';
 import HighlightLabel from '../highlight-label/widget.js';
 import FontAwesomeIcon from '@fortawesome/react-fontawesome';
+import IcuMessage from '../icu-message/widget.js';
+import Container from 'gadgets/container/widget';
 
 class TranslationField extends Form {
   constructor() {
@@ -15,6 +17,8 @@ class TranslationField extends Form {
     this.onUpdate = this.onUpdate.bind(this);
     this.renewTTL = this.renewTTL.bind(this);
     this._renewInterval = null;
+
+    this.renderIcuMessage = this.renderIcuMessage.bind(this);
 
     this.state = {
       showField: false,
@@ -42,6 +46,16 @@ class TranslationField extends Form {
 
   onUpdate() {
     this.setState({showField: true});
+  }
+
+  renderIcuMessage() {
+    if (!this.props.locale) {
+      return;
+    }
+
+    return (
+      <IcuMessage locale={this.props.locale} translation={this.props.text} />
+    );
   }
 
   render() {
@@ -95,21 +109,24 @@ class TranslationField extends Form {
     }
 
     return (
-      <Form {...this.formConfigWithoutStyle}>
-        <Field
-          model={`backend.${id}.text`}
-          grow={grow || '1'}
-          verticalSpacing={verticalSpacing || 'compact'}
-          rows={rows || '1'}
-          className={
-            this.props.labelText
-              ? this.props.style
-              : this.styles.classNames.bottomLine
-          }
-          width={this.props.width}
-          {...other}
-        />
-      </Form>
+      <Container>
+        <Form {...this.formConfigWithoutStyle}>
+          <Field
+            model={`backend.${id}.text`}
+            grow={grow || '1'}
+            verticalSpacing={verticalSpacing || 'compact'}
+            rows={rows || '1'}
+            className={
+              this.props.labelText
+                ? this.props.style
+                : this.styles.classNames.bottomLine
+            }
+            width={this.props.width}
+            {...other}
+          />
+        </Form>
+        {this.renderIcuMessage()}
+      </Container>
     );
   }
 }

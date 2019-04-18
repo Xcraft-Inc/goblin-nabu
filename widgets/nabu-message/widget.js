@@ -93,6 +93,7 @@ class NabuMessage extends Form {
               verticalSpacing="5px"
               width="100%"
               rows="5"
+              locale={l.get('name')}
             />
           );
         })}

@@ -46,6 +46,12 @@ export default function styles() {
     borderBottom: 'solid thin #c1d1e0',
   };
 
+  const links = {
+    display: 'flex',
+    justifyContent: 'space-between',
+    marginBottom: '10px',
+  };
+
   return {
     titleHeader,
     header,
@@ -54,5 +60,6 @@ export default function styles() {
     translationField,
     sources,
     bottomLine,
+    links,
   };
 }
