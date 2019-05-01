@@ -7,7 +7,28 @@ export default function styles() {
     width: '100%',
   };
 
+  const collapsible = {
+    backgroundColor: '#777',
+    color: 'white',
+    cursor: 'pointer',
+    padding: '18px',
+    width: '100%',
+    border: 'none',
+    textAlign: 'left',
+    outline: 'none',
+    fontSize: '15px',
+  };
+
+  const content = {
+    padding: '0 18px',
+    display: 'none',
+    overflow: 'hidden',
+    backgroundColor: '#f1f1f1',
+  };
+
   return {
     bottomLine,
+    collapsible,
+    content,
   };
 }

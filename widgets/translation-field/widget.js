@@ -19,6 +19,7 @@ class TranslationField extends Form {
     this._renewInterval = null;
 
     this.renderIcuMessage = this.renderIcuMessage.bind(this);
+    this.extend = this.extend.bind(this);
 
     this.state = {
       showField: false,
@@ -48,13 +49,40 @@ class TranslationField extends Form {
     this.setState({showField: true});
   }
 
+  extend() {
+    if (this.styles.classNames.content.display === 'block') {
+      this.styles.classNames.content.display = 'none';
+    } else {
+      this.styles.classNames.content.display = 'block';
+    }
+  }
+
   renderIcuMessage() {
-    if (!this.props.locale) {
+    const isIcu = this.props.text
+      ? this.props.text.indexOf('{') > -1
+        ? this.props.text.indexOf('}') > -1
+          ? true
+          : false
+        : false
+      : false;
+    if (!this.props.locale || !isIcu) {
       return;
     }
 
     return (
-      <IcuMessage locale={this.props.locale} translation={this.props.text} />
+      <Container>
+        <button
+          className={this.styles.classNames.collapsible}
+          onClick={this.extend}
+        >
+          Open Collapsible
+        </button>
+        <IcuMessage
+          locale={this.props.locale}
+          translation={this.props.text}
+          className={this.styles.classNames.content}
+        />
+      </Container>
     );
   }
 
