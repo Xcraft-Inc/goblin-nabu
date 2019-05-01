@@ -27,16 +27,25 @@ class IcuMessage extends Widget {
 
   setKey(value) {
     this.setState({parameterKey: value});
+    this.setIcu(value, this.state.parameterValue);
   }
 
   setValue(value) {
     this.setState({parameterValue: value});
+    this.setIcu(this.state.parameterKey, value);
   }
 
-  setIcu() {
-    const formatParams = JSON.parse(
-      `{"${this.state.parameterKey}":${this.state.parameterValue}}`
-    );
+  setIcu(parameterKey, parameterValue) {
+    var parse = require('format-message-parse');
+    var tokens = [];
+    var pattern = this.props.translation;
+    const ast = parse(pattern, {
+      tagsType: null,
+      tokens: tokens,
+    });
+    console.log(ast);
+
+    const formatParams = JSON.parse(`{"${parameterKey}":${parameterValue}}`);
 
     const formattedMex = formatMessage(
       this.props.locale,
@@ -78,8 +87,6 @@ class IcuMessage extends Widget {
             className={this.styles.classNames.input}
           />
         </Container>
-
-        <Button onClick={this.setIcu} text={'Validate'} />
       </Container>
     );
   }
