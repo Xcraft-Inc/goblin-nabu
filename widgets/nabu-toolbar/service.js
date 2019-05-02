@@ -205,6 +205,57 @@ Goblin.registerQuest(goblinName, 'set-selected-item', function*(
   }
 });
 
+function simplifyName(localeName) {
+  return localeName.toLowerCase().replace('-', '_');
+}
+
+function getLang(localeName) {
+  return simplifyName(localeName).split('_')[0];
+}
+
+function findBestLocale(locales, localeName) {
+  // Compare name exacly
+  let locale = locales.find(l => l.get('name') === localeName);
+  if (locale) {
+    return locale;
+  }
+  // Compare name approximately (en_US matches en-us)
+  locale = locales.find(
+    l => simplifyName(l.get('name')) === simplifyName(localeName)
+  );
+  if (locale) {
+    return locale;
+  }
+  // Compare lang exacly (en_US matches en but not en_GB)
+  locale = locales.find(
+    l => simplifyName(l.get('name')) === getLang(localeName)
+  );
+  if (locale) {
+    return locale;
+  }
+  // Compare lang only (en_US matches en_GB)
+  locale = locales.find(
+    l => simplifyName(getLang(l.get('name'))) === getLang(localeName)
+  );
+  return locale;
+}
+
+Goblin.registerQuest(goblinName, 'set-locale-from-name', function*(
+  quest,
+  name
+) {
+  const nabuAPI = quest.getAPI('nabu');
+  const nabuState = yield nabuAPI.get();
+  const locales = nabuState.get('locales');
+  const locale = findBestLocale(locales, name);
+  if (!locale) {
+    return false;
+  }
+  const localeId = locale.get('id');
+  yield quest.me.setSelectedLocale({localeId});
+  return true;
+});
+
 //Dynamic API see reducers for params
 for (const action of Object.keys(logicHandlers)) {
   switch (action) {
