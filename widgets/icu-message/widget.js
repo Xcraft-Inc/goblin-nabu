@@ -5,48 +5,51 @@ import Widget from 'laboratory/widget';
 import Container from 'gadgets/container/widget';
 
 import Label from 'gadgets/label/widget';
-import Button from 'gadgets/button/widget';
 
 const T = require('goblin-nabu/widgets/helpers/t.js');
 const formatMessage = require('goblin-nabu/lib/format.js');
+const parse = require('format-message-parse');
 
 class IcuMessage extends Widget {
   constructor() {
     super(...arguments);
 
-    this.setKey = this.setKey.bind(this);
     this.setValue = this.setValue.bind(this);
     this.setIcu = this.setIcu.bind(this);
+    this.parseParameters = this.parseParameters.bind(this);
+    this.parameterPanel = this.parameterPanel.bind(this);
+    this.parameterArea = this.parameterArea.bind(this);
 
     this.state = {
       formattedText: '',
-      parameterKey: '',
-      parameterValue: '',
+      parameters: [],
     };
   }
 
-  setKey(value) {
-    this.setState({parameterKey: value});
-    this.setIcu(value, this.state.parameterValue);
+  static get wiring() {
+    return {
+      translation: 'translation',
+    };
   }
 
-  setValue(value) {
-    this.setState({parameterValue: value});
-    this.setIcu(this.state.parameterKey, value);
+  setValue(key, value) {
+    let parameters = this.state.parameters;
+    parameters[key] = value;
+
+    this.setState({parameters: parameters});
+    this.setIcu(parameters);
   }
 
-  setIcu(parameterKey, parameterValue) {
-    var parse = require('format-message-parse');
-    var tokens = [];
-    var pattern = this.props.translation;
-    const ast = parse(pattern, {
-      tagsType: null,
-      tokens: tokens,
+  setIcu() {
+    const paramState = this.state.parameters;
+
+    let paramString = '{';
+    Object.keys(paramState).forEach(param => {
+      paramString += `"${param}":"${paramState[param]}"`;
     });
-    console.log(ast);
+    paramString += '}';
 
-    const formatParams = JSON.parse(`{"${parameterKey}":${parameterValue}}`);
-
+    const formatParams = JSON.parse(paramString);
     const formattedMex = formatMessage(
       this.props.locale,
       false,
@@ -57,29 +60,48 @@ class IcuMessage extends Widget {
     this.setState({formattedText: formattedMex});
   }
 
+  parseParameters() {
+    let tokens = [];
+    parse(this.props.translation, {tagsType: null, tokens: tokens});
+
+    let parameters = [];
+    tokens.forEach(token => {
+      if (token[0] === 'id') {
+        parameters[token[1]] = '';
+      }
+    });
+
+    this.setState({parameters: parameters});
+  }
+
+  componentDidMount() {
+    this.parseParameters();
+  }
+
+  parameterPanel(paramKey, index) {
+    return (
+      <Container key={index} className={this.styles.classNames.element}>
+        <Label text={paramKey} className={this.styles.classNames.label} />
+        <input
+          type="text"
+          onChange={event => this.setValue(paramKey, event.target.value)}
+          value={this.state.parameters[paramKey]}
+          className={this.styles.classNames.input}
+        />
+      </Container>
+    );
+  }
+
+  parameterArea() {
+    return Object.keys(this.state.parameters).map((paramKey, index) => {
+      return this.parameterPanel(paramKey, index);
+    });
+  }
+
   render() {
     return (
       <Container className={this.styles.classNames.container}>
-        <Container className={this.styles.classNames.element}>
-          <Label text={T('Key')} className={this.styles.classNames.label} />
-          <input
-            type="text"
-            onChange={event => this.setKey(event.target.value)}
-            value={this.state.parameterKey}
-            className={this.styles.classNames.input}
-          />
-        </Container>
-
-        <Container className={this.styles.classNames.element}>
-          <Label text={T('Value')} className={this.styles.classNames.label} />
-          <input
-            type="text"
-            onChange={event => this.setValue(event.target.value)}
-            value={this.state.parameterValue}
-            className={this.styles.classNames.input}
-          />
-        </Container>
-
+        {this.parameterArea()}
         <Container className={this.styles.classNames.element}>
           <Label text={T('Result')} className={this.styles.classNames.label} />
           <Label
