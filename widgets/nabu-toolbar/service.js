@@ -205,6 +205,22 @@ Goblin.registerQuest(goblinName, 'set-selected-item', function*(
   }
 });
 
+Goblin.registerQuest(goblinName, 'set-locale-from-name', function*(
+  quest,
+  name
+) {
+  const nabuAPI = quest.getAPI('nabu');
+  const nabuState = yield nabuAPI.get();
+  const locales = nabuState.get('locales');
+  const locale = locales.find(locale => locale.get('name') === name);
+  if (!locale) {
+    return false;
+  }
+  const localeId = locale.get('id');
+  yield quest.me.setSelectedLocale({localeId});
+  return true;
+});
+
 //Dynamic API see reducers for params
 for (const action of Object.keys(logicHandlers)) {
   switch (action) {
