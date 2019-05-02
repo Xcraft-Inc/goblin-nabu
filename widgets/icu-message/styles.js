@@ -5,6 +5,7 @@ export default function styles() {
     display: 'flex',
     flexDirection: 'column',
     marginBottom: '15px',
+    marginTop: '15px',
   };
 
   const element = {
