@@ -9,6 +9,9 @@ import HighlightLabel from '../highlight-label/widget.js';
 import FontAwesomeIcon from '@fortawesome/react-fontawesome';
 import IcuMessage from '../icu-message/widget.js';
 import Container from 'gadgets/container/widget';
+import Button from 'gadgets/button/widget';
+
+import T from 't';
 
 class TranslationField extends Form {
   constructor() {
@@ -19,10 +22,11 @@ class TranslationField extends Form {
     this._renewInterval = null;
 
     this.renderIcuMessage = this.renderIcuMessage.bind(this);
-    this.extend = this.extend.bind(this);
+    this.toggleIcu = this.toggleIcu.bind(this);
 
     this.state = {
       showField: false,
+      showIcu: false,
     };
   }
 
@@ -49,12 +53,8 @@ class TranslationField extends Form {
     this.setState({showField: true});
   }
 
-  extend() {
-    if (this.styles.classNames.content.display === 'block') {
-      this.styles.classNames.content.display = 'none';
-    } else {
-      this.styles.classNames.content.display = 'block';
-    }
+  toggleIcu() {
+    this.setState({showIcu: !this.state.showIcu});
   }
 
   renderIcuMessage() {
@@ -70,18 +70,14 @@ class TranslationField extends Form {
     }
 
     return (
-      <Container>
-        <button
-          className={this.styles.classNames.collapsible}
-          onClick={this.extend}
-        >
-          Open Collapsible
-        </button>
-        <IcuMessage
-          locale={this.props.locale}
-          translation={this.props.text}
-          className={this.styles.classNames.content}
-        />
+      <Container className={this.styles.classNames.showIcuButton}>
+        <Button text={T('Icu')} onClick={this.toggleIcu} />
+        {this.state.showIcu ? (
+          <IcuMessage
+            locale={this.props.locale}
+            translation={this.props.text}
+          />
+        ) : null}
       </Container>
     );
   }
