@@ -272,11 +272,18 @@ const renderInput = (placeholder, children, onRef, props) => (
 
 const withT = (Component, textPropName, servicePropName) => {
   const TranslatableComponent = connectTranslatableElement(
-    (translation, children, onRef, props) => (
-      <Component ref={onRef} {...{[textPropName]: translation}} {...props}>
-        {children}
-      </Component>
-    )
+    (translation, children, onRef, props) => {
+      const {msgid, ...otherProps} = props;
+      return (
+        <Component
+          ref={onRef}
+          {...{[textPropName]: translation}}
+          {...otherProps}
+        >
+          {children}
+        </Component>
+      );
+    }
   );
   return props => {
     const {[textPropName]: msgid, ...otherProps} = props;
