@@ -44,7 +44,10 @@ class IcuMessage extends Widget {
     const paramState = this.state.parameters;
 
     let paramString = '{';
-    Object.keys(paramState).forEach(param => {
+    Object.keys(paramState).forEach((param, index) => {
+      if (index !== 0) {
+        paramString += `, `;
+      }
       paramString += `"${param}":"${paramState[param]}"`;
     });
     paramString += '}';
