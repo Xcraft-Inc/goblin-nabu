@@ -94,6 +94,7 @@ class NabuMessage extends Form {
               width="100%"
               rows="5"
               locale={l.get('name')}
+              showIcuButton={true}
             />
           );
         })}

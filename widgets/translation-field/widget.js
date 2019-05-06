@@ -65,7 +65,7 @@ class TranslationField extends Form {
           : false
         : false
       : false;
-    if (!this.props.locale || !isIcu) {
+    if (!this.props.showIcuButton || !isIcu) {
       return;
     }
 
