@@ -29,7 +29,7 @@ const entity = {
     return {
       id: id,
       messageId,
-      locale,
+      locale: locale ? locale : messageId.split('@')[1],
       text: text || '',
     };
   },
