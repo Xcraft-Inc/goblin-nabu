@@ -75,7 +75,7 @@ class TranslationField extends Form {
         {this.state.showIcu ? (
           <IcuMessage
             locale={this.props.locale}
-            translation={this.props.text}
+            translationId={this.props.id}
           />
         ) : null}
       </Container>

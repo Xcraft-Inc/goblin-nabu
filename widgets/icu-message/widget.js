@@ -24,12 +24,7 @@ class IcuMessage extends Widget {
       formattedText: '',
       parameters: [],
       error: '',
-    };
-  }
-
-  static get wiring() {
-    return {
-      translation: 'translation',
+      oldText: '',
     };
   }
 
@@ -38,7 +33,7 @@ class IcuMessage extends Widget {
     parameters[key] = value;
 
     this.setState({parameters: parameters});
-    this.setIcu(parameters);
+    this.setIcu();
   }
 
   setIcu() {
@@ -63,26 +58,26 @@ class IcuMessage extends Widget {
       );
       this.setState({formattedText: formattedMex, error: ''});
     } catch (err) {
-      this.setState({error: err.message});
+      this.setState({formattedText: '', error: err.message});
     }
   }
 
   parseParameters() {
-    let tokens = [];
-    parse(this.props.translation, {tagsType: null, tokens: tokens});
+    try {
+      let tokens = [];
+      parse(this.props.translation, {tagsType: null, tokens: tokens});
 
-    let parameters = [];
-    tokens.forEach(token => {
-      if (token[0] === 'id') {
-        parameters[token[1]] = '';
-      }
-    });
+      let parameters = [];
+      tokens.forEach(token => {
+        if (token[0] === 'id') {
+          parameters[token[1]] = this.state.parameters[token[1]] || '';
+        }
+      });
 
-    this.setState({parameters: parameters});
-  }
-
-  componentDidMount() {
-    this.parseParameters();
+      this.setState({parameters: parameters});
+    } catch (err) {
+      this.setState({formattedText: '', error: err.message});
+    }
   }
 
   parameterPanel(paramKey, index) {
@@ -106,6 +101,12 @@ class IcuMessage extends Widget {
   }
 
   render() {
+    if (this.state.oldText !== this.props.translation) {
+      this.parseParameters();
+      this.setIcu();
+      this.setState({oldText: this.props.translation});
+    }
+
     return (
       <Container className={this.styles.classNames.container}>
         {this.parameterArea()}
@@ -127,4 +128,8 @@ class IcuMessage extends Widget {
   }
 }
 
-export default IcuMessage;
+export default Widget.connect((state, props) => {
+  return {
+    translation: state.get(`backend.${props.translationId}.text`),
+  };
+})(IcuMessage);
