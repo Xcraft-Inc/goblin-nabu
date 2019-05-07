@@ -14,6 +14,13 @@ export default function styles() {
     paddingBottom: '15px',
   };
 
+  const errorElement = {
+    display: 'flex',
+    flexDirection: 'row',
+    paddingBottom: '15px',
+    color: 'rgb(190, 0, 0)',
+  };
+
   const label = {
     display: 'flex',
     width: '120px',
@@ -28,6 +35,7 @@ export default function styles() {
   return {
     container,
     element,
+    errorElement,
     label,
     input,
   };

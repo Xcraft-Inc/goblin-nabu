@@ -23,6 +23,7 @@ class IcuMessage extends Widget {
     this.state = {
       formattedText: '',
       parameters: [],
+      error: '',
     };
   }
 
@@ -52,15 +53,18 @@ class IcuMessage extends Widget {
     });
     paramString += '}';
 
-    const formatParams = JSON.parse(paramString);
-    const formattedMex = formatMessage(
-      this.props.locale,
-      false,
-      this.props.translation,
-      formatParams
-    );
-
-    this.setState({formattedText: formattedMex});
+    try {
+      const formatParams = JSON.parse(paramString);
+      const formattedMex = formatMessage(
+        this.props.locale,
+        false,
+        this.props.translation,
+        formatParams
+      );
+      this.setState({formattedText: formattedMex, error: ''});
+    } catch (err) {
+      this.setState({error: err.message});
+    }
   }
 
   parseParameters() {
@@ -112,6 +116,12 @@ class IcuMessage extends Widget {
             className={this.styles.classNames.input}
           />
         </Container>
+        {this.state.error !== '' ? (
+          <Label
+            text={this.state.error}
+            className={this.styles.classNames.errorElement}
+          />
+        ) : null}
       </Container>
     );
   }
