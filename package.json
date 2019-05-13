@@ -17,7 +17,7 @@
     "lodash": "^4.17.11",
     "messageformat": "^2.0.5",
     "uuid-validate": "^0.0.3",
-    "xcraft-core-goblin": "^2.0.0"
+    "xcraft-core-goblin": "^3.0.0"
   },
   "devDependencies": {
     "babel-core": "^6.26.3",
