@@ -97,7 +97,7 @@ class T extends Widget {
     if (msg._type === 'translatableMarkdown') {
       return (
         <ReactMarkdown
-          source={msg._string.substring(3)} // remove triple back-tick
+          source={msg._string.substring(3, msg._string.length - 3)} // remove triple back-tick
           renderers={{
             text: text => {
               if (text.startsWith('@{') && text.endsWith('}')) {
