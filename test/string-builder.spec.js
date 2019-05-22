@@ -1,13 +1,10 @@
 'use strict';
 
-// To run test:
-// npm test xcraft-core-converters
-
 const assert = require('assert');
 const StringBuilder = require('../lib/string-builder.js');
 const T = require('goblin-nabu/widgets/helpers/t.js');
 
-describe('String Builder Combine', function() {
+describe('StringBuilder Combine', function() {
   it('#Test Strings', function() {
     const result = StringBuilder.combine('a', 'b', 'c');
     assert.equal('abc', result);
@@ -59,7 +56,7 @@ describe('String Builder Combine', function() {
   });
 });
 
-describe('String Builder Join', function() {
+describe('StringBuilder Join', function() {
   it('#Test Strings', function() {
     const result = StringBuilder.join(['a', 'b', 'c'], ',');
     assert.equal('a,b,c', result);
@@ -103,5 +100,28 @@ describe('String Builder Join', function() {
     assert.equal('translatableString', result3._type);
     assert.ok(result3._string);
     assert.equal(6, result3._string.length);
+  });
+});
+
+describe('StringBuilder _toFlatten', function() {
+  it('#Test empty', function() {
+    assert.equal(StringBuilder._toFlatten(''), '');
+  });
+
+  // prettier-ignore
+  it('#Test single', function() {
+    assert.equal(StringBuilder._toFlatten(  "coucou" ),                            "coucou");
+    assert.equal(StringBuilder._toFlatten(T("coucou")),                            "@{coucou}");
+    assert.equal(StringBuilder._toFlatten(StringBuilder.join([  "coucou" ], ".")), "coucou");
+    assert.equal(StringBuilder._toFlatten(StringBuilder.join([T("coucou")], ".")), "@{coucou}");
+    assert.equal(StringBuilder._toFlatten(T("a|b|coucou")),                        "@{a|b|coucou}");
+  });
+
+  // prettier-ignore
+  it('#Test mix', function() {
+    assert.equal(StringBuilder._toFlatten(StringBuilder.join([  "a",    "b" ], ".")), "a.b");
+    assert.equal(StringBuilder._toFlatten(StringBuilder.join([T("a"), T("b")], ".")), "@{a}.@{b}");
+    assert.equal(StringBuilder._toFlatten(StringBuilder.join([T("a"),   "b" ], ".")), "@{a}.b");
+    assert.equal(StringBuilder._toFlatten(StringBuilder.join([  "a",  T("b")], ".")), "a.@{b}");
   });
 });
