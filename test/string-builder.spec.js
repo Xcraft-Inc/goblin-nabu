@@ -87,19 +87,24 @@ describe('StringBuilder Join', function() {
     assert.equal(4, result2._string.length);
   });
 
+  // prettier-ignore
   it('#Test MultipleTranslatableStrings', function() {
     const result1 = StringBuilder.joinSentences([null, 'a', T('b'), 'c']);
     const result2 = StringBuilder.joinSentences([null, 'd', T('e'), 'f']);
-    const result3 = StringBuilder.joinSentences([
-      result1,
-      result2,
-      'g',
-      'h',
-      T('i'),
-    ]);
+    const result3 = StringBuilder.joinSentences([result1, result2, 'g', 'h', T('i'),]);
     assert.equal('translatableString', result3._type);
     assert.ok(result3._string);
     assert.equal(6, result3._string.length);
+  });
+
+  // prettier-ignore
+  it('#Test joinWords', function() {
+    assert.equal(StringBuilder._toFlatten(StringBuilder.joinWords(['a',   'b']      )), "a b");
+    assert.equal(StringBuilder._toFlatten(StringBuilder.joinWords( 'a',   'b'       )), "a b");
+    assert.equal(StringBuilder._toFlatten(StringBuilder.joinWords(['a',   'b',  'c'])), "a b c");
+    assert.equal(StringBuilder._toFlatten(StringBuilder.joinWords( 'a',   'b',  'c' )), "a b c");
+    assert.equal(StringBuilder._toFlatten(StringBuilder.joinWords(['a', T('b'), 'c'])), "a @{b} c");
+    assert.equal(StringBuilder._toFlatten(StringBuilder.joinWords( 'a', T('b'), 'c' )), "a @{b} c");
   });
 });
 
