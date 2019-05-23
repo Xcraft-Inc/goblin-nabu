@@ -4,6 +4,7 @@
 import Widget from 'laboratory/widget';
 import React from 'react';
 import formatMessage from 'goblin-nabu/lib/format.js';
+const {removeContext} = require('goblin-nabu/lib/gettext.js');
 
 export default class NabuText extends Widget {
   constructor() {
@@ -116,7 +117,7 @@ export default class NabuText extends Widget {
       translation.get('text') &&
       localeName
         ? translation.get('text')
-        : nabuId;
+        : removeContext(nabuId);
 
     return formatMessage(
       localeName,

@@ -13,6 +13,7 @@ const {
 } = require('goblin-nabu/lib/helpers.js');
 const {
   translationWithContextAndSublocale,
+  removeContext,
 } = require('goblin-nabu/lib/gettext.js');
 
 const get = (obj, key) =>
@@ -46,7 +47,7 @@ function translate(text, state, enabled, locale) {
   const nabuId = get(text, 'nabuId');
 
   if (!locale) {
-    return nabuId;
+    return removeContext(nabuId);
   }
 
   if (enabled || get(text, 'custom')) {
@@ -61,7 +62,7 @@ function translate(text, state, enabled, locale) {
 
     return translatedMessage && translatedMessage.get('text')
       ? translatedMessage.get('text')
-      : nabuId;
+      : removeContext(nabuId);
   } else {
     const cachedTranslation = translationWithContextAndSublocale(
       nabuId,
@@ -72,7 +73,7 @@ function translate(text, state, enabled, locale) {
         state.get(`backend.nabu.translations.${msgId}.${localeName}`)
     );
 
-    return cachedTranslation || nabuId;
+    return cachedTranslation || removeContext(nabuId);
   }
 }
 
