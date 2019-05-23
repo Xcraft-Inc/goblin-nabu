@@ -18,6 +18,7 @@ class TranslationField extends Form {
     super(...arguments);
 
     this.onUpdate = this.onUpdate.bind(this);
+    this._requestedId = null;
     this.renewTTL = this.renewTTL.bind(this);
     this._renewInterval = null;
 
@@ -98,17 +99,19 @@ class TranslationField extends Form {
     } = this.props;
     const loaded = translationId && id;
 
-    if (!loaded) {
-      if (this.props.onDrillDown && translationId) {
-        const entityInfo = {
-          entityId: translationId,
-          messageId: msgId,
-          locale,
-        };
+    if (this.props.onDrillDown && translationId && this._requestedId !== id) {
+      const entityInfo = {
+        entityId: translationId,
+        messageId: msgId,
+        locale,
+      };
 
-        setTimeout(this.props.onDrillDown, 0, entityInfo);
-        this.renewTTL(entityInfo);
-      }
+      setTimeout(this.props.onDrillDown, 0, entityInfo);
+      this.renewTTL(entityInfo);
+      this._requestedId = id;
+    }
+
+    if (!loaded) {
       return <FontAwesomeIcon icon={[`fas`, 'spinner']} size={'1x'} pulse />;
     }
 
