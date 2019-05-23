@@ -18,7 +18,6 @@ class TranslationField extends Form {
     super(...arguments);
 
     this.onUpdate = this.onUpdate.bind(this);
-    this._requestedId = null;
     this.renewTTL = this.renewTTL.bind(this);
     this._renewInterval = null;
 
@@ -99,7 +98,7 @@ class TranslationField extends Form {
     } = this.props;
     const loaded = translationId && id;
 
-    if (this.props.onDrillDown && translationId && this._requestedId !== id) {
+    if (this.props.onDrillDown && translationId) {
       const entityInfo = {
         entityId: translationId,
         messageId: msgId,
