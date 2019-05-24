@@ -94,7 +94,7 @@ export default class NabuToolbar extends Widget {
         <Container kind="row">
           <Button
             kind="button-footer"
-            text={T('&#x048a;&#x023a;&#x0243;&#x054d;')}
+            text={T('ҊȺɃՍ')}
             onClick={this.toggleEnabled}
           />
           <Button
@@ -152,7 +152,7 @@ export default class NabuToolbar extends Widget {
         <Container kind="row">
           <Button
             kind="button-footer"
-            text={T('&#x048a;&#x023a;&#x0243;&#x054d;')}
+            text={T('ҊȺɃՍ')}
             onClick={this.toggleEnabled}
           />
         </Container>
