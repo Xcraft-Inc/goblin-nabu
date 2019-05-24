@@ -1,5 +1,5 @@
 'use strict';
-//T:2019-02-27
+//T:2019-05-24
 
 import T from 't';
 import Widget from 'laboratory/widget';
@@ -109,12 +109,18 @@ export default class NabuToolbar extends Widget {
           />
           <Button
             kind="button-footer"
-            text={`Marker ${marker ? 'off' : 'on'}`}
+            text={T('Marker {marker, select, false {on} other {off}}', null, {
+              marker: !!marker,
+            })}
             onClick={this.toggleMarks}
           />
           <Button
             kind="button-footer"
-            text={`Select. mode ${selectionMode ? 'off' : 'on'}`}
+            text={T(
+              'Select. mode {mode, select, false {on} other {off}}',
+              null,
+              {mode: !!selectionMode}
+            )}
             onClick={this.toggleSelectionMode}
           />
           <Button
