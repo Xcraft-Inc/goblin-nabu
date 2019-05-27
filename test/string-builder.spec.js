@@ -108,6 +108,52 @@ describe('StringBuilder Join', function() {
   });
 });
 
+// prettier-ignore
+describe('StringBuilder mix', function() {
+  it('#Test mix 1', function() {
+    const x = StringBuilder.joinWords(T('a'), 'b');
+    const y = StringBuilder.joinWords('c', 'd');
+    assert.strictEqual(StringBuilder._toFlatten(StringBuilder.joinWords(x, y)), '@{a} b c d');
+  });
+
+  it('#Test mix 2', function() {
+    const x = StringBuilder.joinWords('a', T('b'));
+    const y = StringBuilder.joinWords('c', 'd');
+    assert.strictEqual(StringBuilder._toFlatten(StringBuilder.joinWords(x, y)), 'a @{b} c d');
+  });
+  
+  it('#Test mix 3', function() {
+    const x = StringBuilder.joinWords('a', 'b');
+    const y = StringBuilder.joinWords(T('c'), 'd');
+    assert.strictEqual(StringBuilder._toFlatten(StringBuilder.joinWords(x, y)), 'a b @{c} d');
+  });
+  
+  it('#Test mix 4', function() {
+    const x = StringBuilder.joinWords('a', 'b');
+    const y = StringBuilder.joinWords('c', T('d'));
+    assert.strictEqual(StringBuilder._toFlatten(StringBuilder.joinWords(x, y)), 'a b c @{d}');
+  });
+  
+  it('#Test mix 5', function() {
+    const x = StringBuilder.joinWords(T('a'), T('b'));
+    const y = StringBuilder.joinWords('c', 'd');
+    assert.strictEqual(StringBuilder._toFlatten(StringBuilder.joinWords(x, y)), '@{a} @{b} c d');
+  });
+  
+  it('#Test mix 6', function() {
+    const x = StringBuilder.joinWords('a', 'b');
+    const y = StringBuilder.joinWords(T('c'), T('d'));
+    assert.strictEqual(StringBuilder._toFlatten(StringBuilder.joinWords(x, y)), 'a b @{c} @{d}');
+  });
+  
+  it('#Test mix full', function() {
+    const x = StringBuilder.joinWords(T('a'), T('b'));
+    const y = StringBuilder.joinWords(T('c'), T('d'));
+    assert.strictEqual(StringBuilder._toFlatten(StringBuilder.joinWords(x, y)), '@{a} @{b} @{c} @{d}');
+  });
+  
+});
+
 describe('StringBuilder _toFlatten', function() {
   it('#Test empty', function() {
     assert.strictEqual(StringBuilder._toFlatten(''), '');
