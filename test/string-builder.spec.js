@@ -64,7 +64,7 @@ describe('StringBuilder Join', function() {
 
   it('#Test Nulls', function() {
     const result = StringBuilder.join([null, null], ',');
-    assert.strictEqual(result, null);
+    assert.strictEqual(result, '');
   });
 
   it('#Test StringsAndNulls', function() {
