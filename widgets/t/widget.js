@@ -11,7 +11,7 @@ import {
 } from 'goblin-nabu/lib/helpers.js';
 const {isShredder, isImmutable} = require('xcraft-core-shredder');
 const {fromJS} = require('immutable');
-import ReactMarkdown from 'react-markdown';
+import Markdown from 'gadgets/markdown/widget';
 import {translationWithContextAndSublocale} from 'goblin-nabu/lib/gettext.js';
 
 const TextConnected = Widget.connect((state, props) => {
@@ -96,7 +96,7 @@ class T extends Widget {
 
     if (msg._type === 'translatableMarkdown') {
       return (
-        <ReactMarkdown
+        <Markdown
           source={msg._string.substring(3, msg._string.length - 3)} // remove triple back-tick
           renderers={{
             text: text => {
