@@ -11,7 +11,6 @@ import {getToolbarId} from 'goblin-nabu/lib/helpers.js';
 export default class NabuToolbar extends Widget {
   constructor() {
     super(...arguments);
-    this.openMessageSearch = this.openMessageSearch.bind(this);
     this.openLocaleSearch = this.openLocaleSearch.bind(this);
     this.toggleEnabled = this.toggleEnabled.bind(this);
     this.toggleMarks = this.toggleMarks.bind(this);
@@ -36,10 +35,6 @@ export default class NabuToolbar extends Widget {
 
   static connectTo(instance) {
     return Widget.Wired(NabuToolbar)(getToolbarId(instance.props.id));
-  }
-
-  openMessageSearch() {
-    this.do('open-message-search', {});
   }
 
   openLocaleSearch() {
@@ -96,11 +91,6 @@ export default class NabuToolbar extends Widget {
             kind="button-footer"
             text={T('ҊȺɃՍ')}
             onClick={this.toggleEnabled}
-          />
-          <Button
-            kind="button-footer"
-            text={T('Search messages')}
-            onClick={this.openMessageSearch}
           />
           <Button
             kind="button-footer"
