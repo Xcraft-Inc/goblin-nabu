@@ -3,6 +3,7 @@ import React from 'react';
 import Widget from 'laboratory/widget';
 
 import TextFieldCombo from 'gadgets/text-field-combo/widget';
+import C from 'goblin-laboratory/widgets/connect-helpers/c';
 
 const {GlyphHelpers} = require('goblin-toolbox');
 
@@ -13,28 +14,28 @@ class HeaderCombo extends Widget {
       .map(l => {
         const localName = l.get('name');
         return {
+          id: localName,
+          text: localName,
           glyph:
             hasTranslation && hasTranslation.get(`${localName}`)
               ? GlyphHelpers.getComboGlyph('desk', 'warning')
               : '',
-          text: localName,
         };
       })
       .toJS();
 
     return (
       <TextFieldCombo
-        model={`.columns[${index}].field`}
+        selectedId={C(`.columns[${index}].field`)}
         readonly="true"
         grow="1"
         list={localesList}
         menuType="wrap"
-        defaultValue={''}
         comboTextTransform="none"
-        onSetText={locale => {
+        onChange={locale => {
           doAsDatagrid('changeSelectedLocale', {index, locale});
         }}
-        onShowCombo={_ => {
+        onShowCombo={() => {
           doAsDatagrid('setNeedTranslation');
         }}
         width={this.props.width}
