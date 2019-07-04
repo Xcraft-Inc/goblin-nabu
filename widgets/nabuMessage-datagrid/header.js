@@ -13,7 +13,7 @@ function renderMissingTranslationsHeaderCell() {
 }
 
 function renderNabuIdHeaderCell() {
-  return <Label spacing="compact" text={T('Message original')} />;
+  return <Label horizontalSpacing="compact" text={T('Message original')} />;
 }
 
 function renderLocaleHeaderCell(id, index, doAsDatagrid) {

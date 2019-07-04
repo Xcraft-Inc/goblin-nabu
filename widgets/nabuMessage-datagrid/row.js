@@ -15,7 +15,7 @@ function renderMissingTranslationsRowCell(id, datagridId) {
     <InfoLabel
       messageId={id}
       datagridId={datagridId}
-      spacing="overlap"
+      horizontalSpacing="overlap"
       tooltip={T(
         "Certaines locales n'ont pas encore été traduites",
         'In Nabu window'
@@ -28,7 +28,7 @@ function renderNabuIdRowCell(id, datagridId) {
   return (
     <div style={{display: 'flex'}}>
       <HighlightLabel id={id} datagridId={datagridId} underline="false" />
-      <InfoLabel id={id} checkDescription="true" spacing="overlap" />
+      <InfoLabel id={id} checkDescription="true" horizontalSpacing="overlap" />
     </div>
   );
 }
@@ -44,7 +44,7 @@ function renderLocaleRowCell(id, locale, datagridId, onDrillDown) {
         onDrillDown={onDrillDown}
         msgId={id}
         labelWidth="0px"
-        spacing="compact"
+        horizontalSpacing="compact"
         width="200%"
       />
     );

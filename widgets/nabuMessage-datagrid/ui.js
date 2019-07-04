@@ -26,7 +26,7 @@ function renderLocaleSortCell(doAsDatagrid, column, datagridId) {
           sort: column.get('field'),
         })
       }
-      spacing="compact"
+      horizontalSpacing="compact"
     />
   );
 }
