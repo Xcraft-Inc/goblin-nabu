@@ -164,7 +164,6 @@ class TranslatableElement extends Widget {
       dispatch,
       children,
       renderElement,
-      workitemId,
       onRef,
       ...other
     } = this.props;
@@ -251,33 +250,43 @@ function connectTranslatableElement(renderElement) {
   })(TranslatableElement);
 }
 
-const renderDiv = (tooltip, children, onRef, props) => (
-  <div ref={onRef} title={tooltip} {...props}>
-    {children}
-  </div>
-);
+const renderDiv = (tooltip, children, onRef, props) => {
+  const {workitemId, ...otherProps} = props;
+  return (
+    <div ref={onRef} title={tooltip} {...otherProps}>
+      {children}
+    </div>
+  );
+};
 
-const renderA = (tooltip, children, onRef, props) => (
-  <a ref={onRef} title={tooltip} {...props}>
-    {children}
-  </a>
-);
+const renderA = (tooltip, children, onRef, props) => {
+  const {workitemId, ...otherProps} = props;
+  return (
+    <a ref={onRef} title={tooltip} {...otherProps}>
+      {children}
+    </a>
+  );
+};
 
-const renderTextarea = (placeholder, children, onRef, props) => (
-  <textarea ref={onRef} placeholder={placeholder} {...props} />
-);
+const renderTextarea = (placeholder, children, onRef, props) => {
+  const {workitemId, ...otherProps} = props;
+  return <textarea ref={onRef} placeholder={placeholder} {...otherProps} />;
+};
 
-const renderInput = (placeholder, children, onRef, props) => (
-  <input ref={onRef} placeholder={placeholder} {...props} />
-);
+function withoutProp(Component, propName) {
+  return React.forwardRef((props, ref) => {
+    const {[propName]: prop, ...otherProps} = props;
+    return <Component ref={ref} {...otherProps} />;
+  });
+}
 
-const withT = (Component, textPropName, servicePropName) => {
+const withT = (Component, textPropName, servicePropName, refPropName) => {
   const TranslatableComponent = connectTranslatableElement(
     (translation, children, onRef, props) => {
-      const {msgid, ...otherProps} = props;
+      const {msgid, [refPropName]: ref, ...otherProps} = props;
       return (
         <Component
-          ref={onRef}
+          ref={refPropName ? ref : onRef}
           {...{[textPropName]: translation}}
           {...otherProps}
         >
@@ -304,6 +313,16 @@ module.exports = {
   TranslatableDiv: connectTranslatableElement(renderDiv),
   TranslatableA: connectTranslatableElement(renderA),
   TranslatableTextarea: connectTranslatableElement(renderTextarea),
-  TranslatableInput: connectTranslatableElement(renderInput),
+  //TranslatableInput: connectTranslatableElement(renderInput),
+  TranslatableInput: withT(
+    withT(
+      withoutProp('input', 'workitemId'),
+      'value',
+      'workitemId',
+      'inputRef'
+    ),
+    'placeholder',
+    'workitemId'
+  ),
   withT,
 };
