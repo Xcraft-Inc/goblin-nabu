@@ -181,7 +181,7 @@ class TranslatableElement extends Widget {
           )
           .toJS()
           .join('')
-      : null;
+      : this.props.msgid;
 
     return renderElement(translation, children, onRef, other);
   }
