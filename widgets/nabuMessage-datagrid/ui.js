@@ -34,12 +34,10 @@ function renderLocaleSortCell(doAsDatagrid, column, datagridId) {
 function renderHinterRow(doAsDatagrid) {
   return (
     <LabelTextField
-      model={`.searchValue`}
+      model=".searchValue"
       grow="1"
       labelGlyph="solid/search"
-      onDebouncedChange={value =>
-        doAsDatagrid('applyElasticVisualization', {value})
-      }
+      onChange={value => doAsDatagrid('applyElasticVisualization', {value})}
       hintText={T('Search message or translation')}
       width="95%"
       verticalSpacing="5px"
