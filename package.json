@@ -15,7 +15,6 @@
   },
   "dependencies": {
     "goblin-workshop": "^0.0.1",
-    "goblin-desktop": "^0.0.1",
     "goblin-toolbox": "^0.0.1",
     "json-stable-stringify": "^1.0.1",
     "lodash": "^4.17.11",
