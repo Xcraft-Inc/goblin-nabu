@@ -4,7 +4,7 @@ const {buildEntity} = require('goblin-workshop');
 const entity = {
   type: 'nabuMessage',
   newEntityStatus: 'published',
-
+  cache: 0,
   buildSummaries: function(quest, nabuMessage) {
     const ref = nabuMessage.get('nabuId', '');
     return {info: ref, description: ref};

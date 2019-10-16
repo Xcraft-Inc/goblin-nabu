@@ -4,7 +4,7 @@ const {buildEntity} = require('goblin-workshop');
 const entity = {
   type: 'locale',
   newEntityStatus: 'draft',
-
+  cache: 0,
   buildSummaries: function(quest, locale, peers, MD) {
     const ref = locale.get('text', locale.get('name', ''));
     return {info: ref, description: ref};

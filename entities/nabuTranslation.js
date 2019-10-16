@@ -7,7 +7,7 @@ const entity = {
     messageId: 'nabuMessage',
   },
   newEntityStatus: 'draft',
-
+  cache: 0,
   buildSummaries: function(quest, nabuTranslation, peers, MD) {
     const ref = nabuTranslation.get('text', '');
     const localeName = nabuTranslation.get('locale');
