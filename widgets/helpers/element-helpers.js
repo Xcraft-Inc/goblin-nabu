@@ -273,6 +273,11 @@ const renderTextarea = (placeholder, children, onRef, props) => {
   return <textarea ref={onRef} placeholder={placeholder} {...otherProps} />;
 };
 
+const renderVideo = (src, children, onRef, props) => {
+  const {workitemId, ...otherProps} = props;
+  return <video ref={onRef} src={src} {...otherProps} />;
+};
+
 function withoutProp(Component, propName) {
   return React.forwardRef((props, ref) => {
     const {[propName]: prop, ...otherProps} = props;
@@ -313,6 +318,7 @@ module.exports = {
   TranslatableDiv: connectTranslatableElement(renderDiv),
   TranslatableA: connectTranslatableElement(renderA),
   TranslatableTextarea: connectTranslatableElement(renderTextarea),
+  TranslatableVideo: withT('video', 'src', 'workitemId', 'videoRef'),
   //TranslatableInput: connectTranslatableElement(renderInput),
   TranslatableInput: withT(
     withT(
