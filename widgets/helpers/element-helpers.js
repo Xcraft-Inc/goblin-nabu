@@ -215,7 +215,7 @@ function connectTranslatableElement(renderElement) {
 
     const toolbar = getToolbar(state, workitemId);
     const enabled = toolbar ? toolbar.get('enabled') : false;
-    const locale = getLocaleName(state, toolbar);
+    const locale = state.get('backend.client.locale');
 
     const translatableElements = fromJS(
       getTranslatableElements(text, enabled, locale, state)

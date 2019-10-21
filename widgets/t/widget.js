@@ -16,9 +16,7 @@ import {translationWithContextAndSublocale} from 'goblin-nabu/lib/gettext.js';
 
 const TextConnected = Widget.connect((state, props) => {
   const toolbarId = getToolbarId(props.workitemId);
-  const localeId = toolbarId
-    ? state.get(`backend.${toolbarId}.selectedLocaleId`)
-    : null;
+  const localeId = state.get('backend.client.locale');
 
   let locale = null;
   let translation = null;
@@ -30,7 +28,7 @@ const TextConnected = Widget.connect((state, props) => {
     const locales = state.get('backend.nabu.locales');
 
     if (locales) {
-      locale = locales.find(locale => locale.get('id') === localeId);
+      locale = locales.find(locale => locale.get('name') === localeId);
 
       if (locale && locale.get('name')) {
         translation = translationWithContextAndSublocale(
