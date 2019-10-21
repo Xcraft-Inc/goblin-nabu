@@ -19,25 +19,6 @@ const {
 const get = (obj, key) =>
   isShredder(obj) || isImmutable(obj) ? obj.get(key) : obj[key];
 
-function getLocaleName(state, toolbar) {
-  const localeId = toolbar ? toolbar.get('selectedLocaleId') : null;
-  if (!localeId) {
-    return null;
-  }
-
-  const locales = state.get('backend.nabu.locales');
-  if (!locales) {
-    return null;
-  }
-
-  const locale = locales.find(locale => locale.get('id') === localeId);
-  if (!locale) {
-    return null;
-  }
-
-  return locale.get('name');
-}
-
 function getToolbar(state, workitemId) {
   const toolbarId = getToolbarId(workitemId);
   return toolbarId ? state.get(`backend.${toolbarId}`) : null;
