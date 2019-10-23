@@ -16,7 +16,9 @@ import {translationWithContextAndSublocale} from 'goblin-nabu/lib/gettext.js';
 
 const TextConnected = Widget.connect((state, props) => {
   const toolbarId = getToolbarId(props.workitemId);
-  const localeId = state.get('backend.client.locale');
+  const localeId = state.get(
+    `backend.${state.get(`backend.${window.labId}.clientSessionId`)}.locale`
+  );
 
   let locale = null;
   let translation = null;
