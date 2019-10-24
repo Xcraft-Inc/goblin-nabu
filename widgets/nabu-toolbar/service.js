@@ -129,13 +129,22 @@ Goblin.registerQuest(goblinName, 'open-datagrid', function*(quest, next) {
   yield desk.addWorkitem({workitem, navigate: true}, next);
 });
 
+const getNabuDesktopId = id => {
+  if (id.endsWith('@nabu')) {
+    return id;
+  }
+  const p = id.split('@');
+  return `${p[0]}@${p[1]}@nabu`;
+};
+
 Goblin.registerQuest(goblinName, 'open-single-entity', function*(
   quest,
   entityId,
   next
 ) {
   const desktopId = quest.goblin.getX('desktopId');
-  const desk = quest.getAPI(desktopId);
+  const nabuDesktopId = getNabuDesktopId(desktopId);
+  const desk = quest.getAPI(nabuDesktopId);
 
   if (entityId) {
     const workitem = {
@@ -143,7 +152,7 @@ Goblin.registerQuest(goblinName, 'open-single-entity', function*(
       name: 'nabuMessage-workitem',
       view: 'default',
       icon: 'solid/file-alt',
-      kind: 'dialog',
+      kind: 'tab',
       isClosable: true,
       navigate: true,
       isDone: false,
@@ -167,6 +176,12 @@ Goblin.registerQuest(goblinName, 'open-single-entity', function*(
       messageId: entityId,
       desktopId,
     });
+    if (nabuDesktopId !== desktopId) {
+      yield nabu.loadTranslations({
+        messageId: entityId,
+        desktopId: nabuDesktopId,
+      });
+    }
   }
 });
 
@@ -177,15 +192,29 @@ Goblin.registerQuest(goblinName, 'set-selected-item', function*(
 ) {
   const enabled = quest.goblin.getState().get('enabled');
   if (enabled) {
+    const desktopId = quest.goblin.getX('desktopId');
+    const nabuDesktopId = getNabuDesktopId(desktopId);
     const workitemId = quest.goblin.getX('singleEntityWorkitemId');
     if (workitemId) {
       const workitemApi = quest.getAPI(workitemId);
       yield workitemApi.changeEntity(
         {
+          desktopId: nabuDesktopId,
           entityId: messageId,
         },
         next
       );
+      const nabu = quest.getAPI('nabu');
+      yield nabu.loadTranslations({
+        messageId: messageId,
+        desktopId,
+      });
+      if (nabuDesktopId !== desktopId) {
+        yield nabu.loadTranslations({
+          messageId: messageId,
+          desktopId: nabuDesktopId,
+        });
+      }
     }
     quest.do();
   }
