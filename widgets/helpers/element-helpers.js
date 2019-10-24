@@ -215,9 +215,7 @@ function connectTranslatableElement(renderElement) {
 
     const toolbar = getToolbar(state, workitemId);
     const enabled = toolbar ? toolbar.get('enabled') : false;
-    const locale = state.get(
-      `backend.${state.get(`backend.${window.labId}.clientSessionId`)}.locale`
-    );
+    const locale = Widget.getUserSession(state).get('locale');
 
     const translatableElements = fromJS(
       getTranslatableElements(text, enabled, locale, state)
