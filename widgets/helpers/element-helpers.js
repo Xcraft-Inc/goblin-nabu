@@ -294,7 +294,12 @@ module.exports = {
   TranslatableDiv: connectTranslatableElement(renderDiv),
   TranslatableA: connectTranslatableElement(renderA),
   TranslatableTextarea: connectTranslatableElement(renderTextarea),
-  TranslatableVideo: withT('video', 'src', 'workitemId', 'videoRef'),
+  TranslatableVideo: withT(
+    withoutProp('video', 'workitemId'),
+    'src',
+    'workitemId',
+    'videoRef'
+  ),
   //TranslatableInput: connectTranslatableElement(renderInput),
   TranslatableInput: withT(
     withT(
