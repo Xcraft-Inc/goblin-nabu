@@ -168,14 +168,16 @@ Goblin.registerQuest(goblinName, 'open-single-entity', function*(
       icon: 'solid/file-alt',
       kind: 'tab',
       isClosable: true,
-      navigate: !!navigate,
       isDone: false,
       payload: {
         entityId,
       },
     };
 
-    const workitemId = yield desk.addWorkitem({workitem, navigate: true}, next);
+    const workitemId = yield desk.addWorkitem(
+      {workitem, navigate: !!navigate},
+      next
+    );
     const workitemApi = quest.getAPI(workitemId);
     yield workitemApi.setPostRemove({
       postRemoveAction: () =>
