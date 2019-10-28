@@ -79,6 +79,19 @@ Goblin.registerQuest(goblinName, 'create', function*(
   }
 
   quest.do();
+  const goblinId = quest.goblin.id;
+  quest.goblin.defer(
+    quest.sub(`*::*.${goblinId}.edit-message-requested`, function*(
+      err,
+      {msg, resp}
+    ) {
+      yield resp.cmd(`${goblinName}.open-single-entity`, {
+        id: goblinId,
+        entityId: msg.data.entityId,
+        navigate: msg.data.navigate,
+      });
+    })
+  );
 });
 
 Goblin.registerQuest(goblinName, 'delete', function(quest) {});
@@ -140,6 +153,7 @@ const getNabuDesktopId = id => {
 Goblin.registerQuest(goblinName, 'open-single-entity', function*(
   quest,
   entityId,
+  navigate,
   next
 ) {
   const desktopId = quest.goblin.getX('desktopId');
@@ -154,7 +168,7 @@ Goblin.registerQuest(goblinName, 'open-single-entity', function*(
       icon: 'solid/file-alt',
       kind: 'tab',
       isClosable: true,
-      navigate: true,
+      navigate: !!navigate,
       isDone: false,
       payload: {
         entityId,
