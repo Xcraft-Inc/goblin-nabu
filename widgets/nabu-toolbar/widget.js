@@ -27,6 +27,7 @@ export default class NabuToolbar extends Widget {
       id: 'id',
       show: 'show',
       enabled: 'enabled',
+      editor: 'editor',
       marker: 'marker',
       focus: 'focus',
       selectionMode: 'selectionMode.enabled',
@@ -83,78 +84,87 @@ export default class NabuToolbar extends Widget {
   }
 
   render() {
-    const {show, enabled, marker, selectionMode, selectedItem} = this.props;
+    const {
+      show,
+      enabled,
+      marker,
+      selectionMode,
+      selectedItem,
+      editor,
+    } = this.props;
 
     if (!show) {
       return <div />;
     }
 
     if (enabled) {
-      return (
-        <Container kind="row">
-          <Button
-            kind="button-footer"
-            text={T('ҊȺɃՍ')}
-            onClick={this.toggleEnabled}
-          />
-          <Button
-            kind="button-footer"
-            text={T('Search locales')}
-            onClick={this.openLocaleSearch}
-          />
-          <Button
-            kind="button-footer"
-            text={T('Marker {marker, select, false {on} other {off}}', null, {
-              marker: !!marker,
-            })}
-            onClick={this.toggleMarks}
-          />
-          <Button
-            kind="button-footer"
-            text={T(
-              'Select. mode {mode, select, false {on} other {off}}',
-              null,
-              {mode: !!selectionMode}
-            )}
-            onClick={this.toggleSelectionMode}
-          />
-          <Button
-            kind="button-footer"
-            text={T(`Modify all messages`)}
-            onClick={this.openDatagrid}
-          />
-          {selectedItem && selectionMode ? (
+      if (editor) {
+        return (
+          <Container kind="row">
             <Button
               kind="button-footer"
-              text={T(`Modify single message`)}
-              onClick={() => this.openSingleEntity(selectedItem)}
+              text={T('Search locales')}
+              onClick={this.openLocaleSearch}
             />
-          ) : null}
-          <Button
-            kind="button-footer"
-            text={T(`Extract all messages`)}
-            onClick={this.extract}
-          />
-          <Button
-            kind="button-footer"
-            text={T(`Pack all messages`)}
-            onClick={this.pack}
-          />
-          <Button
-            kind="button-footer"
-            text={T(`Open a Nabu Session`)}
-            onClick={this.openSession}
-          />
-        </Container>
-      );
+
+            <Button
+              kind="button-footer"
+              text={T(`Modify all messages`)}
+              onClick={this.openDatagrid}
+            />
+
+            <Button
+              kind="button-footer"
+              text={T(`Extract all messages`)}
+              onClick={this.extract}
+            />
+
+            <Button
+              kind="button-footer"
+              text={T(`Pack all messages`)}
+              onClick={this.pack}
+            />
+          </Container>
+        );
+      } else {
+        return (
+          <Container kind="row">
+            <Button
+              kind="button-footer"
+              text={T('Marker {marker, select, false {on} other {off}}', null, {
+                marker: !!marker,
+              })}
+              onClick={this.toggleMarks}
+            />
+            <Button
+              kind="button-footer"
+              text={T(
+                'Select. mode {mode, select, false {on} other {off}}',
+                null,
+                {mode: !!selectionMode}
+              )}
+              onClick={this.toggleSelectionMode}
+            />
+            {selectedItem && selectionMode ? (
+              <Button
+                kind="button-footer"
+                text={T(`Modify single message`)}
+                onClick={() => this.openSingleEntity(selectedItem)}
+              />
+            ) : null}
+          </Container>
+        );
+      }
     } else {
       return (
         <Container kind="row">
-          <Button
-            kind="button-footer"
-            text={T('ҊȺɃՍ')}
-            onClick={this.toggleEnabled}
-          />
+          {!editor ? (
+            <Button
+              kind="button-footer"
+              text={T(`Open a Nabu Session`)}
+              onClick={this.openSession}
+            />
+          ) : null}
         </Container>
       );
     }

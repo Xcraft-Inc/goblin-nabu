@@ -6,6 +6,14 @@ const goblinName = 'nabu-toolbar';
 const Goblin = require('xcraft-core-goblin');
 const T = require('goblin-nabu/widgets/helpers/t.js');
 
+const getNabuDesktopId = id => {
+  if (id.endsWith('@nabu')) {
+    return id;
+  }
+  const p = id.split('@');
+  return `${p[0]}@${p[1]}@nabu`;
+};
+
 // Define initial logic values
 const logicState = {
   show: false,
@@ -13,6 +21,8 @@ const logicState = {
 
   marker: false,
   focus: null,
+
+  editor: false,
 
   selectedLocaleId: null,
   selectionMode: {
@@ -24,7 +34,10 @@ const logicState = {
 // Define logic handlers according rc.json
 const logicHandlers = {
   'create': (state, action) => {
-    return state.set('id', action.get('id')).set('show', action.get('show'));
+    return state
+      .set('id', action.get('id'))
+      .set('show', action.get('show'))
+      .set('editor', action.get('editor'));
   },
   'enable': state => {
     return state.set('enabled', true);
@@ -67,18 +80,21 @@ Goblin.registerQuest(goblinName, 'get', function(quest) {
   return quest.goblin.getState();
 });
 
-Goblin.registerQuest(goblinName, 'create', function*(
-  quest,
-  desktopId,
-  enabled
-) {
+Goblin.registerQuest(goblinName, 'create', function(quest, desktopId, enabled) {
   quest.goblin.setX('desktopId', desktopId);
+  const nabuDesktopId = getNabuDesktopId(desktopId);
 
-  if (enabled) {
-    yield quest.me.enable();
+  //SET EDITOR MODE ONLY FOR NABU SESSION
+  let editor = false;
+  if (nabuDesktopId === desktopId) {
+    editor = true;
+    enabled = true;
   }
 
-  quest.do();
+  quest.do({editor});
+  if (enabled) {
+    quest.dispatch('enable');
+  }
   const goblinId = quest.goblin.id;
   quest.goblin.defer(
     quest.sub(`*::*.${goblinId}.edit-message-requested`, function*(
@@ -123,6 +139,7 @@ Goblin.registerQuest(goblinName, 'open-session', function*(quest) {
     rootWidget: 'desktop',
     configuration,
   });
+  quest.dispatch('enable');
 });
 
 Goblin.registerQuest(goblinName, 'open-datagrid', function*(quest, next) {
@@ -141,14 +158,6 @@ Goblin.registerQuest(goblinName, 'open-datagrid', function*(quest, next) {
 
   yield desk.addWorkitem({workitem, navigate: true}, next);
 });
-
-const getNabuDesktopId = id => {
-  if (id.endsWith('@nabu')) {
-    return id;
-  }
-  const p = id.split('@');
-  return `${p[0]}@${p[1]}@nabu`;
-};
 
 Goblin.registerQuest(goblinName, 'open-single-entity', function*(
   quest,
