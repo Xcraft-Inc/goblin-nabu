@@ -112,18 +112,21 @@ export default class NabuToolbar extends Widget {
               text={T(`Modify all messages`)}
               onClick={this.openDatagrid}
             />
+            {process.env.NODE_ENV === 'development' ? (
+              <Button
+                kind="button-footer"
+                text={T(`Extract all messages`)}
+                onClick={this.extract}
+              />
+            ) : null}
 
-            <Button
-              kind="button-footer"
-              text={T(`Extract all messages`)}
-              onClick={this.extract}
-            />
-
-            <Button
-              kind="button-footer"
-              text={T(`Pack all messages`)}
-              onClick={this.pack}
-            />
+            {process.env.NODE_ENV === 'development' ? (
+              <Button
+                kind="button-footer"
+                text={T(`Pack all messages`)}
+                onClick={this.pack}
+              />
+            ) : null}
           </Container>
         );
       } else {
