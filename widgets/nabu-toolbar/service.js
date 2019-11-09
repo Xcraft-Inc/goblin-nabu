@@ -130,8 +130,8 @@ Goblin.registerQuest(goblinName, 'open-locale-search', function*(quest, next) {
 
 Goblin.registerQuest(goblinName, 'open-session', function*(quest) {
   const client = quest.getAPI('client');
-  const nabuAPI = quest.getAPI('nabu');
-  const configuration = yield nabuAPI.getConfiguration();
+  const storeAPI = quest.getAPI('nabu-store');
+  const configuration = yield storeAPI.getConfiguration();
   yield client.openSession({
     desktopId: `desktop@${configuration.mandate}@nabu`,
     session: `desktop@${configuration.mandate}@nabu`,
