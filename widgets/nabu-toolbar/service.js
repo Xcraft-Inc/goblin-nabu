@@ -7,11 +7,10 @@ const Goblin = require('xcraft-core-goblin');
 const T = require('goblin-nabu/widgets/helpers/t.js');
 
 const getNabuDesktopId = id => {
-  if (id.endsWith('@nabu')) {
+  if (id.endsWith('-nabu-window')) {
     return id;
   }
-  const p = id.split('@');
-  return `${p[0]}@${p[1]}@nabu`;
+  return `${id}-nabu-window`;
 };
 
 // Define initial logic values
@@ -129,12 +128,14 @@ Goblin.registerQuest(goblinName, 'open-locale-search', function*(quest, next) {
 });
 
 Goblin.registerQuest(goblinName, 'open-session', function*(quest) {
+  const desktopId = quest.goblin.getX('desktopId');
+  const nabuDesktopId = getNabuDesktopId(desktopId);
   const client = quest.getAPI('client');
   const storeAPI = quest.getAPI('nabu-store');
   const configuration = yield storeAPI.getConfiguration();
   yield client.openSession({
-    desktopId: `desktop@${configuration.mandate}@nabu`,
-    session: `desktop@${configuration.mandate}@nabu`,
+    desktopId: nabuDesktopId,
+    session: nabuDesktopId,
     username: 'nabu',
     rootWidget: 'desktop',
     configuration,
