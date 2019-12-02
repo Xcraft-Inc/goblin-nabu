@@ -134,6 +134,11 @@ export default class NabuToolbar extends Widget {
           <Container kind="row">
             <Button
               kind="button-footer"
+              text={T(`Open a Nabu Session`)}
+              onClick={this.openSession}
+            />
+            <Button
+              kind="button-footer"
               text={T('Marker {marker, select, false {on} other {off}}', null, {
                 marker: !!marker,
               })}
