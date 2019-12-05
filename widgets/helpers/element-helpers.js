@@ -291,7 +291,12 @@ const withT = (Component, textPropName, servicePropName, refPropName) => {
 //-----------------------------------------------------------------------------
 
 module.exports = {
-  TranslatableDiv: connectTranslatableElement(renderDiv),
+  TranslatableDiv: withT(
+    withoutProp('div', 'workitemId'),
+    'title',
+    'workitemId',
+    'divRef'
+  ),
   TranslatableA: connectTranslatableElement(renderA),
   TranslatableTextarea: connectTranslatableElement(renderTextarea),
   TranslatableVideo: withT(
