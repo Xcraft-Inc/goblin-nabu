@@ -261,7 +261,12 @@ function withoutProp(Component, propName) {
   });
 }
 
-const withT = (Component, textPropName, servicePropName, refPropName) => {
+export const withT = (
+  Component,
+  textPropName,
+  servicePropName,
+  refPropName
+) => {
   const TranslatableComponent = connectTranslatableElement(
     (translation, children, onRef, props) => {
       const {msgid, [refPropName]: ref, ...otherProps} = props;
@@ -290,31 +295,23 @@ const withT = (Component, textPropName, servicePropName, refPropName) => {
 
 //-----------------------------------------------------------------------------
 
-module.exports = {
-  TranslatableDiv: withT(
-    withoutProp('div', 'workitemId'),
-    'title',
-    'workitemId',
-    'divRef'
-  ),
-  TranslatableA: connectTranslatableElement(renderA),
-  TranslatableTextarea: connectTranslatableElement(renderTextarea),
-  TranslatableVideo: withT(
-    withoutProp('video', 'workitemId'),
-    'src',
-    'workitemId',
-    'videoRef'
-  ),
-  //TranslatableInput: connectTranslatableElement(renderInput),
-  TranslatableInput: withT(
-    withT(
-      withoutProp('input', 'workitemId'),
-      'value',
-      'workitemId',
-      'inputRef'
-    ),
-    'placeholder',
-    'workitemId'
-  ),
-  withT,
-};
+export const TranslatableDiv = withT(
+  withoutProp('div', 'workitemId'),
+  'title',
+  'workitemId',
+  'divRef'
+);
+export const TranslatableA = connectTranslatableElement(renderA);
+export const TranslatableTextarea = connectTranslatableElement(renderTextarea);
+export const TranslatableVideo = withT(
+  withoutProp('video', 'workitemId'),
+  'src',
+  'workitemId',
+  'videoRef'
+);
+// export const TranslatableInput = connectTranslatableElement(renderInput);
+export const TranslatableInput = withT(
+  withT(withoutProp('input', 'workitemId'), 'value', 'workitemId', 'inputRef'),
+  'placeholder',
+  'workitemId'
+);
