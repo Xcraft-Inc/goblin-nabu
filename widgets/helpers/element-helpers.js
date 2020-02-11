@@ -19,25 +19,6 @@ const {
 const get = (obj, key) =>
   isShredder(obj) || isImmutable(obj) ? obj.get(key) : obj[key];
 
-function getLocaleName(state, toolbar) {
-  const localeId = toolbar ? toolbar.get('selectedLocaleId') : null;
-  if (!localeId) {
-    return null;
-  }
-
-  const locales = state.get('backend.nabu.locales');
-  if (!locales) {
-    return null;
-  }
-
-  const locale = locales.find(locale => locale.get('id') === localeId);
-  if (!locale) {
-    return null;
-  }
-
-  return locale.get('name');
-}
-
 function getToolbar(state, workitemId) {
   const toolbarId = getToolbarId(workitemId);
   return toolbarId ? state.get(`backend.${toolbarId}`) : null;
@@ -234,7 +215,7 @@ function connectTranslatableElement(renderElement) {
 
     const toolbar = getToolbar(state, workitemId);
     const enabled = toolbar ? toolbar.get('enabled') : false;
-    const locale = getLocaleName(state, toolbar);
+    const locale = Widget.getUserSession(state).get('locale');
 
     const translatableElements = fromJS(
       getTranslatableElements(text, enabled, locale, state)
@@ -280,7 +261,12 @@ function withoutProp(Component, propName) {
   });
 }
 
-const withT = (Component, textPropName, servicePropName, refPropName) => {
+export const withT = (
+  Component,
+  textPropName,
+  servicePropName,
+  refPropName
+) => {
   const TranslatableComponent = connectTranslatableElement(
     (translation, children, onRef, props) => {
       const {msgid, [refPropName]: ref, ...otherProps} = props;
@@ -309,21 +295,23 @@ const withT = (Component, textPropName, servicePropName, refPropName) => {
 
 //-----------------------------------------------------------------------------
 
-module.exports = {
-  TranslatableDiv: connectTranslatableElement(renderDiv),
-  TranslatableA: connectTranslatableElement(renderA),
-  TranslatableTextarea: connectTranslatableElement(renderTextarea),
-  TranslatableVideo: withT('video', 'src', 'workitemId', 'videoRef'),
-  //TranslatableInput: connectTranslatableElement(renderInput),
-  TranslatableInput: withT(
-    withT(
-      withoutProp('input', 'workitemId'),
-      'value',
-      'workitemId',
-      'inputRef'
-    ),
-    'placeholder',
-    'workitemId'
-  ),
-  withT,
-};
+export const TranslatableDiv = withT(
+  withoutProp('div', 'workitemId'),
+  'title',
+  'workitemId',
+  'divRef'
+);
+export const TranslatableA = connectTranslatableElement(renderA);
+export const TranslatableTextarea = connectTranslatableElement(renderTextarea);
+export const TranslatableVideo = withT(
+  withoutProp('video', 'workitemId'),
+  'src',
+  'workitemId',
+  'videoRef'
+);
+// export const TranslatableInput = connectTranslatableElement(renderInput);
+export const TranslatableInput = withT(
+  withT(withoutProp('input', 'workitemId'), 'value', 'workitemId', 'inputRef'),
+  'placeholder',
+  'workitemId'
+);

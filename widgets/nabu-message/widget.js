@@ -8,7 +8,7 @@ import Form from 'laboratory/form';
 import Container from 'gadgets/container/widget';
 import Label from 'gadgets/label/widget';
 import Button from 'gadgets/button/widget';
-import TranslationFieldConnected from '../translation-field/widget.js';
+import TranslationFieldConnected from 'goblin-nabu/widgets/translation-field/widget';
 const {computeTranslationId} = require('goblin-nabu/lib/helpers.js');
 
 class NabuMessage extends Form {
