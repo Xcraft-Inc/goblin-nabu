@@ -97,6 +97,7 @@ class T extends Widget {
         <Markdown
           source={msg._string.substring(3, msg._string.length - 3)} // remove triple back-tick
           markdownVerticalSpacing={this.props.markdownverticalspacing}
+          textColor={this.props.textcolor}
           renderers={{
             text: text => {
               if (text.startsWith('@{') && text.endsWith('}')) {
