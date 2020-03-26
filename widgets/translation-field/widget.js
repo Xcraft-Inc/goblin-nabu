@@ -126,7 +126,7 @@ class TranslationField extends Form {
         <HighlightLabel
           id={id}
           datagridId={datagridId}
-          insideButton="false"
+          insideButton={false}
           onClick={this.onUpdate}
           underline={true}
           {...other}
