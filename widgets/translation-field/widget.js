@@ -6,7 +6,7 @@ import Form from 'laboratory/form';
 import Field from 'gadgets/field/widget';
 import Widget from 'laboratory/widget';
 import HighlightLabel from '../highlight-label/widget.js';
-import FontAwesomeIcon from '@fortawesome/react-fontawesome';
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import IcuMessage from '../icu-message/widget.js';
 import Container from 'gadgets/container/widget';
 import Button from 'gadgets/button/widget';
