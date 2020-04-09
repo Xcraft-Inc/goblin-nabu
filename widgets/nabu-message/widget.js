@@ -78,7 +78,7 @@ class NabuMessage extends Form {
           text={T(`Translations`)}
           className={this.styles.classNames.header}
         />
-        {locales.map(l => {
+        {locales.map((l) => {
           const translationId = computeTranslationId(
             this.props.entityId,
             l.get('name')

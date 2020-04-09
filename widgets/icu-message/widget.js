@@ -68,7 +68,7 @@ class IcuMessage extends Widget {
       parse(this.props.translation, {tagsType: null, tokens: tokens});
 
       let parameters = [];
-      tokens.forEach(token => {
+      tokens.forEach((token) => {
         if (token[0] === 'id') {
           parameters[token[1]] = this.state.parameters[token[1]] || '';
         }
@@ -86,7 +86,7 @@ class IcuMessage extends Widget {
         <Label text={paramKey} className={this.styles.classNames.label} />
         <input
           type="text"
-          onChange={event => this.setValue(paramKey, event.target.value)}
+          onChange={(event) => this.setValue(paramKey, event.target.value)}
           value={this.state.parameters[paramKey]}
           className={this.styles.classNames.input}
         />

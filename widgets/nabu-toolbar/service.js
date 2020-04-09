@@ -6,7 +6,7 @@ const goblinName = 'nabu-toolbar';
 const Goblin = require('xcraft-core-goblin');
 const T = require('goblin-nabu/widgets/helpers/t.js');
 
-const getNabuDesktopId = id => {
+const getNabuDesktopId = (id) => {
   if (id.endsWith('-nabu-window')) {
     return id;
   }
@@ -38,18 +38,18 @@ const logicHandlers = {
       .set('show', action.get('show'))
       .set('editor', action.get('editor'));
   },
-  'enable': state => {
+  'enable': (state) => {
     return state.set('enabled', true);
   },
-  'disable': state => {
+  'disable': (state) => {
     return state.set('enabled', false);
   },
 
-  'toggle-enabled': state => {
+  'toggle-enabled': (state) => {
     const newState = !state.get('enabled');
     return state.set('enabled', newState);
   },
-  'toggle-marks': state => {
+  'toggle-marks': (state) => {
     const newState = !state.get('marker');
     return state.set('marker', newState);
   },
@@ -69,17 +69,21 @@ const logicHandlers = {
     return state.set(`selectionMode.selectedItemId`, action.get('messageId'));
   },
 
-  'toggle-selection-mode': state => {
+  'toggle-selection-mode': (state) => {
     const newState = !state.get(`selectionMode.enabled`);
     return state.set(`selectionMode.enabled`, newState);
   },
 };
 
-Goblin.registerQuest(goblinName, 'get', function(quest) {
+Goblin.registerQuest(goblinName, 'get', function (quest) {
   return quest.goblin.getState();
 });
 
-Goblin.registerQuest(goblinName, 'create', function(quest, desktopId, enabled) {
+Goblin.registerQuest(goblinName, 'create', function (
+  quest,
+  desktopId,
+  enabled
+) {
   quest.goblin.setX('desktopId', desktopId);
   const nabuDesktopId = getNabuDesktopId(desktopId);
 
@@ -96,7 +100,7 @@ Goblin.registerQuest(goblinName, 'create', function(quest, desktopId, enabled) {
   }
   const goblinId = quest.goblin.id;
   quest.goblin.defer(
-    quest.sub(`*::*.${goblinId}.edit-message-requested`, function*(
+    quest.sub(`*::*.${goblinId}.edit-message-requested`, function* (
       err,
       {msg, resp}
     ) {
@@ -109,9 +113,9 @@ Goblin.registerQuest(goblinName, 'create', function(quest, desktopId, enabled) {
   );
 });
 
-Goblin.registerQuest(goblinName, 'delete', function(quest) {});
+Goblin.registerQuest(goblinName, 'delete', function (quest) {});
 
-Goblin.registerQuest(goblinName, 'open-locale-search', function*(quest, next) {
+Goblin.registerQuest(goblinName, 'open-locale-search', function* (quest, next) {
   const desk = quest.getAPI(quest.goblin.getX('desktopId'));
   const workitem = {
     name: 'locale-search',
@@ -127,7 +131,7 @@ Goblin.registerQuest(goblinName, 'open-locale-search', function*(quest, next) {
   yield desk.addWorkitem({workitem, navigate: true}, next);
 });
 
-Goblin.registerQuest(goblinName, 'open-session', function*(quest) {
+Goblin.registerQuest(goblinName, 'open-session', function* (quest) {
   const desktopId = quest.goblin.getX('desktopId');
   const nabuDesktopId = getNabuDesktopId(desktopId);
   const storeAPI = quest.getAPI('nabu-store');
@@ -145,7 +149,7 @@ Goblin.registerQuest(goblinName, 'open-session', function*(quest) {
   quest.dispatch('enable');
 });
 
-Goblin.registerQuest(goblinName, 'open-datagrid', function*(quest, next) {
+Goblin.registerQuest(goblinName, 'open-datagrid', function* (quest, next) {
   const desk = quest.getAPI(quest.goblin.getX('desktopId'));
   const workitem = {
     id: quest.uuidV4(),
@@ -162,7 +166,7 @@ Goblin.registerQuest(goblinName, 'open-datagrid', function*(quest, next) {
   yield desk.addWorkitem({workitem, navigate: true}, next);
 });
 
-Goblin.registerQuest(goblinName, 'open-single-entity', function*(
+Goblin.registerQuest(goblinName, 'open-single-entity', function* (
   quest,
   entityId,
   navigate,
@@ -213,7 +217,7 @@ Goblin.registerQuest(goblinName, 'open-single-entity', function*(
   }
 });
 
-Goblin.registerQuest(goblinName, 'set-selected-item', function*(
+Goblin.registerQuest(goblinName, 'set-selected-item', function* (
   quest,
   messageId,
   next
@@ -248,7 +252,7 @@ Goblin.registerQuest(goblinName, 'set-selected-item', function*(
   }
 });
 
-Goblin.registerQuest(goblinName, 'set-locale-from-name', function*(
+Goblin.registerQuest(goblinName, 'set-locale-from-name', function* (
   quest,
   name
 ) {
@@ -269,14 +273,14 @@ for (const action of Object.keys(logicHandlers)) {
     case 'disable':
     case 'toggle-enabled':
     case 'set-selected-locale':
-      Goblin.registerQuest(goblinName, action, function(quest) {
+      Goblin.registerQuest(goblinName, action, function (quest) {
         quest.do();
       });
       break;
     case 'toggle-selection-mode':
     case 'toggle-marks':
     case 'set-focus':
-      Goblin.registerQuest(goblinName, action, function(quest) {
+      Goblin.registerQuest(goblinName, action, function (quest) {
         const enabled = quest.goblin.getState().get('enabled');
         if (enabled) {
           quest.do();

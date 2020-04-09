@@ -28,14 +28,14 @@ const TextConnected = Widget.connect((state, props) => {
     const locales = state.get('backend.nabu.locales');
 
     if (locales) {
-      locale = locales.find(locale => locale.get('name') === localeId);
+      locale = locales.find((locale) => locale.get('name') === localeId);
 
       if (locale && locale.get('name')) {
         translation = translationWithContextAndSublocale(
           props.nabuId,
           locale.get('name'),
-          nabuId => computeMessageId(nabuId),
-          translation => translation && translation.get('text'),
+          (nabuId) => computeMessageId(nabuId),
+          (translation) => translation && translation.get('text'),
           (msgId, localeName) =>
             state.get(`backend.${computeTranslationId(msgId, localeName)}`)
         );
@@ -43,8 +43,8 @@ const TextConnected = Widget.connect((state, props) => {
         cachedTranslation = translationWithContextAndSublocale(
           props.nabuId,
           locale.get('name'),
-          nabuId => computeMessageId(nabuId),
-          translation => translation,
+          (nabuId) => computeMessageId(nabuId),
+          (translation) => translation,
           (msgId, localeName) =>
             state.get(`backend.nabu.translations.${msgId}.${localeName}`)
         );
@@ -99,7 +99,7 @@ class T extends Widget {
           markdownVerticalSpacing={this.props.markdownverticalspacing}
           textColor={this.props.textcolor}
           renderers={{
-            text: text => {
+            text: (text) => {
               if (text.startsWith('@{') && text.endsWith('}')) {
                 return (
                   <T

@@ -35,8 +35,8 @@ function translate(text, state, enabled, locale) {
     const translatedMessage = translationWithContextAndSublocale(
       nabuId,
       locale,
-      nabuId => computeMessageId(nabuId),
-      translation => translation && translation.get('text'),
+      (nabuId) => computeMessageId(nabuId),
+      (translation) => translation && translation.get('text'),
       (msgId, localeName) =>
         state.get(`backend.${computeTranslationId(msgId, localeName)}`)
     );
@@ -48,8 +48,8 @@ function translate(text, state, enabled, locale) {
     const cachedTranslation = translationWithContextAndSublocale(
       nabuId,
       locale,
-      nabuId => computeMessageId(nabuId),
-      translation => translation,
+      (nabuId) => computeMessageId(nabuId),
+      (translation) => translation,
       (msgId, localeName) =>
         state.get(`backend.nabu.translations.${msgId}.${localeName}`)
     );
@@ -95,7 +95,7 @@ function getTranslatableElements(text, enabled, locale, state) {
 
   // translatable string
   return get(text, '_string')
-    .map(item => getTranslatableElements(item, enabled, locale, state))
+    .map((item) => getTranslatableElements(item, enabled, locale, state))
     .flat();
 }
 
@@ -150,7 +150,7 @@ class TranslatableElement extends Widget {
     } = this.props;
     const translation = translatableElements
       ? translatableElements
-          .map(element =>
+          .map((element) =>
             element.get('nabuObject', null)
               ? format(
                   element.get('translation'),
@@ -281,7 +281,7 @@ export const withT = (
       );
     }
   );
-  return props => {
+  return (props) => {
     const {[textPropName]: msgid, ...otherProps} = props;
     return (
       <TranslatableComponent
