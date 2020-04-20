@@ -209,7 +209,7 @@ function connectTranslatableElement(renderElement) {
     }
 
     if (!nabuId && type !== 'translatableString') {
-      console.err(text);
+      console.error(text);
       throw new Error('Cannot render object in Translatable Element');
     }
 
