@@ -2,6 +2,7 @@
 
 import React from 'react';
 import Widget from 'laboratory/widget';
+import * as styles from './styles';
 import Container from 'gadgets/container/widget';
 
 import Label from 'gadgets/label/widget';
@@ -13,6 +14,7 @@ const parse = require('format-message-parse');
 class IcuMessage extends Widget {
   constructor() {
     super(...arguments);
+    this.styles = styles;
 
     this.setValue = this.setValue.bind(this);
     this.setIcu = this.setIcu.bind(this);

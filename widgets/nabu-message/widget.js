@@ -3,6 +3,7 @@
 import T from 't';
 import React from 'react';
 import Widget from 'laboratory/widget';
+import * as styles from './styles';
 import Form from 'laboratory/form';
 
 import Container from 'gadgets/container/widget';
@@ -14,6 +15,7 @@ const {computeTranslationId} = require('goblin-nabu/lib/helpers.js');
 class NabuMessage extends Form {
   constructor() {
     super(...arguments);
+    this.styles = styles;
 
     this.renderTranslations = this.renderTranslations.bind(this);
     this.renderSources = this.renderSources.bind(this);

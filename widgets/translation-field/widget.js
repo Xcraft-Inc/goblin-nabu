@@ -5,6 +5,7 @@ import Form from 'laboratory/form';
 
 import Field from 'gadgets/field/widget';
 import Widget from 'laboratory/widget';
+import * as styles from './styles';
 import HighlightLabel from '../highlight-label/widget.js';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import IcuMessage from '../icu-message/widget.js';
@@ -16,6 +17,7 @@ import T from 't';
 class TranslationField extends Form {
   constructor() {
     super(...arguments);
+    this.styles = styles;
 
     this.onUpdate = this.onUpdate.bind(this);
     this.renewTTL = this.renewTTL.bind(this);

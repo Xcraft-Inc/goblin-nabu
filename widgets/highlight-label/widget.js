@@ -3,10 +3,12 @@
 import React from 'react';
 import Label from 'gadgets/label/widget';
 import Widget from 'laboratory/widget';
+import * as styles from './styles';
 
 class HighlightLabel extends Widget {
   constructor() {
     super(...arguments);
+    this.styles = styles;
 
     this.evaluateText = this.evaluateText.bind(this);
     this.shrinkText = this.shrinkText.bind(this);
