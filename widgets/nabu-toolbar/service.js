@@ -115,7 +115,10 @@ Goblin.registerQuest(goblinName, 'create', function (
 
 Goblin.registerQuest(goblinName, 'delete', function (quest) {});
 
-Goblin.registerQuest(goblinName, 'open-locale-search', function* (quest, next) {
+Goblin.registerQuest(goblinName, 'open-locale-search', function* (
+  quest,
+  currentLocation
+) {
   const desk = quest.getAPI(quest.goblin.getX('desktopId'));
   const workitem = {
     name: 'locale-search',
@@ -128,7 +131,7 @@ Goblin.registerQuest(goblinName, 'open-locale-search', function* (quest, next) {
     maxInstances: 1,
   };
 
-  yield desk.addWorkitem({workitem, navigate: true}, next);
+  yield desk.addWorkitem({workitem, navigate: true, currentLocation});
 });
 
 Goblin.registerQuest(goblinName, 'open-session', function* (quest) {
