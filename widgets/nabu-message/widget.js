@@ -94,7 +94,7 @@ class NabuMessage extends Form {
               labelText={l.get('text')}
               verticalSpacing="5px"
               width="100%"
-              rows="5"
+              rows={5}
               locale={l.get('name')}
               showIcuButton={true}
             />
