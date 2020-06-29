@@ -143,7 +143,7 @@ class TranslationField extends Form {
             model={`backend.${id}.text`}
             grow={grow || '1'}
             verticalSpacing={verticalSpacing || 'compact'}
-            rows={rows || '1'}
+            rows={rows || 1}
             className={
               this.props.labelText
                 ? this.props.style
