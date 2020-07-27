@@ -1,7 +1,7 @@
 'use strict';
 //T:2019-02-27
 
-import Widget from 'laboratory/widget';
+import Widget from 'goblin-laboratory/widgets/widget';
 import React from 'react';
 import formatMessage from 'goblin-nabu/lib/format.js';
 const {removeContext} = require('goblin-nabu/lib/gettext.js');

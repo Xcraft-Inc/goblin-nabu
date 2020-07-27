@@ -1,9 +1,9 @@
 'use strict';
 //T:2019-02-27
 
-import Widget from 'laboratory/widget';
+import Widget from 'goblin-laboratory/widgets/widget';
 import React from 'react';
-import Text from 'nabu/text/widget';
+import Text from '../text/widget';
 import {
   getToolbarId,
   computeMessageId,
@@ -11,7 +11,7 @@ import {
 } from 'goblin-nabu/lib/helpers.js';
 const {isShredder, isImmutable} = require('xcraft-core-shredder');
 const {fromJS} = require('immutable');
-import Markdown from 'gadgets/markdown/widget';
+import Markdown from 'goblin-gadgets/widgets/markdown/widget';
 import {translationWithContextAndSublocale} from 'goblin-nabu/lib/gettext.js';
 
 const TextConnected = Widget.connect((state, props) => {
