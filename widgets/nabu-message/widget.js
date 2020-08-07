@@ -4,7 +4,7 @@ import T from 't';
 import React from 'react';
 import Widget from 'goblin-laboratory/widgets/widget';
 import * as styles from './styles';
-import Form from 'laboratory/form';
+import Form from 'goblin-laboratory/widgets/form';
 
 import Container from 'goblin-gadgets/widgets/container/widget';
 import Label from 'goblin-gadgets/widgets/label/widget';

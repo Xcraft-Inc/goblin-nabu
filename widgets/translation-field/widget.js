@@ -1,7 +1,7 @@
 //T:2019-02-27
 
 import React from 'react';
-import Form from 'laboratory/form';
+import Form from 'goblin-laboratory/widgets/form';
 
 import Field from 'goblin-gadgets/widgets/field/widget';
 import Widget from 'goblin-laboratory/widgets/widget';
