@@ -2,7 +2,7 @@
 
 import T from 't';
 import React from 'react';
-import Widget from 'laboratory/widget';
+import Widget from 'goblin-laboratory/widgets/widget';
 import * as styles from './styles';
 import Form from 'laboratory/form';
 

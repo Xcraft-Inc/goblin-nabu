@@ -1,7 +1,7 @@
 //T:2019-04-11
 
 import React from 'react';
-import Widget from 'laboratory/widget';
+import Widget from 'goblin-laboratory/widgets/widget';
 import * as styles from './styles';
 import Container from 'goblin-gadgets/widgets/container/widget';
 

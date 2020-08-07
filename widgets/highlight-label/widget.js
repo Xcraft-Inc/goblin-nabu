@@ -2,7 +2,7 @@
 
 import React from 'react';
 import Label from 'goblin-gadgets/widgets/label/widget';
-import Widget from 'laboratory/widget';
+import Widget from 'goblin-laboratory/widgets/widget';
 import * as styles from './styles';
 
 class HighlightLabel extends Widget {

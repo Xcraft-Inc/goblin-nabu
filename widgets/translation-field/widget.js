@@ -4,7 +4,7 @@ import React from 'react';
 import Form from 'laboratory/form';
 
 import Field from 'goblin-gadgets/widgets/field/widget';
-import Widget from 'laboratory/widget';
+import Widget from 'goblin-laboratory/widgets/widget';
 import * as styles from './styles';
 import HighlightLabel from '../highlight-label/widget.js';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
