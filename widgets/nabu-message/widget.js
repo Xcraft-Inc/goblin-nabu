@@ -6,9 +6,9 @@ import Widget from 'laboratory/widget';
 import * as styles from './styles';
 import Form from 'laboratory/form';
 
-import Container from 'gadgets/container/widget';
-import Label from 'gadgets/label/widget';
-import Button from 'gadgets/button/widget';
+import Container from 'goblin-gadgets/widgets/container/widget';
+import Label from 'goblin-gadgets/widgets/label/widget';
+import Button from 'goblin-gadgets/widgets/button/widget';
 import TranslationFieldConnected from 'goblin-nabu/widgets/translation-field/widget';
 const {computeTranslationId} = require('goblin-nabu/lib/helpers.js');
 

@@ -3,14 +3,14 @@
 import React from 'react';
 import Form from 'laboratory/form';
 
-import Field from 'gadgets/field/widget';
+import Field from 'goblin-gadgets/widgets/field/widget';
 import Widget from 'laboratory/widget';
 import * as styles from './styles';
 import HighlightLabel from '../highlight-label/widget.js';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import IcuMessage from '../icu-message/widget.js';
-import Container from 'gadgets/container/widget';
-import Button from 'gadgets/button/widget';
+import Container from 'goblin-gadgets/widgets/container/widget';
+import Button from 'goblin-gadgets/widgets/button/widget';
 
 import T from 't';
 

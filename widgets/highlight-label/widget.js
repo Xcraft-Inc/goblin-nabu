@@ -1,7 +1,7 @@
 //T:2019-02-27
 
 import React from 'react';
-import Label from 'gadgets/label/widget';
+import Label from 'goblin-gadgets/widgets/label/widget';
 import Widget from 'laboratory/widget';
 import * as styles from './styles';
 

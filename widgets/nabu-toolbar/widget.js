@@ -4,8 +4,8 @@
 import T from 't';
 import Widget from 'laboratory/widget';
 import React from 'react';
-import Container from 'gadgets/container/widget';
-import Button from 'gadgets/button/widget';
+import Container from 'goblin-gadgets/widgets/container/widget';
+import Button from 'goblin-gadgets/widgets/button/widget';
 import {getToolbarId} from 'goblin-nabu/lib/helpers.js';
 
 export default class NabuToolbar extends Widget {

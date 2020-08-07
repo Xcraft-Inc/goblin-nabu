@@ -3,9 +3,9 @@
 import React from 'react';
 import Widget from 'laboratory/widget';
 import * as styles from './styles';
-import Container from 'gadgets/container/widget';
+import Container from 'goblin-gadgets/widgets/container/widget';
 
-import Label from 'gadgets/label/widget';
+import Label from 'goblin-gadgets/widgets/label/widget';
 
 const T = require('goblin-nabu/widgets/helpers/t.js');
 const formatMessage = require('goblin-nabu/lib/format.js');
