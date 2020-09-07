@@ -15,7 +15,7 @@ class HighlightLabel extends Widget {
   }
 
   evaluateText() {
-    let text = '';
+    let text = undefined;
     const {id, message, highlight} = this.props;
     if (highlight) {
       if (highlight.get(id)) {
@@ -24,7 +24,8 @@ class HighlightLabel extends Widget {
           text = highLightSearch;
         }
       }
-    } else {
+    }
+    if (!text) {
       const nabuId = message.get('nabuId');
       const translation = message.get('text');
       text = nabuId || translation;
