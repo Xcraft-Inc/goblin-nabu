@@ -15,16 +15,20 @@ class HighlightLabel extends Widget {
   }
 
   evaluateText() {
-    // FIXME : props highlight return a shredder, not a text
-    //let text = this.props.highlight
-    //  ? this.props.highlight.get(this.props.id)
-    //  : undefined;
-    //if (!text) {
-    const nabuId = this.props.message.get('nabuId');
-    const translation = this.props.message.get('text');
-    let text = nabuId || translation;
-    //}
-
+    let text = '';
+    const {id, message, highlight} = this.props;
+    if (highlight) {
+      if (highlight.get(id)) {
+        const highLightSearch = highlight.get(id).get('auto');
+        if (highLightSearch) {
+          text = highLightSearch;
+        }
+      }
+    } else {
+      const nabuId = message.get('nabuId');
+      const translation = message.get('text');
+      text = nabuId || translation;
+    }
     return text;
   }
 
