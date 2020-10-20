@@ -138,15 +138,19 @@ Goblin.registerQuest(goblinName, 'open-session', function* (quest) {
   const desktopId = quest.goblin.getX('desktopId');
   const nabuDesktopId = getNabuDesktopId(desktopId);
   const storeAPI = quest.getAPI('nabu-store');
-  const configuration = yield storeAPI.getConfiguration();
+  const mandate = quest.getSession();
+  const appConfig = yield storeAPI.getConfiguration({mandate});
+  const configuration = {defaultContextId: 'nabu', ...appConfig};
   const desktopAPI = quest.getAPI(desktopId);
   const clientSessionId = yield desktopAPI.getClientSessionId();
   quest.evt(`${clientSessionId}.open-session-requested`, {
     desktopId: nabuDesktopId,
-    session: nabuDesktopId,
+    session: nabuDesktopId.split('@')[2],
     username: 'nabu',
     rootWidget: 'desktop',
     configuration,
+    mainGoblin: 'nabu',
+    mandate,
   });
 
   quest.dispatch('enable');
