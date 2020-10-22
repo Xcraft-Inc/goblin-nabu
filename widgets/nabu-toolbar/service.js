@@ -142,8 +142,8 @@ Goblin.registerQuest(goblinName, 'open-session', function* (quest) {
   const appConfig = yield storeAPI.getConfiguration({mandate});
   const configuration = {defaultContextId: 'nabu', ...appConfig};
   const desktopAPI = quest.getAPI(desktopId);
-  const clientSessionId = yield desktopAPI.getClientSessionId();
-  quest.evt(`${clientSessionId}.open-session-requested`, {
+  const labId = yield desktopAPI.getLabId();
+  quest.evt(`${labId}.open-session-requested`, {
     desktopId: nabuDesktopId,
     session: nabuDesktopId.split('@')[2],
     username: 'nabu',
