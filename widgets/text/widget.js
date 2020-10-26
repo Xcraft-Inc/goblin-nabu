@@ -119,12 +119,18 @@ export default class NabuText extends Widget {
         ? translation.get('text')
         : removeContext(nabuId);
 
-    return formatMessage(
+    let text = formatMessage(
       localeName,
       html,
       translatedMessage,
       values ? values.toJS() : {}
     );
+
+    if (text) {
+      text = text.replace(/\n/g, '<br/>');
+    }
+
+    return text;
   }
 
   getSelectionModeStyle() {
