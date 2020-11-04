@@ -8,123 +8,80 @@ import Container from 'goblin-gadgets/widgets/container/widget';
 import Label from 'goblin-gadgets/widgets/label/widget';
 
 const T = require('goblin-nabu/widgets/helpers/t.js');
-const formatMessage = require('goblin-nabu/lib/format.js');
-const parse = require('format-message-parse');
+const {formatMessage, parseParameters} = require('goblin-nabu/lib/format.js');
 
 class IcuMessage extends Widget {
   constructor() {
     super(...arguments);
     this.styles = styles;
 
-    this.setValue = this.setValue.bind(this);
-    this.setIcu = this.setIcu.bind(this);
-    this.parseParameters = this.parseParameters.bind(this);
-    this.parameterPanel = this.parameterPanel.bind(this);
-    this.parameterArea = this.parameterArea.bind(this);
-
-    this.state = {
-      formattedText: '',
-      parameters: [],
-      error: '',
-      oldText: '',
-    };
+    this.parseTranslation = this.parseTranslation.bind(this);
+    this.getFormattedText = this.getFormattedText.bind(this);
+    this.getIcuError = this.getIcuError.bind(this);
   }
 
-  setValue(key, value) {
-    let parameters = this.state.parameters;
-    parameters[key] = value;
-
-    this.setState({parameters: parameters});
-    this.setIcu();
-  }
-
-  setIcu() {
-    const paramState = this.state.parameters;
-
-    let paramString = '{';
-    Object.keys(paramState).forEach((param, index) => {
-      if (index !== 0) {
-        paramString += `, `;
-      }
-      paramString += `"${param}":"${paramState[param]}"`;
-    });
-    paramString += '}';
-
+  parseTranslation() {
     try {
-      const formatParams = JSON.parse(paramString);
-      const formattedMex = formatMessage(
+      return formatMessage(
         this.props.locale,
         false,
         this.props.translation,
-        formatParams
+        this.props.originalIcuParameters.toJS()
       );
-      this.setState({formattedText: formattedMex, error: ''});
     } catch (err) {
-      this.setState({formattedText: '', error: err.message});
+      throw err.message || err;
     }
   }
 
-  parseParameters() {
+  getFormattedText() {
     try {
-      let tokens = [];
-      parse(this.props.translation, {tagsType: null, tokens: tokens});
-
-      let parameters = [];
-      tokens.forEach((token) => {
-        if (token[0] === 'id') {
-          parameters[token[1]] = this.state.parameters[token[1]] || '';
-        }
-      });
-
-      this.setState({parameters: parameters});
+      return this.parseTranslation();
     } catch (err) {
-      this.setState({formattedText: '', error: err.message});
+      return null;
     }
   }
 
-  parameterPanel(paramKey, index) {
-    return (
-      <Container key={index} className={this.styles.classNames.element}>
-        <Label text={paramKey} className={this.styles.classNames.label} />
-        <input
-          type="text"
-          onChange={(event) => this.setValue(paramKey, event.target.value)}
-          value={this.state.parameters[paramKey]}
-          className={this.styles.classNames.input}
-        />
-      </Container>
-    );
-  }
+  getIcuError() {
+    try {
+      this.parseTranslation();
 
-  parameterArea() {
-    return Object.keys(this.state.parameters).map((paramKey, index) => {
-      return this.parameterPanel(paramKey, index);
-    });
+      // No icu error, then check for missmatching parameters
+      const missmatchingParameters = parseParameters(
+        this.props.translation
+      ).parameters.filter(
+        (translationParameter) =>
+          !this.props.originalIcuParameters.has(translationParameter)
+      );
+
+      if (missmatchingParameters.length > 0) {
+        return (
+          'The following parameters do not exist in the original nabu id:' +
+          missmatchingParameters.join(', ')
+        );
+      }
+
+      return null;
+    } catch (err) {
+      return err;
+    }
   }
 
   render() {
-    if (this.state.oldText !== this.props.translation) {
-      this.parseParameters();
-      this.setIcu();
-      this.setState({oldText: this.props.translation});
-    }
+    console.dir(this.props);
 
     return (
       <Container className={this.styles.classNames.container}>
-        {this.parameterArea()}
         <Container className={this.styles.classNames.element}>
           <Label text={T('Result')} className={this.styles.classNames.label} />
           <Label
-            text={this.state.formattedText}
+            text={this.getFormattedText()}
             className={this.styles.classNames.input}
           />
         </Container>
-        {this.state.error !== '' ? (
-          <Label
-            text={this.state.error}
-            className={this.styles.classNames.errorElement}
-          />
-        ) : null}
+        <Label
+          text={this.getIcuError()}
+          className={this.styles.classNames.errorElement}
+        />
       </Container>
     );
   }

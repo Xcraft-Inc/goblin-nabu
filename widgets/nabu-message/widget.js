@@ -19,6 +19,10 @@ class NabuMessage extends Form {
 
     this.renderTranslations = this.renderTranslations.bind(this);
     this.renderSources = this.renderSources.bind(this);
+
+    this.renderIcuParameters = this.renderIcuParameters.bind(this);
+    this.renderIcuParameter = this.renderIcuParameter.bind(this);
+
     this.copyNabuIdToClipboard = this.copyNabuIdToClipboard.bind(this);
   }
 
@@ -92,6 +96,7 @@ class NabuMessage extends Form {
               key={translationId}
               translationId={translationId}
               labelText={l.get('text')}
+              icuParameters={this.props.icuParameters}
               verticalSpacing="5px"
               width="100%"
               rows={5}
@@ -100,6 +105,47 @@ class NabuMessage extends Form {
             />
           );
         })}
+      </Container>
+    );
+  }
+
+  renderIcuParameter(paramKey) {
+    return (
+      <Container key={paramKey} className={this.styles.classNames.element}>
+        <Label text={paramKey} className={this.styles.classNames.label} />
+        <input
+          type="text"
+          onChange={(event) =>
+            this.doFor(this.props.id, 'changeIcuParameter', {
+              parameterName: paramKey,
+              value: event.target.value,
+            })
+          }
+          value={this.props.icuParameters.get(paramKey)}
+          className={this.styles.classNames.input}
+        />
+      </Container>
+    );
+  }
+
+  renderIcuParameters() {
+    const {icuParameters, nabuIdIcuError} = this.props;
+
+    return (
+      <Container>
+        <Label
+          text={T(`ICU parameters`)}
+          className={this.styles.classNames.header}
+        />
+        {Object.keys(icuParameters.toJS()).map((icuParameterName) => {
+          return this.renderIcuParameter(icuParameterName);
+        })}
+        {nabuIdIcuError ? (
+          <Label
+            text={nabuIdIcuError}
+            className={this.styles.classNames.errorElement}
+          />
+        ) : null}
       </Container>
     );
   }
@@ -129,7 +175,14 @@ class NabuMessage extends Form {
             onClick={this.copyNabuIdToClipboard}
           />
         </Form>
-        {this.renderTranslations()}
+        <Container className={this.styles.classNames.content}>
+          <Container className={this.styles.classNames.halfContent}>
+            {this.renderTranslations()}
+          </Container>
+          <Container className={this.styles.classNames.halfContent}>
+            {this.renderIcuParameters()}
+          </Container>
+        </Container>
         {this.renderSources()}
       </Container>
     );
@@ -140,4 +193,6 @@ export default Widget.connect((state, props) => ({
   nabuId: state.get(`backend.${props.entityId}.nabuId`),
   locales: state.get(`backend.nabu.locales`),
   sources: state.get(`backend.${props.entityId}.sources`),
+  icuParameters: state.get(`backend.${props.id}.icuParameters`),
+  nabuIdIcuError: state.get(`backend.${props.id}.nabuIdIcuError`),
 }))(NabuMessage);

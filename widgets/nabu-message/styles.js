@@ -31,6 +31,13 @@ export default function styles() {
     alignItems: 'center',
   };
 
+  const errorElement = {
+    display: 'flex',
+    flexDirection: 'row',
+    paddingTop: '15px',
+    color: 'rgb(190, 0, 0)',
+  };
+
   const sources = {
     maxHeight: '100px',
     overflow: 'auto',
@@ -45,6 +52,19 @@ export default function styles() {
     border: 'hidden',
     borderBottom: 'solid thin #c1d1e0',
   };
+  const content = {
+    display: 'flex',
+    flexDirection: 'row',
+    flexGrow: '1',
+  };
+  const halfContent = {
+    display: 'flex',
+    flexDirection: 'column',
+    flexGrow: '1',
+    flexBasis: '0',
+    flexShrink: '0',
+    marginRight: '10px',
+  };
 
   return {
     titleHeader,
@@ -54,5 +74,8 @@ export default function styles() {
     translationField,
     sources,
     bottomLine,
+    content,
+    halfContent,
+    errorElement,
   };
 }
