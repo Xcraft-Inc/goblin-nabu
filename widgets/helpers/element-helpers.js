@@ -2,7 +2,7 @@
 
 import React from 'react';
 import Widget from 'goblin-laboratory/widgets/widget/index.js';
-import formatMessage from 'goblin-nabu/lib/format.js';
+import {formatMessage} from 'goblin-nabu/lib/format.js';
 const {fromJS} = require('immutable');
 const {isShredder, isImmutable} = require('xcraft-core-shredder');
 
