@@ -55,7 +55,7 @@ class IcuMessage extends Widget {
 
       if (missmatchingParameters.length > 0) {
         return (
-          'The following parameters do not exist in the original nabu id:' +
+          'The following parameters do not exist in the original nabu id: ' +
           missmatchingParameters.join(', ')
         );
       }
@@ -67,17 +67,21 @@ class IcuMessage extends Widget {
   }
 
   render() {
-    console.dir(this.props);
-
     return (
       <Container className={this.styles.classNames.container}>
-        <Container className={this.styles.classNames.element}>
-          <Label text={T('Result')} className={this.styles.classNames.label} />
-          <Label
-            text={this.getFormattedText()}
-            className={this.styles.classNames.input}
-          />
-        </Container>
+        {this.props.originalIcuParameters &&
+        this.props.originalIcuParameters.size > 0 ? (
+          <Container className={this.styles.classNames.element}>
+            <Label
+              text={T('Result')}
+              className={this.styles.classNames.label}
+            />
+            <Label
+              text={this.getFormattedText()}
+              className={this.styles.classNames.input}
+            />
+          </Container>
+        ) : null}
         <Label
           text={this.getIcuError()}
           className={this.styles.classNames.errorElement}
