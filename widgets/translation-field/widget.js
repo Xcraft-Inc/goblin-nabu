@@ -10,9 +10,6 @@ import HighlightLabel from '../highlight-label/widget.js';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import IcuMessage from '../icu-message/widget.js';
 import Container from 'goblin-gadgets/widgets/container/widget';
-import Button from 'goblin-gadgets/widgets/button/widget';
-
-import T from 't';
 
 class TranslationField extends Form {
   constructor() {
@@ -23,12 +20,8 @@ class TranslationField extends Form {
     this.renewTTL = this.renewTTL.bind(this);
     this._renewInterval = null;
 
-    this.renderIcuMessage = this.renderIcuMessage.bind(this);
-    this.toggleIcu = this.toggleIcu.bind(this);
-
     this.state = {
       showField: false,
-      showIcu: false,
     };
   }
 
@@ -55,35 +48,6 @@ class TranslationField extends Form {
     this.setState({showField: true});
   }
 
-  toggleIcu() {
-    this.setState({showIcu: !this.state.showIcu});
-  }
-
-  renderIcuMessage() {
-    const isIcu = this.props.text
-      ? this.props.text.indexOf('{') > -1
-        ? this.props.text.indexOf('}') > -1
-          ? true
-          : false
-        : false
-      : false;
-    if (!this.props.showIcuButton || !isIcu) {
-      return;
-    }
-
-    return (
-      <Container className={this.styles.classNames.showIcuButton}>
-        <Button text={T('Icu')} onClick={this.toggleIcu} />
-        {this.state.showIcu ? (
-          <IcuMessage
-            locale={this.props.locale}
-            translationId={this.props.id}
-          />
-        ) : null}
-      </Container>
-    );
-  }
-
   render() {
     const {
       id,
@@ -96,6 +60,7 @@ class TranslationField extends Form {
       grow,
       highlight,
       text,
+      icuParameters,
       ...other
     } = this.props;
     const loaded = translationId && id;
@@ -153,7 +118,15 @@ class TranslationField extends Form {
             {...other}
           />
         </Form>
-        {this.renderIcuMessage()}
+        {icuParameters ? (
+          <Container className={this.styles.classNames.showIcuButton}>
+            <IcuMessage
+              locale={locale}
+              translationId={id}
+              originalIcuParameters={icuParameters}
+            />
+          </Container>
+        ) : null}
       </Container>
     );
   }
