@@ -8,8 +8,78 @@ import Form from 'goblin-laboratory/widgets/form';
 import Container from 'goblin-gadgets/widgets/container/widget';
 import Label from 'goblin-gadgets/widgets/label/widget';
 import Button from 'goblin-gadgets/widgets/button/widget';
+import TextFieldNC from 'goblin-gadgets/widgets/text-field-nc/widget';
 import TranslationFieldConnected from 'goblin-nabu/widgets/translation-field/widget';
 const {computeTranslationId} = require('goblin-nabu/lib/helpers.js');
+
+class IcuParameter extends Form {
+  render() {
+    const {icuParameterName, icuParameterValue, styles} = this.props;
+
+    return (
+      <Container
+        key={icuParameterName}
+        className={styles.classNames.icuParameter}
+      >
+        <Label text={icuParameterName} className={styles.classNames.label} />
+        <TextFieldNC
+          shape="smooth"
+          value={icuParameterValue}
+          onChange={(value) =>
+            this.doFor(this.props.id, 'changeIcuParameter', {
+              parameterName: icuParameterName,
+              value: value,
+            })
+          }
+          grow="1"
+          className={styles.classNames.input}
+        />
+      </Container>
+    );
+  }
+}
+
+const ConnectedIcuParameter = Widget.connect((state, props) => ({
+  icuParameterValue: state.get(
+    `backend.${props.id}.icuParameters.${props.icuParameterName}`
+  ),
+}))(IcuParameter);
+
+class IcuParameters extends Widget {
+  render() {
+    const {id, icuParameters, nabuIdIcuError, styles} = this.props;
+
+    return (
+      <Container>
+        <Label
+          text={T(`ICU parameters`)}
+          className={styles.classNames.header}
+        />
+        {icuParameters.map((icuParameterName) => {
+          return (
+            <ConnectedIcuParameter
+              id={id}
+              key={icuParameterName}
+              styles={styles}
+              icuParameterName={icuParameterName}
+            />
+          );
+        })}
+        {nabuIdIcuError ? (
+          <Label
+            text={nabuIdIcuError}
+            className={styles.classNames.errorElement}
+          />
+        ) : null}
+      </Container>
+    );
+  }
+}
+
+const ConnectedIcuParameters = Widget.connect((state, props) => ({
+  icuParameters: state.get(`backend.${props.id}.icuParameters`).keySeq(),
+  nabuIdIcuError: state.get(`backend.${props.id}.nabuIdIcuError`),
+}))(IcuParameters);
 
 class NabuMessage extends Form {
   constructor() {
@@ -17,9 +87,6 @@ class NabuMessage extends Form {
 
     this.renderTranslations = this.renderTranslations.bind(this);
     this.renderSources = this.renderSources.bind(this);
-
-    this.renderIcuParameters = this.renderIcuParameters.bind(this);
-    this.renderIcuParameter = this.renderIcuParameter.bind(this);
 
     this.copyNabuIdToClipboard = this.copyNabuIdToClipboard.bind(this);
   }
@@ -94,7 +161,7 @@ class NabuMessage extends Form {
               key={translationId}
               translationId={translationId}
               labelText={l.get('text')}
-              icuParameters={this.props.icuParameters}
+              workitemId={this.props.id}
               verticalSpacing="5px"
               width="100%"
               rows={5}
@@ -103,47 +170,6 @@ class NabuMessage extends Form {
             />
           );
         })}
-      </Container>
-    );
-  }
-
-  renderIcuParameter(paramKey) {
-    return (
-      <Container key={paramKey} className={this.styles.classNames.element}>
-        <Label text={paramKey} className={this.styles.classNames.label} />
-        <input
-          type="text"
-          onChange={(event) =>
-            this.doFor(this.props.id, 'changeIcuParameter', {
-              parameterName: paramKey,
-              value: event.target.value,
-            })
-          }
-          value={this.props.icuParameters.get(paramKey)}
-          className={this.styles.classNames.input}
-        />
-      </Container>
-    );
-  }
-
-  renderIcuParameters() {
-    const {icuParameters, nabuIdIcuError} = this.props;
-
-    return (
-      <Container>
-        <Label
-          text={T(`ICU parameters`)}
-          className={this.styles.classNames.header}
-        />
-        {Object.keys(icuParameters.toJS()).map((icuParameterName) => {
-          return this.renderIcuParameter(icuParameterName);
-        })}
-        {nabuIdIcuError ? (
-          <Label
-            text={nabuIdIcuError}
-            className={this.styles.classNames.errorElement}
-          />
-        ) : null}
       </Container>
     );
   }
@@ -178,7 +204,7 @@ class NabuMessage extends Form {
             {this.renderTranslations()}
           </Container>
           <Container className={this.styles.classNames.halfContent}>
-            {this.renderIcuParameters()}
+            <ConnectedIcuParameters id={this.props.id} styles={this.styles} />
           </Container>
         </Container>
         {this.renderSources()}
@@ -191,6 +217,4 @@ export default Widget.connect((state, props) => ({
   nabuId: state.get(`backend.${props.entityId}.nabuId`),
   locales: state.get(`backend.nabu.locales`),
   sources: state.get(`backend.${props.entityId}.sources`),
-  icuParameters: state.get(`backend.${props.id}.icuParameters`),
-  nabuIdIcuError: state.get(`backend.${props.id}.nabuIdIcuError`),
 }))(NabuMessage);

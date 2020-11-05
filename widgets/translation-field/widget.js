@@ -58,7 +58,7 @@ class TranslationField extends Form {
       grow,
       highlight,
       text,
-      icuParameters,
+      workitemId,
       ...other
     } = this.props;
     const loaded = translationId && id;
@@ -116,15 +116,11 @@ class TranslationField extends Form {
             {...other}
           />
         </Form>
-        {icuParameters ? (
-          <Container className={this.styles.classNames.showIcuButton}>
-            <IcuMessage
-              locale={locale}
-              translationId={id}
-              originalIcuParameters={icuParameters}
-            />
-          </Container>
-        ) : null}
+        <IcuMessage
+          locale={locale}
+          translationId={id}
+          workitemId={workitemId}
+        />
       </Container>
     );
   }

@@ -76,32 +76,29 @@ class IcuMessage extends Widget {
   }
 
   render() {
-    return (
+    return this.props.originalIcuParameters &&
+      this.props.originalIcuParameters.size > 0 ? (
       <Container className={this.styles.classNames.container}>
-        {this.props.originalIcuParameters &&
-        this.props.originalIcuParameters.size > 0 ? (
-          <Container className={this.styles.classNames.element}>
-            <Label
-              text={T('Result')}
-              className={this.styles.classNames.label}
-            />
-            <Label
-              text={this.getFormattedText()}
-              className={this.styles.classNames.input}
-            />
-          </Container>
-        ) : null}
+        <Container className={this.styles.classNames.element}>
+          <Label
+            text={this.getFormattedText()}
+            className={this.styles.classNames.input}
+          />
+        </Container>
         <Label
           text={this.getIcuError()}
           className={this.styles.classNames.errorElement}
         />
       </Container>
-    );
+    ) : null;
   }
 }
 
 export default Widget.connect((state, props) => {
   return {
     translation: state.get(`backend.${props.translationId}.text`),
+    originalIcuParameters: props.workitemId
+      ? state.get(`backend.${props.workitemId}.icuParameters`)
+      : null,
   };
 })(IcuMessage);
