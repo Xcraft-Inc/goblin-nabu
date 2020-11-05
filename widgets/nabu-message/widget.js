@@ -199,11 +199,11 @@ class NabuMessage extends Form {
             onClick={this.copyNabuIdToClipboard}
           />
         </Form>
-        <Container className={this.styles.classNames.content}>
-          <Container className={this.styles.classNames.halfContent}>
+        <Container className={this.styles.classNames.contentContainer}>
+          <Container className={this.styles.classNames.translationsContainer}>
             {this.renderTranslations()}
           </Container>
-          <Container className={this.styles.classNames.halfContent}>
+          <Container className={this.styles.classNames.icuParametersContainer}>
             <ConnectedIcuParameters id={this.props.id} styles={this.styles} />
           </Container>
         </Container>

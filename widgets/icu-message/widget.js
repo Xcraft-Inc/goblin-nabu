@@ -27,7 +27,7 @@ class IcuMessage extends Widget {
           canonicalizeIcuParameters[parameterName] =
             originalIcuParameters[parameterName];
         } else {
-          canonicalizeIcuParameters[parameterName] = '-';
+          canonicalizeIcuParameters[parameterName] = `{${parameterName}}`;
         }
       }
 

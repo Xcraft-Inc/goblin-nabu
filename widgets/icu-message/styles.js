@@ -31,7 +31,7 @@ export default function styles() {
   const input = {
     display: 'flex',
     height: '25px',
-    width: '90%',
+    width: '100%',
     border: 'solid thin #c1d1e0',
   };
 

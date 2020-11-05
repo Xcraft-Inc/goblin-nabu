@@ -52,24 +52,32 @@ export default function styles() {
     border: 'hidden',
     borderBottom: 'solid thin #c1d1e0',
   };
-  const content = {
+  const contentContainer = {
     display: 'flex',
     flexDirection: 'row',
     flexGrow: '1',
   };
-  const halfContent = {
+  const translationsContainer = {
+    display: 'flex',
+    flexDirection: 'column',
+    flexGrow: '2',
+    flexBasis: '0',
+    flexShrink: '0',
+  };
+
+  const icuParametersContainer = {
     display: 'flex',
     flexDirection: 'column',
     flexGrow: '1',
     flexBasis: '0',
     flexShrink: '0',
-    marginRight: '30px',
+    marginLeft: '50px',
   };
 
-  const icuParamater = {
+  const icuParameter = {
     display: 'flex',
-    flexDirection: 'row',
-    paddingBottom: '15px',
+    flexDirection: 'column',
+    marginBottom: '20px',
   };
 
   return {
@@ -80,9 +88,10 @@ export default function styles() {
     translationField,
     sources,
     bottomLine,
-    content,
-    halfContent,
+    contentContainer,
+    translationsContainer,
+    icuParametersContainer,
     errorElement,
-    icuParamater,
+    icuParameter,
   };
 }
