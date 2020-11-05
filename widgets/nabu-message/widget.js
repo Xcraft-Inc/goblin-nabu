@@ -3,6 +3,7 @@
 import T from 't';
 import React from 'react';
 import Widget from 'goblin-laboratory/widgets/widget';
+import * as styles from './styles';
 import Form from 'goblin-laboratory/widgets/form';
 
 import Container from 'goblin-gadgets/widgets/container/widget';
@@ -84,6 +85,7 @@ const ConnectedIcuParameters = Widget.connect((state, props) => ({
 class NabuMessage extends Form {
   constructor() {
     super(...arguments);
+    this.styles = styles;
 
     this.renderTranslations = this.renderTranslations.bind(this);
     this.renderSources = this.renderSources.bind(this);

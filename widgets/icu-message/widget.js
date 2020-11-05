@@ -2,6 +2,7 @@
 
 import React from 'react';
 import Widget from 'goblin-laboratory/widgets/widget';
+import * as styles from './styles';
 import Container from 'goblin-gadgets/widgets/container/widget';
 
 import Label from 'goblin-gadgets/widgets/label/widget';
@@ -11,6 +12,7 @@ const {formatMessage, parseParameters} = require('goblin-nabu/lib/format.js');
 class IcuMessage extends Widget {
   constructor() {
     super(...arguments);
+    this.styles = styles;
 
     this.parseTranslation = this.parseTranslation.bind(this);
     this.getFormattedText = this.getFormattedText.bind(this);
