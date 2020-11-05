@@ -3,12 +3,10 @@
 import React from 'react';
 import Label from 'goblin-gadgets/widgets/label/widget';
 import Widget from 'goblin-laboratory/widgets/widget';
-import * as styles from './styles';
 
 class HighlightLabel extends Widget {
   constructor() {
     super(...arguments);
-    this.styles = styles;
 
     this.evaluateText = this.evaluateText.bind(this);
     this.shrinkText = this.shrinkText.bind(this);

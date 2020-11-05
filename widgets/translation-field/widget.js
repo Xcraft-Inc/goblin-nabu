@@ -5,7 +5,6 @@ import Form from 'goblin-laboratory/widgets/form';
 
 import Field from 'goblin-gadgets/widgets/field/widget';
 import Widget from 'goblin-laboratory/widgets/widget';
-import * as styles from './styles';
 import HighlightLabel from '../highlight-label/widget.js';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import IcuMessage from '../icu-message/widget.js';
@@ -14,7 +13,6 @@ import Container from 'goblin-gadgets/widgets/container/widget';
 class TranslationField extends Form {
   constructor() {
     super(...arguments);
-    this.styles = styles;
 
     this.onUpdate = this.onUpdate.bind(this);
     this.renewTTL = this.renewTTL.bind(this);
