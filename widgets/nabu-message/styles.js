@@ -77,7 +77,7 @@ export default function styles() {
   const icuParameter = {
     display: 'flex',
     flexDirection: 'column',
-    marginBottom: '20px',
+    marginBottom: '10px',
   };
 
   return {

@@ -14,15 +14,23 @@ import TranslationFieldConnected from 'goblin-nabu/widgets/translation-field/wid
 const {computeTranslationId} = require('goblin-nabu/lib/helpers.js');
 
 class IcuParameter extends Form {
+  constructor() {
+    super(...arguments);
+    this.styles = styles;
+  }
+
   render() {
-    const {icuParameterName, icuParameterValue, styles} = this.props;
+    const {icuParameterName, icuParameterValue} = this.props;
 
     return (
       <Container
         key={icuParameterName}
-        className={styles.classNames.icuParameter}
+        className={this.styles.classNames.icuParameter}
       >
-        <Label text={icuParameterName} className={styles.classNames.label} />
+        <Label
+          text={icuParameterName}
+          className={this.styles.classNames.label}
+        />
         <TextFieldNC
           shape="smooth"
           value={icuParameterValue}
@@ -33,7 +41,7 @@ class IcuParameter extends Form {
             })
           }
           grow="1"
-          className={styles.classNames.input}
+          className={this.styles.classNames.input}
         />
       </Container>
     );
@@ -47,21 +55,25 @@ const ConnectedIcuParameter = Widget.connect((state, props) => ({
 }))(IcuParameter);
 
 class IcuParameters extends Widget {
+  constructor() {
+    super(...arguments);
+    this.styles = styles;
+  }
+
   render() {
-    const {id, icuParameters, nabuIdIcuError, styles} = this.props;
+    const {id, icuParameters, nabuIdIcuError} = this.props;
 
     return (
       <Container>
         <Label
           text={T(`ICU parameters`)}
-          className={styles.classNames.header}
+          className={this.styles.classNames.header}
         />
         {icuParameters.map((icuParameterName) => {
           return (
             <ConnectedIcuParameter
               id={id}
               key={icuParameterName}
-              styles={styles}
               icuParameterName={icuParameterName}
             />
           );
@@ -69,7 +81,7 @@ class IcuParameters extends Widget {
         {nabuIdIcuError ? (
           <Label
             text={nabuIdIcuError}
-            className={styles.classNames.errorElement}
+            className={this.styles.classNames.errorElement}
           />
         ) : null}
       </Container>
@@ -206,7 +218,7 @@ class NabuMessage extends Form {
             {this.renderTranslations()}
           </Container>
           <Container className={this.styles.classNames.icuParametersContainer}>
-            <ConnectedIcuParameters id={this.props.id} styles={this.styles} />
+            <ConnectedIcuParameters id={this.props.id} />
           </Container>
         </Container>
         {this.renderSources()}
