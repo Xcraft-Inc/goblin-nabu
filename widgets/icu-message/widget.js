@@ -6,7 +6,6 @@ import Container from 'goblin-gadgets/widgets/container/widget';
 
 import Label from 'goblin-gadgets/widgets/label/widget';
 
-const T = require('goblin-nabu/widgets/helpers/t.js');
 const {formatMessage, parseParameters} = require('goblin-nabu/lib/format.js');
 
 class IcuMessage extends Widget {
@@ -20,11 +19,23 @@ class IcuMessage extends Widget {
 
   parseTranslation() {
     try {
+      const originalIcuParameters = this.props.originalIcuParameters.toJS();
+      const canonicalizeIcuParameters = {};
+
+      for (let parameterName of Object.keys(originalIcuParameters)) {
+        if (originalIcuParameters[parameterName]) {
+          canonicalizeIcuParameters[parameterName] =
+            originalIcuParameters[parameterName];
+        } else {
+          canonicalizeIcuParameters[parameterName] = '-';
+        }
+      }
+
       return formatMessage(
         this.props.locale,
         false,
         this.props.translation,
-        this.props.originalIcuParameters.toJS()
+        canonicalizeIcuParameters
       );
     } catch (err) {
       throw err.message || err;
