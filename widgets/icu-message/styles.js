@@ -6,6 +6,9 @@ export default function styles() {
     flexDirection: 'column',
     marginBottom: '15px',
     marginTop: '15px',
+    position: 'relative',
+    left: '120px',
+    marginRight: '120px',
   };
 
   const element = {

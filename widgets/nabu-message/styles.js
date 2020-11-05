@@ -63,7 +63,13 @@ export default function styles() {
     flexGrow: '1',
     flexBasis: '0',
     flexShrink: '0',
-    marginRight: '10px',
+    marginRight: '30px',
+  };
+
+  const icuParamater = {
+    display: 'flex',
+    flexDirection: 'row',
+    paddingBottom: '15px',
   };
 
   return {
@@ -77,5 +83,6 @@ export default function styles() {
     content,
     halfContent,
     errorElement,
+    icuParamater,
   };
 }

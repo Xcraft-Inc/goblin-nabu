@@ -7,15 +7,7 @@ export default function styles() {
     width: '100%',
   };
 
-  const showIcuButton = {
-    marginBottom: '15px',
-    position: 'relative',
-    left: '120px',
-    marginRight: '120px',
-  };
-
   return {
     bottomLine,
-    showIcuButton,
   };
 }
