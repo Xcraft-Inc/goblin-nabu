@@ -18,6 +18,7 @@
     "babel-plugin-transform-object-rest-spread": "^6.23.0",
     "babel-preset-env": "^1.7.0",
     "babel-preset-react": "^6.24.1",
+    "format-message-parse": "^6.0.3",
     "fs-extra": "^7.0.1",
     "gigawatts": "^4.0.1",
     "highland": "^2.11.1",
