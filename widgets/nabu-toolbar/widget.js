@@ -18,6 +18,7 @@ export default class NabuToolbar extends Widget {
     this.toggleSelectionMode = this.toggleSelectionMode.bind(this);
     this.openDatagrid = this.openDatagrid.bind(this);
     this.openSingleEntity = this.openSingleEntity.bind(this);
+    this.openImportPacked = this.openImportPacked.bind(this);
     this.extract = this.extract.bind(this);
     this.pack = this.pack.bind(this);
   }
@@ -69,6 +70,10 @@ export default class NabuToolbar extends Widget {
 
   openSingleEntity(entityId) {
     this.do('open-single-entity', {entityId});
+  }
+
+  openImportPacked() {
+    this.do('open-importPackedMessages', {});
   }
 
   extract() {
@@ -125,6 +130,13 @@ export default class NabuToolbar extends Widget {
                 kind="button-footer"
                 text={T(`Pack all messages`)}
                 onClick={this.pack}
+              />
+            ) : null}
+            {process.env.NODE_ENV === 'development' ? (
+              <Button
+                kind="button-footer"
+                text={T(`Import packed messages`)}
+                onClick={this.openImportPacked}
               />
             ) : null}
           </Container>

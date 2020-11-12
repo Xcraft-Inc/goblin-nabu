@@ -173,6 +173,26 @@ Goblin.registerQuest(goblinName, 'open-datagrid', function* (quest, next) {
   yield desk.addWorkitem({workitem, navigate: true}, next);
 });
 
+Goblin.registerQuest(goblinName, 'open-importPackedMessages', function* (
+  quest,
+  next
+) {
+  const desk = quest.getAPI(quest.goblin.getX('desktopId'));
+  const workitem = {
+    id: quest.uuidV4(),
+    name: 'importPackedMessages-wizard',
+    view: 'default',
+    icon: 'solid/file-alt',
+    kind: 'tab',
+    isClosable: true,
+    navigate: true,
+    maxInstances: 1,
+    isDone: false,
+  };
+
+  yield desk.addWorkitem({workitem, navigate: true}, next);
+});
+
 Goblin.registerQuest(goblinName, 'open-single-entity', function* (
   quest,
   entityId,
