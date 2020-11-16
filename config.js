@@ -10,4 +10,11 @@ module.exports = [
     message: 'Storage available',
     default: true,
   },
+  {
+    type: 'checkbox',
+    name: 'locales',
+    message: 'list of loaded locales',
+    choices: [],
+    default: ['fr_CH', 'de_CH'],
+  },
 ];
