@@ -15,6 +15,6 @@ module.exports = [
     name: 'locales',
     message: 'list of loaded locales',
     choices: [],
-    default: ['fr_CH', 'de_CH'],
+    default: [],
   },
 ];
