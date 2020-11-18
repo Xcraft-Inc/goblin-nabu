@@ -23,6 +23,7 @@
     "gigawatts": "^4.0.1",
     "highland": "^2.11.1",
     "json-stable-stringify": "^1.0.1",
+    "langmap": "^0.0.16",
     "lodash": "^4.17.11",
     "messageformat": "^2.0.5",
     "md5.js": "^1.3.5",

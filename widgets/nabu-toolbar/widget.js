@@ -48,10 +48,6 @@ export default class NabuToolbar extends Widget {
     this.do('open-locale-search', {});
   }
 
-  localeSearch() {
-    this.do('open-locale-search', {});
-  }
-
   toggleEnabled() {
     this.do('toggle-enabled', {});
   }
