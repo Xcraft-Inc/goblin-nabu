@@ -9,7 +9,6 @@ import * as styles from './styles';
 import HighlightLabel from '../highlight-label/widget.js';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import IcuMessage from '../icu-message/widget.js';
-import Container from 'goblin-gadgets/widgets/container/widget';
 
 class TranslationField extends Form {
   constructor() {
@@ -102,7 +101,7 @@ class TranslationField extends Form {
     }
 
     return (
-      <Container>
+      <>
         <Form {...this.formConfigWithoutStyle}>
           <Field
             model={`backend.${id}.text`}
@@ -123,7 +122,7 @@ class TranslationField extends Form {
           translationId={id}
           workitemId={workitemId}
         />
-      </Container>
+      </>
     );
   }
 }
