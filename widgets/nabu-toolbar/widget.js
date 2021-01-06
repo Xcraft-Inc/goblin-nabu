@@ -110,7 +110,7 @@ export default class NabuToolbar extends Widget {
 
             <Button
               kind="button-footer"
-              text={T(`Modify all messages`)}
+              text={T(`Search for messages`)}
               onClick={this.openDatagrid}
             />
             {process.env.NODE_ENV === 'development' ? (

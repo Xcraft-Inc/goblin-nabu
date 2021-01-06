@@ -158,6 +158,7 @@ Goblin.registerQuest(goblinName, 'open-datagrid', function* (quest, next) {
   const workitem = {
     id: quest.uuidV4(),
     name: 'nabuMessage-datagrid',
+    description: T('Search for messages'),
     view: 'default',
     icon: 'solid/file-alt',
     kind: 'tab',
