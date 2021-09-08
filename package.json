@@ -22,6 +22,7 @@
     "fs-extra": "^9.1.0",
     "gigawatts": "^4.0.1",
     "highland": "^2.11.1",
+    "immutable": "4.0.0-rc.14",
     "json-stable-stringify": "^1.0.1",
     "langmap": "^0.0.16",
     "lodash": "^4.17.11",
@@ -32,6 +33,7 @@
     "xcraft-core-shredder": "^4.0.0"
   },
   "devDependencies": {
+    "@fortawesome/react-fontawesome": "^0.1.9",
     "prettier": "2.0.4",
     "xcraft-dev-prettier": "^2.0.0",
     "xcraft-dev-rules": "^2.0.0"
