@@ -95,24 +95,35 @@ class T extends Widget {
     if (msg._type === 'translatableMarkdown') {
       return (
         <Markdown
-          source={msg._string.substring(3, msg._string.length - 3)} // remove triple back-tick
           markdownVerticalSpacing={this.props.markdownverticalspacing}
           textColor={this.props.textcolor}
-          renderers={{
-            text: (text) => {
-              if (text.startsWith('@{') && text.endsWith('}')) {
-                return (
-                  <T
-                    key={text}
-                    msgid={msg._refs[text.slice(2, text.length - 1)]}
-                  />
-                );
-              } else {
-                return text;
-              }
+          components={{
+            em: (props) => {
+              const r = props.children.map((child) => {
+                if (
+                  child &&
+                  typeof child === 'string' &&
+                  child.startsWith('@{') &&
+                  child.endsWith('}')
+                ) {
+                  return (
+                    <T
+                      key={child}
+                      msgid={msg._refs[child.slice(2, child.length - 1)]}
+                    />
+                  );
+                }
+                return child;
+              });
+
+              return <>{r}</>;
             },
           }}
-        />
+        >
+          {msg._string
+            .substring(3, msg._string.length - 3) /* remove triple back-tick */
+            .replace(/(@{[^}]+})/g, '_$1_')}
+        </Markdown>
       );
     } else if (msg._type === 'translatableString') {
       return (
