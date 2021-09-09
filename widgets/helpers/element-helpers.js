@@ -31,7 +31,9 @@ function translate(text, state, enabled, locale) {
     return removeContext(nabuId);
   }
 
-  if (enabled || get(text, 'custom')) {
+  const isCustom = get(text, 'custom');
+
+  if (enabled || isCustom) {
     const translatedMessage = translationWithContextAndSublocale(
       nabuId,
       locale,
@@ -41,9 +43,11 @@ function translate(text, state, enabled, locale) {
         state.get(`backend.${computeTranslationId(msgId, localeName)}`)
     );
 
+    let fallback = isCustom ? '' : removeContext(nabuId);
+
     return translatedMessage && translatedMessage.get('text')
       ? translatedMessage.get('text')
-      : removeContext(nabuId);
+      : fallback;
   } else {
     const cachedTranslation = translationWithContextAndSublocale(
       nabuId,
