@@ -97,6 +97,9 @@ class T extends Widget {
         <Markdown
           markdownVerticalSpacing={this.props.markdownverticalspacing}
           textColor={this.props.textcolor}
+          source={msg._string
+            .substring(3, msg._string.length - 3) /* remove triple back-tick */
+            .replace(/(@{[^}]+})/g, '_$1_')}
           components={{
             em: (props) => {
               const r = props.children.map((child) => {
@@ -119,11 +122,7 @@ class T extends Widget {
               return <>{r}</>;
             },
           }}
-        >
-          {msg._string
-            .substring(3, msg._string.length - 3) /* remove triple back-tick */
-            .replace(/(@{[^}]+})/g, '_$1_')}
-        </Markdown>
+        />
       );
     } else if (msg._type === 'translatableString') {
       return (
