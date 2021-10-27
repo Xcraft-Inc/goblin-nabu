@@ -6,7 +6,6 @@ import React from 'react';
 import Text from '../text/widget';
 import {
   getToolbarId,
-  findBestLocale,
   computeMessageId,
   computeTranslationId,
 } from 'goblin-nabu/lib/helpers.js';
@@ -17,8 +16,7 @@ import {translationWithContextAndSublocale} from 'goblin-nabu/lib/gettext.js';
 
 const TextConnected = Widget.connect((state, props) => {
   const toolbarId = getToolbarId(props.workitemId);
-  const locales = state.get('backend.nabu.locales');
-  const sessionLocaleName = Widget.getUserSession(state).get('locale');
+  const localeId = Widget.getUserSession(state).get('locale');
 
   let locale = null;
   let translation = null;
@@ -26,13 +24,11 @@ const TextConnected = Widget.connect((state, props) => {
   let wiring = {};
   const message = state.get(`backend.${computeMessageId(props.nabuId)}`);
 
-  if (locales) {
-    const localeName = window.isBrowser
-      ? findBestLocale(locales, sessionLocaleName) ?? locales.get('0.name')
-      : sessionLocaleName;
+  if (localeId) {
+    const locales = state.get('backend.nabu.locales');
 
-    if (localeName) {
-      locale = locales.find((locale) => locale.get('name') === localeName);
+    if (locales) {
+      locale = locales.find((locale) => locale.get('name') === localeId);
 
       if (locale && locale.get('name')) {
         translation = translationWithContextAndSublocale(
