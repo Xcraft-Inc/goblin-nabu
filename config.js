@@ -17,4 +17,11 @@ module.exports = [
     choices: [],
     default: [],
   },
+  {
+    type: 'checkbox',
+    name: 'apps',
+    message: 'list of apps to handle',
+    choices: [],
+    default: [],
+  },
 ];
