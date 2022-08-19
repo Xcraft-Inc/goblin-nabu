@@ -154,15 +154,17 @@ class TranslatableElement extends Widget {
     } = this.props;
     const translation = translatableElements
       ? translatableElements
-          .map((element) =>
-            element.get('nabuObject', null)
-              ? format(
-                  element.get('translation'),
-                  locale,
-                  element.get('nabuObject')
-                )
-              : element.get('translation')
-          )
+          .map((element) => {
+            const translation = element.get('translation');
+            const nabuObject = element.get('nabuObject');
+            if (!nabuObject) {
+              return translation;
+            }
+            const custom = nabuObject.get('custom');
+            return custom && !enabled && !translation
+              ? ''
+              : format(translation, locale, nabuObject);
+          })
           .toJS()
           .join('')
       : this.props.msgid;

@@ -117,6 +117,8 @@ export default class NabuText extends Widget {
       translation.get('text') &&
       localeName
         ? translation.get('text')
+        : custom && !enabled
+        ? ''
         : removeContext(nabuId);
 
     let text = formatMessage(
