@@ -144,7 +144,7 @@ class T extends Widget {
         custom={msg.custom}
         html={msg.html}
         values={values}
-        workitemId={self.context.desktopId || self.getNearestId()}
+        workitemId={workitemId || self.context.desktopId || self.getNearestId()}
         {...other}
       />
     );
