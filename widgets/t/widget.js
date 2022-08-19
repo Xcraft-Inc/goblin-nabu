@@ -76,7 +76,7 @@ const TextConnected = Widget.connect((state, props) => {
 
 class T extends Widget {
   render() {
-    const {msgid, ...other} = this.props;
+    const {msgid, workitemId, ...other} = this.props;
     const self = this;
     let msg = msgid;
     let values = null;
