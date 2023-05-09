@@ -192,7 +192,7 @@ export default class NabuText extends Widget {
       cachedTranslation,
       translation,
       locale,
-      html,
+      html = true,
       values,
       selectedItem,
       selectionModeEnabled,
