@@ -321,3 +321,8 @@ export const TranslatableInput = withT(
   'placeholder',
   'workitemId'
 );
+export const TranslatableButton = withT(
+  withoutProp('button', 'workitemId'),
+  'title',
+  'workitemId'
+);
