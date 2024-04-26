@@ -79,11 +79,7 @@ function format(translation, locale, text) {
 
 function getTranslatableElements(text, enabled, locale, state) {
   if (typeof text === 'string') {
-    return [
-      {
-        translation: text,
-      },
-    ];
+    return [{translation: text}];
   }
 
   const nabuId = get(text, 'nabuId');
@@ -193,11 +189,7 @@ function connectTranslatableElement(renderElement) {
 
     if (typeof text !== 'object') {
       return {
-        translatableElements: fromJS([
-          {
-            translation: text,
-          },
-        ]),
+        translatableElements: fromJS([{translation: text}]),
         renderElement,
         ...other,
       };
