@@ -153,7 +153,7 @@ Goblin.registerQuest(goblinName, 'open-session', function* (quest) {
   quest.dispatch('enable');
 });
 
-Goblin.registerQuest(goblinName, 'open-datagrid', function* (quest, next) {
+Goblin.registerQuest(goblinName, 'open-datagrid', function* (quest) {
   const desk = quest.getAPI(quest.goblin.getX('desktopId'));
   const workitem = {
     id: quest.uuidV4(),
@@ -168,12 +168,11 @@ Goblin.registerQuest(goblinName, 'open-datagrid', function* (quest, next) {
     isDone: false,
   };
 
-  yield desk.addWorkitem({workitem, navigate: true}, next);
+  yield desk.addWorkitem({workitem, navigate: true});
 });
 
 Goblin.registerQuest(goblinName, 'open-importPackedMessages', function* (
-  quest,
-  next
+  quest
 ) {
   const desk = quest.getAPI(quest.goblin.getX('desktopId'));
   const workitem = {
@@ -188,14 +187,13 @@ Goblin.registerQuest(goblinName, 'open-importPackedMessages', function* (
     isDone: false,
   };
 
-  yield desk.addWorkitem({workitem, navigate: true}, next);
+  yield desk.addWorkitem({workitem, navigate: true});
 });
 
 Goblin.registerQuest(goblinName, 'open-single-entity', function* (
   quest,
   entityId,
-  navigate,
-  next
+  navigate
 ) {
   const desktopId = quest.goblin.getX('desktopId');
   const nabuDesktopId = getNabuDesktopId(desktopId);
@@ -215,10 +213,7 @@ Goblin.registerQuest(goblinName, 'open-single-entity', function* (
       },
     };
 
-    const workitemId = yield desk.addWorkitem(
-      {workitem, navigate: !!navigate},
-      next
-    );
+    const workitemId = yield desk.addWorkitem({workitem, navigate: !!navigate});
     const workitemApi = quest.getAPI(workitemId);
     yield workitemApi.setPostRemove({
       postRemoveAction: () =>
@@ -244,8 +239,7 @@ Goblin.registerQuest(goblinName, 'open-single-entity', function* (
 
 Goblin.registerQuest(goblinName, 'set-selected-item', function* (
   quest,
-  messageId,
-  next
+  messageId
 ) {
   const enabled = quest.goblin.getState().get('enabled');
   if (enabled) {
@@ -254,13 +248,10 @@ Goblin.registerQuest(goblinName, 'set-selected-item', function* (
     const workitemId = quest.goblin.getX('singleEntityWorkitemId');
     if (workitemId) {
       const workitemApi = quest.getAPI(workitemId);
-      yield workitemApi.changeEntity(
-        {
-          desktopId: nabuDesktopId,
-          entityId: messageId,
-        },
-        next
-      );
+      yield workitemApi.changeEntity({
+        desktopId: nabuDesktopId,
+        entityId: messageId,
+      });
       const nabu = quest.getAPI('nabu');
       yield nabu.loadTranslations({
         messageId: messageId,
