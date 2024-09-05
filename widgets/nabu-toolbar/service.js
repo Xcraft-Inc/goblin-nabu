@@ -153,7 +153,7 @@ Goblin.registerQuest(goblinName, 'open-session', function* (quest) {
   quest.dispatch('enable');
 });
 
-Goblin.registerQuest(goblinName, 'open-datagrid', function* (quest) {
+Goblin.registerQuest(goblinName, 'open-datagrid', function* (quest, next) {
   const desk = quest.getAPI(quest.goblin.getX('desktopId'));
   const workitem = {
     id: quest.uuidV4(),
@@ -172,7 +172,8 @@ Goblin.registerQuest(goblinName, 'open-datagrid', function* (quest) {
 });
 
 Goblin.registerQuest(goblinName, 'open-importPackedMessages', function* (
-  quest
+  quest,
+  next
 ) {
   const desk = quest.getAPI(quest.goblin.getX('desktopId'));
   const workitem = {
@@ -193,7 +194,8 @@ Goblin.registerQuest(goblinName, 'open-importPackedMessages', function* (
 Goblin.registerQuest(goblinName, 'open-single-entity', function* (
   quest,
   entityId,
-  navigate
+  navigate,
+  next
 ) {
   const desktopId = quest.goblin.getX('desktopId');
   const nabuDesktopId = getNabuDesktopId(desktopId);
@@ -239,7 +241,8 @@ Goblin.registerQuest(goblinName, 'open-single-entity', function* (
 
 Goblin.registerQuest(goblinName, 'set-selected-item', function* (
   quest,
-  messageId
+  messageId,
+  next
 ) {
   const enabled = quest.goblin.getState().get('enabled');
   if (enabled) {
