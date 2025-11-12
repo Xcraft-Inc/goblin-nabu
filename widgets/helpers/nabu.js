@@ -4,7 +4,7 @@ import {translationWithContextAndSublocale} from '../../lib/gettext.js';
 import Shredder from 'xcraft-core-shredder';
 import {formatMessage} from '../../lib/format.js';
 
-const T = function (nabuId, values = {}) {
+const T = function (nabuId, description, values = {}) {
   const state = new Shredder(window.renderer.store.getState());
 
   let locale = null;
