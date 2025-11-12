@@ -35,4 +35,4 @@ const T = function (nabuId, values = {}) {
   return formatMessage(locale, true, translation || nabuId, values);
 };
 
-export {T};
+export default T;
