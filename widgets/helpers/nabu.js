@@ -5,6 +5,10 @@ import Shredder from 'xcraft-core-shredder';
 import {formatMessage} from '../../lib/format.js';
 
 const T = function (nabuId, description, values = {}) {
+  if (!window.renderer) {
+    return formatMessage(null, true, nabuId, values);
+  }
+
   const state = new Shredder(window.renderer.store.getState());
 
   let locale = null;
