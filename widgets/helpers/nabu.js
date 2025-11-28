@@ -6,7 +6,7 @@ import {formatMessage} from '../../lib/format.js';
 
 const T = function (nabuId, description, values = {}) {
   if (!window.renderer) {
-    return formatMessage(null, true, nabuId, values);
+    return formatMessage(null, false, nabuId, values);
   }
 
   const state = new Shredder(window.renderer.store.getState());
@@ -14,17 +14,17 @@ const T = function (nabuId, description, values = {}) {
   let locale = null;
   const localeId = Widget.getUserSession(state).get('locale');
   if (!localeId) {
-    return formatMessage(null, true, nabuId, values);
+    return formatMessage(null, false, nabuId, values);
   }
 
   const locales = state.get('backend.nabu.locales');
   if (!locales) {
-    return formatMessage(null, true, nabuId, values);
+    return formatMessage(null, false, nabuId, values);
   }
 
   locale = locales.find((locale) => locale.get('name') === localeId);
   if (!locale || !locale.get('name')) {
-    return formatMessage(null, true, nabuId, values);
+    return formatMessage(null, false, nabuId, values);
   }
 
   locale = locale.get('name');
@@ -36,7 +36,7 @@ const T = function (nabuId, description, values = {}) {
     (msgId, localeName) =>
       state.get(`backend.nabu.translations.${msgId}.${localeName}`)
   );
-  return formatMessage(locale, true, translation || nabuId, values);
+  return formatMessage(locale, false, translation || nabuId, values);
 };
 
 export default T;
