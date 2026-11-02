@@ -1,6 +1,9 @@
 import {computeMessageId} from '../../lib/helpers.js';
 import Widget from 'goblin-laboratory/widgets/widget/index.js';
-import {translationWithContextAndSublocale} from '../../lib/gettext.js';
+import {
+  removeContext,
+  translationWithContextAndSublocale,
+} from '../../lib/gettext.js';
 import Shredder from 'xcraft-core-shredder';
 import {formatMessage} from '../../lib/format.js';
 
@@ -36,7 +39,8 @@ const T = function (nabuId, description, values = {}) {
     (msgId, localeName) =>
       state.get(`backend.nabu.translations.${msgId}.${localeName}`)
   );
-  return formatMessage(locale, false, translation || nabuId, values);
+  const text = removeContext(translation || nabuId);
+  return formatMessage(locale, false, text, values);
 };
 
 export default T;
