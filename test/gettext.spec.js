@@ -24,6 +24,11 @@ describe('goblin.nabu', function () {
         ['ctx 1|notctx 2 |foobar']: 'notctx 2 |foobar',
         ['|foobar']: '|foobar',
         ['ctx||foobar']: '|foobar',
+        ['']: '',
+        ['|']: '|',
+        ['||']: '||',
+        ['| |']: '| |',
+        ['ctx| |']: ' |',
       };
 
       for (const [input, output] of Object.entries(strings)) {
